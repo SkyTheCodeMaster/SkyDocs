@@ -16,9 +16,9 @@
  <p>SkyDB is a filetype with is read and loaded with the AdvFS library</p>
  <p>It is loaded with `AdvFS.tblLoad`, and saved with `AdvFS.tblSave`.</p>
  <SkyCode>
-  AdvFS = require("AdvFS")
-  data = AdvFS.tblLoad("database.skydb")
-  data[#data + 1] = "This is the new last entry in this database!"
-  AdvFS.tblSave(data,"database.skydb")
+  AdvFS = require("AdvFS") <br>
+  data = AdvFS.tblLoad("database.skydb") <br>
+  data[#data + 1] = "This is the new last entry in this database!" <br>
+  AdvFS.tblSave(data,"database.skydb") <br>
  </SkyCode>
 </body>
