@@ -2,7 +2,7 @@
  <title>SkyDB - Main Page</title>
  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
  <style>
-  pre code {
+  SkyCode {
    background-color: #eee;
    border: 1px solid #999;
    display: block;
@@ -15,12 +15,10 @@
  <h1>SkyDB - A ComputerCraft: Tweaked Database format</h1>
  <p>SkyDB is a filetype with is read and loaded with the AdvFS library</p>
  <p>It is loaded with `AdvFS.tblLoad`, and saved with `AdvFS.tblSave`.</p>
- <pre>    
-  <code>
-   AdvFS = require("AdvFS")
-   data = AdvFS.tblLoad("database.skydb")
-   data[#data + 1] = "This is the new last entry in this database!"
-   AdvFS.tblSave(data,"database.skydb")
-  </code>
- </pre>
+ <SkyCode>
+  AdvFS = require("AdvFS")
+  data = AdvFS.tblLoad("database.skydb")
+  data[#data + 1] = "This is the new last entry in this database!"
+  AdvFS.tblSave(data,"database.skydb")
+ </SkyCode>
 </body>
