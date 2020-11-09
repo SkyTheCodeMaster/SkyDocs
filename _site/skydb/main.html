@@ -1,0 +1,27 @@
+<head>
+ <title>SkyDB - Main Page</title>
+ <link rel="stylesheet" href="https://SkyTheCodeMaster.github.io/SkyDocs/css/myCSS.css">
+ <style>
+  SkyCode {
+   background-color: #eee;
+   border: 2px solid #ddd
+   font-size:16px;
+   width:650px;
+   padding:20px;
+   word-wrap:break-word;
+   display:block;
+  }
+ </style>
+</head>
+<script src="../navbar.js"></script>
+<body>
+ <h1>SkyDB - A CC: Tweaked Database Format</h1>
+ <p>SkyDB is a filetype with is read and loaded with the AdvFS library</p>
+ <p>It is loaded with `AdvFS.tblLoad`, and saved with `AdvFS.tblSave`.</p>
+ <SkyCode>
+  AdvFS = require("AdvFS") <br>
+  data = AdvFS.tblLoad("database.skydb") <br>
+  data[#data + 1] = "This is the new last entry in this database!" <br>
+  AdvFS.tblSave(data,"database.skydb") <br>
+ </SkyCode>
+</body>
