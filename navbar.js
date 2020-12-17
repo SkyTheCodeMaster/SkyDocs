@@ -12,10 +12,11 @@ document.write(`
     <button class="w3-button">Libraries</button>
     <div class="w3-dropdown-content w3-bar-block w3-card-4">
       <a href="/libs/sUtils/sUtils.html" class="w3-bar-item w3-button">sUtils</a>
-      <a href="/libs/file.html" class="w3-bar-item w3-button">File Library</a>
-      <a href="/libs/graphic.html" class="w3-bar-item w3-button">Graphic Library</a>
-      <a href="/libs/gpswrapper.html" class="w3-bar-item w3-button">GPSwrapper Library</a>
-      <a href="/libs/ts.html" class="w3-bar-item w3-button">Timeserver API</a>
+      <a href="/libs/file.html" class="w3-bar-item w3-button">File</a>
+      <a href="/libs/graphic.html" class="w3-bar-item w3-button">Graphic</a>
+      <a href="/libs/gpswrapper.html" class="w3-bar-item w3-button">GPSwrapper</a>
+      <a href="/libs/ts.html" class="w3-bar-item w3-button">Timeserver</a>
+      <a href="/libs/progressBar.html" class="w3-bar-item w3-button">Progress Bar</a>
     </div>
   </div>
 </div>
