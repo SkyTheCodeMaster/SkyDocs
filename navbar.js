@@ -13,6 +13,7 @@ document.write(`
     <div class="w3-dropdown-content w3-bar-block w3-card-4">
       <a href="/libs/sUtils/sUtils.html" class="w3-bar-item w3-button">sUtils</a>
       <a href="/libs/file.html" class="w3-bar-item w3-button">File Library</a>
+      <a href="/libs/graphic.html" class="w3-bar-item w3-button">Graphic Library</a>
     </div>
   </div>
 </div>
