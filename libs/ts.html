@@ -1,0 +1,49 @@
+<head>
+  <meta property="og:site_name" content="SkyDocs">
+  <meta property="og:url" content="skydocs.madefor.cc/libs/ts.html">
+  <meta property="og:title" content="Timeserver API">
+  <meta property="og:description" content="The doc page for the timeserver api">
+  <meta property="og:type" content="website">
+  <title>Graphic Library</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    c { text-align: center; }
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      }
+    th, td {
+      padding: 15px;
+    }
+    th {
+      text-align: left;
+    }
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+    tr:nth-child(odd) {
+      background-color: #fff;
+    }
+    code {
+      font-family: Consolas,"courier new";
+      color: black;
+      background-color: #f1f1f1;
+      padding: 4px;
+      font-size: 105%;
+    }
+    source {
+      font-family: Consolas,"courier new";
+      color: blue;
+      padding: 4px;
+      font-size: 50%;
+    }
+  </style>
+</head>
+<script src="/navbar.js"></script>
+<body>
+  <c><h1>The Timeserver API</h1></c>
+  <c><p>The timeserver api will contact the SkyNet TimeServer, and return the current time</p></c>
+  <p>Functions:</p>
+  <code>ts.get(nOffset)<br/> -> This returns a table with the current time in a table, a string with HH:MM:SS, and a string with HH:MM.<br/><br/></code>
+</body>
