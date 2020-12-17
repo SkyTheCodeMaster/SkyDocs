@@ -1,0 +1,54 @@
+<head>
+  <meta property="og:site_name" content="SkyDocs">
+  <meta property="og:url" content="skydocs.madefor.cc/libs/graphic.html">
+  <meta property="og:title" content="Graphic Library">
+  <meta property="og:description" content="The doc page for the graphic library">
+  <meta property="og:type" content="website">
+  <title>Graphic Library</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    c { text-align: center; }
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      }
+    th, td {
+      padding: 15px;
+    }
+    th {
+      text-align: left;
+    }
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+    tr:nth-child(odd) {
+      background-color: #fff;
+    }
+    code {
+      font-family: Consolas,"courier new";
+      color: black;
+      background-color: #f1f1f1;
+      padding: 4px;
+      font-size: 105%;
+    }
+    source {
+      font-family: Consolas,"courier new";
+      color: blue;
+      padding: 4px;
+      font-size: 50%;
+    }
+  </style>
+</head>
+<script src="/navbar.js"></script>
+<body>
+  <c><h1>The Graphic Library</h1></c>
+  <c><p>The graphics library is a wrapper around paintutils that restores the original cursor position and terminal colours. It also has a text drawing function.</p></c>
+  <p>The <code>[tOutput]</code> requires a modded version of paintutils which supports this. It allows pixels to be drawn to other term objects without using <code>term.redirect()</code></p>
+  <p>Functions:</p>
+  <code>graphic.drawFilledBox(nStartX,nStartY,nEndX,nEndY,nColour,[tOutput])<br/> -> Draws a filled box between the start x and y, and the end x and y.<br/></code>
+  <code>graphic.drawBox(nStartX,nStartY,nEndX,nEndY,nColour,[tOutput])<br/> -> Draws a hollow box between the start x and y, and the end x and y.<br/></code>
+  <code>graphic.drawLine(nStartX,nStartY,nEndX,nEndY,nColour,[tOutput])<br/> -> Draws a line between the start x and y, and the end x and y.<br/></code>
+  <code>graphic.drawPixel(nX,nY,nColour,[tOutput])<br/> -> Draws a single pixel at the specified x and y coordinates.<br/></code>
+  <code>graphic.drawText(nX,nY,nFG,nBG,sText,[tOutput])<br/> -> Draws text to the screen starting at the specified x and y coordinates, with the specified colour.<br/></code>
+</body>
