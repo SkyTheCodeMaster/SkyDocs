@@ -15,6 +15,7 @@ document.write(`
       <a href="/libs/file.html" class="w3-bar-item w3-button">File Library</a>
       <a href="/libs/graphic.html" class="w3-bar-item w3-button">Graphic Library</a>
       <a href="/libs/gpswrapper.html" class="w3-bar-item w3-button">GPSwrapper Library</a>
+      <a href="/libs/ts.html" class="w3-bar-item w3-button">Timeserver API</a>
     </div>
   </div>
 </div>
