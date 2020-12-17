@@ -14,6 +14,7 @@ document.write(`
       <a href="/libs/sUtils/sUtils.html" class="w3-bar-item w3-button">sUtils</a>
       <a href="/libs/file.html" class="w3-bar-item w3-button">File Library</a>
       <a href="/libs/graphic.html" class="w3-bar-item w3-button">Graphic Library</a>
+      <a href="/libs/gpswrapper.html" class="w3-bar-item w3-button">GPSwrapper Library</a>
     </div>
   </div>
 </div>
