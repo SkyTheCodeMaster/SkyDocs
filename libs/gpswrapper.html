@@ -1,0 +1,50 @@
+<head>
+  <meta property="og:site_name" content="SkyDocs">
+  <meta property="og:url" content="skydocs.madefor.cc/libs/graphic.html">
+  <meta property="og:title" content="Graphic Library">
+  <meta property="og:description" content="The doc page for the graphic library">
+  <meta property="og:type" content="website">
+  <title>Graphic Library</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    c { text-align: center; }
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+      }
+    th, td {
+      padding: 15px;
+    }
+    th {
+      text-align: left;
+    }
+    tr:nth-child(even) {
+      background-color: #eee;
+    }
+    tr:nth-child(odd) {
+      background-color: #fff;
+    }
+    code {
+      font-family: Consolas,"courier new";
+      color: black;
+      background-color: #f1f1f1;
+      padding: 4px;
+      font-size: 105%;
+    }
+    source {
+      font-family: Consolas,"courier new";
+      color: blue;
+      padding: 4px;
+      font-size: 50%;
+    }
+  </style>
+</head>
+<script src="/navbar.js"></script>
+<body>
+  <c><h1>The Graphic Library</h1></c>
+  <c><p>The gpswrapper library is a wrapper around the gps library, but works in an emulator. If the gps library is not present, this returns <code>1,1,1</code></p></c>
+  <p>Functions:</p>
+  <code>gpswrapper.gpslocate(nTimeout)<br/> -> This checks to see if the gps library exists, if so, it pings gps servers, if not, it returns 1,1,1<br/><br/></code>
+  <code>gpswrapper.gpsfloor(nTimeout)<br/> -> This calls gpswrapper.gpslocate(), but returns the results rounded to the nearest integer.<br/><br/></code>
+</body>
