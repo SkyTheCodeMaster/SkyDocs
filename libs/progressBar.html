@@ -45,7 +45,7 @@
   <c><h1>The Progress Bar Library</h1></c>
   <c><p>The progress bar library simply creates and manages progress bars</p></c>
   <p>Functions:</p>
-  <code>progressBar.new(nX,nY,nFG,nBG,sName,[nFilled],[tOutput])<br/> -> This creates a new progress bar, and fills it to the specified level, or it defaults to 0.<br/><br/></code>
+  <code>progressBar.new(nX,nY,nLen,nHeight,nFG,nBG,sName[,nFilled][,tOutput])<br/> -> This creates a new progress bar, at the specified cordinates with nLen determining the length and nHeight determining the height if set.<br/><br/></code>
   <code>progressBar.update(sName,nFill)<br/> -> This updates a progress bar and fills it in to the desired amount.<br/><br/></code>
   <code>progressBar.getFill(sName)<br/> -> This gets the current fill amount of a particular progress bar.<br/><br/></code>
   <code>progressBar.calcFill(nLength,nFill)<br/> -> This simply does some math to calculate how many pixels should be filled in to fill up a progress bar.<br/><br/></code>
