@@ -14,6 +14,7 @@
     (title "SkyDocs")
     ;;(logo src/main/resources/pack.png)
     (url https://skydocs.madefor.cc/)
+    (source-link https://github.com/SkyTheCodeMaster/SkyDocs/blob/${commit}/${path}#L${line})
 
     (styles src/web/styles.css)
     ;;(scripts build/rollup/index.js)
