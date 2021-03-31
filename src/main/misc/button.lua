@@ -3,7 +3,9 @@
 -- @module[kind=misc] button
 
 local expect = require("cc.expect").expect
+--- idLength is how long the specific IDs are, if you have lots of buttons, this should go higher.
 local idLength = 6 -- This is the length of the unique identifiers for buttons.
+--- strictImage forces the image to be the same height and width as the button
 local strictImage = true -- This confirms that the image is the same height as the button.
 local buttons = {}
 
