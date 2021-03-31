@@ -102,7 +102,7 @@ local function downloadRepo(user,repo,branch,path)
 end
 
 --- updateSkyOS simply updates SkyOS from the github repository
--- @tparam boolean reboot after update. Defaults to false
+-- @tparam[opt=false] boolean reboot after update. Defaults to false
 local function updateSkyOS(reboot)
   expect(1,reboot,"boolean","nil")
   reboot = reboot or false
