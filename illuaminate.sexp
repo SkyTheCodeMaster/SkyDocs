@@ -20,6 +20,10 @@
     ;;(scripts build/rollup/index.js)
     (head doc/head.html))
 
+  (module-kinds
+    (skyos SkyOS)
+    (misc Misc))
+
   (library-path
     /src/main/skyos/
     /src/main/misc/))
