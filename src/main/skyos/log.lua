@@ -1,5 +1,6 @@
 --- log is a library to simply write logs to a file.
 -- This library will be soon rewritten in favour of objects, instead of the library holding them.
+-- This library is deprecated; it's successor is in development.
 -- @module[kind=skyos] log
 
 local mLog
