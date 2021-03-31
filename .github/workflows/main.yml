@@ -25,6 +25,6 @@ jobs:
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
-        publish_dir: ./doc
+        publish_dir: ./build/docs/lua
         force_orphan: true
         commit_message: Build for
