@@ -1,5 +1,4 @@
 --- A simple button api with the option of drawing an image on the button.
--- https://gist.github.com/SkyTheCodeMaster/c127ca042ee4d178693e45983ce42da4
 -- @module[kind=misc] button
 
 local expect = require("cc.expect").expect

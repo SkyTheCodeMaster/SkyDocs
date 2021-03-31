@@ -1,5 +1,4 @@
 --- Provides a pastebin api to interact with pastebin without using the pastebin shell command.
--- https://gist.github.com/SkyTheCodeMaster/12aeb6cd7d2890640bd81bab66261a4b
 -- @module[kind=misc] pastebin
 
 local function extractId(paste)

@@ -1,5 +1,4 @@
 --- sUtils is a utility api with a large amount of functions for various purposes
--- https://gist.github.com/SkyTheCodeMaster/63d05e3cb5173eda7f4a6755a8a5c962
 -- @module[kind=misc] sUtils
 
 local expect = require("cc.expect").expect
