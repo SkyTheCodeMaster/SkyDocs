@@ -109,3 +109,8 @@ local function updateSkyOS(reboot)
   downloadRepo()
   if reboot then os.reboot() end
 end
+
+return {
+  downloadRepo = downloadRepo,
+  updateSkyOS = updateSkyOS,
+}
