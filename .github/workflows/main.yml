@@ -1,29 +1,30 @@
-# This is a basic workflow to help you get started with Actions
+name: GitHub Pages
 
-name: Build documentation
-
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+    branches:
+    - source
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
 
     steps:
-      # ...
-    - name: Lint Lua code
+    - uses: actions/checkout@v2
+    - uses: leafo/gh-actions-lua@v8.0.0
+
+    - name: Generate documentation
       run: |
-        # Download illuaminate
         test -d bin || mkdir bin
-        test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/bin/illuaminate
+        test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/linux-x86-64/illuaminate
         chmod +x bin/illuaminate
-        # And run it
-        GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }} bin/illuaminate doc-gen --github
+        bin/illuaminate doc-gen
+
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./doc
+        force_orphan: true
+        commit_message: Build for
