@@ -9,7 +9,7 @@ end
 
 local tbl = {} --- @type log
 local mt = {["__index"] = tbl}
---- save Save the log, writing all the written info to the file.
+--- save Save the log, writing all the written info to the file. 
 function tbl:save() 
   self.fHandle.save()
 end
