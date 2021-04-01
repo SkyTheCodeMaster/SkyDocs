@@ -18,17 +18,19 @@ end
 function tbl:info(info)
   local time = genTime()
   local str = time .. "[INFO]" .. info
-  fHandle.writeLine(str)
+  self.fHandle.writeLine(str)
 end
 function tbl:warn(warn)
   local time = genTime()
   local str = time .. "[INFO]" .. warn
-  fHandle.writeLine(str)
+  self.fHandle.writeLine(str)
 end
+--- err Writes an errorline to the log.
+-- @tparam string error The error to write to the log.
 function tbl:err(err)
   local time = genTime()
   local str = time .. "[INFO]" .. err
-  fHandle.writeLine(str)
+  self.fHandle.writeLine(str)
 end
 --- create returns a table of functions for writing to a log file.
 -- @tparam string file Path to the log file.
