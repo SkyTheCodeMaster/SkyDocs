@@ -27,7 +27,7 @@ function tbl:warn(warn)
 end
 function tbl:err(err)
   local time = genTime()
-  local str == time .. "[INFO]" .. err
+  local str = time .. "[INFO]" .. err
   fHandle.writeLine(str)
 end
 --- create returns a table of functions for writing to a log file.
