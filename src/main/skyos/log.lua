@@ -7,7 +7,7 @@ local function genTime()
   return str
 end
 
-local tbl = {}
+local tbl = {} --- @type table
 local mt = {["__index"] = tbl}
 function tbl:save() 
   self.fHandle.save()
