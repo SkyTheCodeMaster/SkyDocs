@@ -21,6 +21,20 @@ local function makePrompt(promptName,choices)
   return str
 end
 
+--- madeDiceRoll takes some parameters and generates a dice roll string
+-- @tparam string numDice How many dice to roll.
+-- @tparam string diceSides How many sides of the die.
+-- @tparam string modifier Modifier of the dice roll.
+-- @tparam boolean inline Whether or not to make it an inline dice roll.
+-- @treturn string roll The roll string that can be ran in Roll20.
+local function makeDiceRoll(numDice,diceSides,modifier,inline)
+  local str = ""
+  if inline then str = str .. "[[" end
+  str = str .. numDice .. "D" .. diceSides .. "+" .. modifier
+  if inline then str = str .. "]]" end
+  return str
+end
+
 return {
   conditionCharacters = conditionCharacters,
   makePrompt = makePrompt,
