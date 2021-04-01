@@ -34,6 +34,7 @@ function tbl:err(err)
 end
 --- create returns a table of functions for writing to a log file.
 -- @tparam string file Path to the log file.
+-- @treturn table object Object with functions to write to the log file.
 local function create(file)
   local fHandle,err = fs.open(file,"w")
   if not fHandle then return nil,err end
