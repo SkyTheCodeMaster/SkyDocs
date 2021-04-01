@@ -1,86 +1,42 @@
---- log is a library to simply write logs to a file.
--- This library will be soon rewritten in favour of objects, instead of the library holding them.
--- This library is deprecated; it's successor is in development.
+--- The log library is a library to store logs for various programs. It will keep the logs down to a certain size.
 -- @module[kind=skyos] log
 
-local mLog
-local LFT = {} -- Log File Table
-local log = {}
-
---- new creates a new log, and adds it to the table of logs
--- @tparam string path path to the log file
--- @tparam string name name of the log file
-function log.new(logPath,logName)
-  LFT[tostring(logName)] = fs.open(logPath,"a")
+local function genTime()
+  local time = os.date("!*t")
+  local str = "["..tostring(t.hour)..":"..tostring(t.min)..":"..tostring(t.sec).."] "
+  return str
 end
 
---- save saves the log
--- @tparam name name of the log to save
-function log.save(logName)
-  if logName == nil then logName = mLog end
-  LFT[tostring(logName)].flush()
+local tbl = {}
+local mt = {["__index"] = tbl}
+function tbl:save() 
+  self.fHandle.save()
 end
-
---- close closes the log file
--- @tparam string name name of the log to close
-function log.close(logName)
-  if logName == nil then logName = mLog end
-  LFT[tostring(logName)].close()
+function tbl:close()
+  self.fHandle.close()
 end
-
---- info logs "[INFO] text" in the log file
--- @tparam string text text to write in the log
--- @tparam string name name of the log to write
-function log.info(text,logName)
-  if logName == nil then logName = mLog end
-  t = os.date("*t")
-  curTime = "[" .. string.gsub(os.date("%x"),"/",":") .. ":" .. os.date("%X") .. "]"
-  LFT[tostring(logName)].writeLine(curTime.." [INFO] "..tostring(text))
+function tbl:info(info)
+  local time = genTime()
+  local str = time .. "[INFO]" .. info
+  fHandle.writeLine(str)
 end
-
---- warn logs "[WARN] text" in the log file
--- @tparam string text text to write in the log
--- @tparam string name name of the log to write
-function log.warn(text,logName)
-  if logName == nil then logName = mLog end
-  t = os.date("*t")
-  curTime = "[" .. string.gsub(os.date("%x"),"/",":") .. ":" .. os.date("%X") .. "]"
-  LFT[tostring(logName)].writeLine(curTime.." [WARN] "..tostring(text))
+function tbl:warn(warn)
+  local time = genTime()
+  local str = time .. "[INFO]" .. warn
+  fHandle.writeLine(str)
 end
-
---- error logs "[ERROR] text" in the log file
--- @tparam {string|number} id error ID
--- @tparam string text text to write in the log
--- @tparam string name name of the log to write
-function log.error(errorID,errorInfo,logName)
-  if logName == nil then logName = mLog end
-  t = os.date("*t")
-  curTime = "[" .. string.gsub(os.date("%x"),"/",":") .. ":" .. os.date("%X") .. "]"
-  LFT[tostring(logName)].writeLine(curTime.." [ERROR] "..tostring(errorID)..":"..tostring(errorInfo))
+function tbl:err(err)
+  local time = genTime()
+  local str == time .. "[INFO]" .. err
+  fHandle.writeLine(str)
 end
-
---- errorC calls {@log.error} and closes the log file
--- @tparam {string|number} id error ID
--- @tparam string info error info
--- @tparam string name name of the log
-function log.errorC(errorID,errorInfo,logName)
-  if logName == nil then logName = mLog end
-  log.error(errorID,errorInfo,logName)
-  log.save(logName)
-  log.close(logName)
-  error(tostring(errorInfo).." See log for more")
+--- create returns a table of functions for writing to a log file.
+-- @tparam string file Path to the log file.
+local function create(file)
+  local fHandle,err = fs.open(file,"w")
+  if not fHandle then return nil,err end
+  local tbl = {
+    fHandle = fHandle
+  }
+  return setmetatable(tbl,mt)
 end
-
--- setMain sets the default log to write to
--- @tparam string name name of the log to set as default
-function log.setMain(logName)
-  mLog = logName
-end
-
---- activeLogs returns the open log files 
--- @treturn table active log files
-function log.activeLogs()
-  return LFT
-end
-
-return log
