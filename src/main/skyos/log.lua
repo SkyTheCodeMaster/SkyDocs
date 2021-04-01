@@ -42,3 +42,7 @@ local function create(file)
   }
   return setmetatable(tbl,mt)
 end
+
+return {
+  create = create,
+}
