@@ -38,4 +38,5 @@ end
 return {
   conditionCharacters = conditionCharacters,
   makePrompt = makePrompt,
+  makeDiceRoll = makeDiceRoll,
 }
