@@ -1,8 +1,6 @@
 --- progress bar is an api for drawing & updating progress bars.
 -- @module[kind=misc] progressbar
 
-
-
 local function save()
   local x,y = term.getCursorPos()
   local tbl = {
@@ -32,7 +30,9 @@ local function update(bar,percent)
   local pixels = math.floor((percent / (100 / bar.w)) + 0.5) -- The math.floor + 0.5 acts as a rounding function.
   -- percent / (100 / barWidth) calculates how many pixels should be filled in the bar
   dfb(bar.x,bar.y,(bar.x+bar.w),(bar.y+bar.h),bar.bg)
-  dfb(bar.x,bar.y,(bar.x+pixels),(bar.y+bar.h),bar.fg)
+  if pixels ~= 0 then
+    dfb(bar.x,bar.y,(bar.x+pixels-1),(bar.y+bar.h),bar.fg)
+  end
   return percent
 end
 
