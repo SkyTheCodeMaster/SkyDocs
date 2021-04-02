@@ -72,3 +72,7 @@ local function create(x,y,w,h,fg,bg,fill)
   if fill ~= 0 then update(bar,fill) end
   return setmetatable(bar,mt)
 end
+
+return {
+  create = create,
+}
