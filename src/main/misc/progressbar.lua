@@ -31,7 +31,7 @@ local function update(bar,percent)
   -- percent / (100 / barWidth) calculates how many pixels should be filled in the bar
   dfb(bar.x,bar.y,(bar.x+bar.w),(bar.y+bar.h),bar.bg)
   if pixels ~= 0 then
-    dfb(bar.x,bar.y,(bar.x+pixels-1),(bar.y+bar.h),bar.fg)
+    dfb(bar.x,bar.y,(bar.x+pixels),(bar.y+bar.h),bar.fg)
   end
   return percent
 end
