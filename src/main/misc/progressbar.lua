@@ -36,17 +36,17 @@ local function update(bar,percent)
   return percent
 end
 
-local bar = {} --- @type bar
-local mt = {["__index"] = bar}
+local bar1 = {} --- @type bar
+bar1.__index = bar1
 
 --- Update the bar to a percentage from 0 to 100.
 -- @tparam number percent Percentage of how full the bar is.
-function bar:update(percent)
+function bar1:update(percent)
   self.fill = update(self,percent)
 end
 
 --- Redraw the bar, putting it overtop of whatever has been drawn since.
-function bar:redraw()
+function bar1:redraw()
   update(self,self.fill)
 end
 
@@ -70,7 +70,7 @@ local function create(x,y,w,h,fg,bg,fill)
     fill = fill,
   }
   if fill ~= 0 then update(bar,fill) end
-  return setmetatable(bar,mt)
+  return setmetatable(bar,bar1)
 end
 
 return {
