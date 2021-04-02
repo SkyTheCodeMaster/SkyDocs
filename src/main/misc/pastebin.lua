@@ -48,38 +48,38 @@ local function get(url)
   end
 end
 
---- puts a string onto pastebin
+--- Put a string on pastebin.
 -- @tparam string string The string that you want to put on pastebin.
 -- @tparam[opt] string name The name of the paste, defaults to "CC:T Paste".
 -- @treturn string|nil A string containing the id of the paste.
 local function put(sText, sName)
-sName = sName or "CC:T Paste"
--- Upload a file to pastebin.com
+  sName = sName or "CC:T Paste"
+  -- Upload a file to pastebin.com
 
- -- POST the contents to pastebin
-local key = "0ec2eb25b6166c0c27a394ae118ad829"
-local response = http.post(
-  "https://pastebin.com/api/api_post.php",
-  "api_option=paste&" ..
-  "api_dev_key=" .. key .. "&" ..
-  "api_paste_format=lua&" ..
-  "api_paste_name=" .. textutils.urlEncode(sName) .. "&" ..
-  "api_paste_code=" .. textutils.urlEncode(sText)
-)
+  -- POST the contents to pastebin
+  local key = "0ec2eb25b6166c0c27a394ae118ad829"
+  local response = http.post(
+    "https://pastebin.com/api/api_post.php",
+    "api_option=paste&" ..
+    "api_dev_key=" .. key .. "&" ..
+    "api_paste_format=lua&" ..
+    "api_paste_name=" .. textutils.urlEncode(sName) .. "&" ..
+    "api_paste_code=" .. textutils.urlEncode(sText)
+  )
 
-if response then
+  if response then
 
-  local sResponse = response.readAll()
-  response.close()
+    local sResponse = response.readAll()
+    response.close()
 
-  local sCode = string.match(sResponse, "[^/]+$")
-  return sCode
-else
-  return nil
-end
+    local sCode = string.match(sResponse, "[^/]+$")
+    return sCode
+  else
+    return nil
+  end
 end
 
 return {
-get = get,
-put = put,
+  get = get,
+  put = put,
 }

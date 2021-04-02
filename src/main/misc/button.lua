@@ -19,14 +19,14 @@ local function genRandID(length)
   return str
 end
 
---[[- newButton makes a new button, adds it to the button table, and returns the ID of it.
-  @tparam number x x coordinate of the button
-  @tparam number y y coordinate of the button
-  @tparam number width width of the button
-  @tparam number height height of the button
-  @tparam function function function to be run when the button is clicked.
-  @tparam table|nil image blit table to draw where the button is.
-  @tparam boolean|nil enabled whether or not to enable the button, defaults true.
+--[[- Create a button, and add it to the internal table of buttons.
+  @tparam number x X coordinate of the button.
+  @tparam number y Y coordinate of the button.
+  @tparam number width Width of the button.
+  @tparam number height Height of the button.
+  @tparam function function The function to run when the button is clicked.
+  @tparam[opt] table image Table of blit lines to draw on the button.
+  @tparam[opt] boolean enabled Whether or not the button is active. Defaults to true.
   @treturn string id id of the button
 ]]
 local function newButton(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of blit lines. This function will check they're the same length.
@@ -83,7 +83,7 @@ local function newButton(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of
   return id
 end
 
---- deleteButton removes a button from the table, but doesn't remove the image.
+--- Remove a button from being clicked.
 -- @tparam string id button id to remove.
 local function deleteButton(id) -- This doesn't remove the image if any!
   if buttons[id] then
@@ -91,17 +91,17 @@ local function deleteButton(id) -- This doesn't remove the image if any!
   end
 end
 
---- enableButton takes a button ID and enables it or disables it.
--- @tparam string button id
--- @tparam boolean enable the button
+--- Enable or disable a button.
+-- @tparam string id Button to enable or disable.
+-- @tparam boolean enable Whether the button is enabled or not.
 local function enableButton(id,enable)
   if not buttons[id] then error("Button " .. id .. " does not exist.") end
   buttons[id].enabled = enable
 end
 
---- executeButtons takes an event, checks it's a mouse_click, and sees if it's within a button.
--- @tparam table event event table to check for mouse_click and coords.
--- @tparam boolean drag enable trigger on drag events, defaults to false
+--- Takes an event, checks if it's a `mouse_click` or `mouse_drag`, and sees if it's within a button.
+-- @tparam table event Event table to check for `mouse_click` or `mouse_drag`.
+-- @tparam[opt] boolean drag Enable button trigger on a `mouse_drag` event. Defaults to false.
 local function executeButtons(tEvent,bDrag)
   bDrag = bDrag or false
   if tEvent[1] == "mouse_click" or (bDrag and tEvent[1] == "mouse_drag") then

@@ -5,10 +5,10 @@
 
 local file = {}
  
---- split splits a string into a table by a separater
--- @tparam string inputstr string to split
--- @tparam string sep separater to split the string by 
--- @treturn table table containing the split string
+--- Split a string by it's separator.
+-- @tparam string inputstr String to split.
+-- @tparam string sep Separator to split the string by.
+-- @treturn table Table containing the split string.
 function file.split (inputstr, sep)
         SkyOS.sLog.info("[file] splitting " .. inputstr)
         if sep == nil then
@@ -21,9 +21,9 @@ function file.split (inputstr, sep)
         return t
 end
 
---- countLines returns the amount of lines in a file.
--- @tparam string file file to count the lines offset
--- @treturn number lines amount of lines in the file
+--- Count the number of lines in the file.
+-- @tparam string file File to count the lines of.
+-- @treturn number lines Amount of lines in the file.
 function file.countLines(path)
   local lines = 0 
   for _ in io.lines(path) do lines = lines + 1 end 
@@ -31,9 +31,9 @@ function file.countLines(path)
   
 end
  
---- loadGrpLines loads the skgrp file onto the screen.
--- @tparam string file path to the file
--- @tparam table output terminal to draw to, defaults to term.current()
+--- Load a `.skgrp` file onto the screen.
+-- @tparam string file Path to the file to draw.
+-- @tparam table output Terminal object to draw to, defaults to `term.current()`.
 function file.loadGrpLines(path,tOutput)
   tOutput = tOutput or term.current()
   SkyOS.sLog.info("[file] loading image " .. path)
@@ -125,9 +125,9 @@ function file.loadApps(settingsFile)
   settings.close()
 end
 
---- getSize recursively gets the size of a folder
--- @tparam string path path to folder or file
--- @treturn number size size of the folder or file
+--- Recursively get the size of a folder.
+-- @tparam string path Path to the folder or file.
+-- @treturn number size Size of the folder or file.
 function file.getSize(path)
   local size = 0
   local files = fs.list(path)

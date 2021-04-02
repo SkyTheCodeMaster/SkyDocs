@@ -9,36 +9,36 @@ end
 
 local tbl = {} --- @type log
 local mt = {["__index"] = tbl}
---- save Save the log, writing all the written info to the file. 
+--- Save the log, writing all the written info to the file. 
 function tbl:save() 
   self.fHandle.save()
 end
---- close Close the log, stopping further use.
+--- Close the log, stopping further use.
 function tbl:close()
   self.fHandle.close()
 end
---- info Writes an info line to the log.
+--- Writes an info line to the log.
 -- @tparam string info The info to write to the log.
 function tbl:info(info)
   local time = genTime()
   local str = time .. "[INFO]" .. info
   self.fHandle.writeLine(str)
 end
---- err Writes a warn line to the log.
+--- Writes a warn line to the log.
 -- @tparam string warn The warn to write to the log.
 function tbl:warn(warn)
   local time = genTime()
   local str = time .. "[INFO]" .. warn
   self.fHandle.writeLine(str)
 end
---- err Writes an errorline to the log.
+--- Writes an errorline to the log.
 -- @tparam string error The error to write to the log.
 function tbl:err(err)
   local time = genTime()
   local str = time .. "[INFO]" .. err
   self.fHandle.writeLine(str)
 end
---- create returns a table of functions for writing to a log file.
+--- Create returns a table of functions for writing to a log file.
 -- @tparam string file Path to the log file.
 -- @treturn table log Logwith functions to write to the log file.
 local function create(file)

@@ -8,10 +8,10 @@ local nft = require("cc.image.nft")
 -- Random, useful functions
 -- @section randomfunctions
 
---- numericallyContains will return a boolean if a numerically indiced table contains a value
--- @tparam table table to search through
--- @tparam any value to look for in the table
--- @treturn boolean if the table contains the value
+--- Loop through a table, and check if it contains the value specified
+-- @tparam table Table to loop through.
+-- @tparam any value Value to look for in the table.
+-- @treturn boolean True if the table contains the value.
 local function numericallyContains(t, value)
   expect(1,t,"table")
   expect(1,value,"any")
@@ -23,9 +23,24 @@ local function numericallyContains(t, value)
   return false
 end
 
---- getFile will grab a file from the internet and save it in the provided file
--- @tparam string file name to save the webpage input
--- @tparam string url to get the content from
+--- Loop through a table, and check if it contains the value specified
+-- @tparam table Table to loop through.
+-- @tparam any value Value to look for in the table.
+-- @treturn boolean True if the table contains the value.
+local function keyContains(t, value)
+  expect(1,t,"table")
+  expect(1,value,"any")
+  for k,v in pairs(t) do
+    if k == value or v == value then
+      return true
+    end
+  end
+  return false
+end
+
+--- Grab a file from the internet and save it in the file path.
+-- @tparam string file Path to the file to save in.
+-- @tparam string url URL to get the content from.
 local function getFile(sFilename, sNetAddress, nFails)
   expect(1,sFilename,"string")
   expect(1,sNetAddress,"string")
@@ -51,10 +66,10 @@ local function getFile(sFilename, sNetAddress, nFails)
   end
 end
 
---- split splits the input string by the separator.
--- @tparam string string to split
--- @tparam string separator to split by. the pattern is "([^" .. sep .. "]+)"
--- @treturn table table of the split string, numerically indiced.
+--- Split a string by it's separator.
+-- @tparam string inputstr String to split.
+-- @tparam string sep Separator to split the string by.
+-- @treturn table Table containing the split string.
 local function split (inputstr, sep)
   expect(1,inputstr,"string")
   expect(1,sep,"string")
@@ -66,9 +81,9 @@ local function split (inputstr, sep)
   return t
 end
 
---- countLines will count the amount of lines in the file
--- @tparam string path to the file
--- @treturn number number of lines in the file
+--- Count the number of lines in the file.
+-- @tparam string file File to count the lines of.
+-- @treturn number lines Amount of lines in the file.
 local function countLines(path)
   expect(1,path,"string")
   local lines = 0 
@@ -76,9 +91,9 @@ local function countLines(path)
   return lines
 end
 
---- getSize will recursively get the size of a directory
--- @tparam string path to the directory
--- @treturn number size of the directory
+--- Recursively get the size of a folder.
+-- @tparam string path Path to the folder or file.
+-- @treturn number size Size of the folder or file.
 local function getSize(path)
   expect(1,path,"string")
   local size = 0
@@ -93,8 +108,8 @@ local function getSize(path)
   return size
 end
 
---- generateRandom generates a random number based on math.random(), and the current time.
--- @treturn number mostly random number.
+--- Generate a random number based on math.random(), and the current time.
+-- @treturn number A mostly random number.
 local function generateRandom()
   --[[
     This function is not truly random. It uses a combination of math.random() and the current time to return a pseudo random number.
@@ -104,12 +119,12 @@ local function generateRandom()
   return (t.hour * t.min * t.sec) * (t.hour + t.min + t.sec)
 end
 
---- diceRoll will roll a dice with a modifier, and check if it passes the specified dc
--- @tparam number size of the dice
--- @tparam number modifier of the dice roll
--- @tparam number dc to check against
--- @treturn boolean if the dice roll beats the modifier
--- @treturn number the roll with the modifier
+--- Roll a dice with a specified modifier, and check if it passes the DC.
+-- @tparam number size Number of sides of the dice.
+-- @tparam number modifier Bonuses of the roll.
+-- @tparam number dc DC to check the roll against.
+-- @treturn boolean If the roll passes the DC.
+-- @treturn number The final roll.
 local function diceRoll(size,modifier,dc)
   expect(1,size,"number")
   expect(1,modifier,"number")
@@ -123,11 +138,12 @@ local function diceRoll(size,modifier,dc)
   return false,roll
 end
 
---- getTime gets the current time with an offset from utc
--- @tparam number offset from utc
--- @treturn table table containing time
+--- Get the current time with an offset from UTC.
+-- @tparam number offset Offset from UTC.
+-- @treturn table Table containing the time.
 local function getTime(offset)
-  expect(1,offset,"number")
+  expect(1,offset,"number","nil")
+  offset = offset or 0
   local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * offset)
   local t = os.date("!*t",epoch)
   return t
@@ -136,9 +152,9 @@ end
 --- file oriented functions
 -- @section file
 
---- fread read the contents of a file
--- @tparam string path to file
--- @treturn string contents of file
+--- Read the contents of a file.
+-- @tparam string file Path to the file.
+-- @treturn string Contents of the file.
 local function fread(file)
   expect(1,file,"string")
   local f = fs.open(file,"r")
@@ -147,9 +163,9 @@ local function fread(file)
   return contents
 end
 
---- fwrite writes content to a file
--- @tparam string path to file
--- @tparam string contents of file
+--- Write contents to a file.
+-- @tparam string file Path to the file.
+-- @tparam string Contents to write to the file.
 local function fwrite(file,contents)
   expect(1,file,"string")
   expect(2,contents,"string")
@@ -158,26 +174,26 @@ local function fwrite(file,contents)
   f.close()
 end
 
---- encfwrite serializes a lua object, and then writes it to a file.
--- @tparam string path to file
--- @tparam any lua object to serialize.
+--- Serialize a lua object, and write it to a file.
+-- @tparam string path Path to the file.
+-- @param object Any serializable lua object.
 local function encfwrite(file,object)
   local obj = textutils.serialize(object)
   fwrite(file,obj)
 end
 
 --- encfread reads a file, and unserializes the lua object.
--- @tparam string path to file
--- @treturn any lua object from the file
+-- @tparam string Path to file.
+-- @return Any lua object from the file.
 local function encfread(file)
   local contents = fread(file)
   return textutils.unserialize(contents)
 end
 
 --- hread reads from a url
--- @tparam string url to read from
--- @treturn string|nil contents of the site, nil if unavailable
--- @treturn nil|any failing response, if any
+-- @tparam string url URL to read from.
+-- @treturn string|nil Contents of the page, if any.
+-- @treturn nil|any Failing response, if any.
 local function hread(url)
   expect(1,url,"string")
   local h,err = http.get(url)
@@ -189,19 +205,19 @@ local function hread(url)
   return contents,nil
 end
 
---- poke just pokes a file, creating it if it doesn't exist.
--- @tparam string path to file to poke.
+--- Poke a file, creating it if it doesn't exist.
+-- @tparam string Path to the file.
 local function poke(file)
   fs.open(file,"a").close()
 end
 
 --- webquire is a `require` but for URLs
--- @tparam string url to download module from
--- @treturn any module, like what require would return.
+-- @tparam string url URL to download the module from.
+-- @treturn The loaded module, like what `require` would return.
 local function webquire(url)
   local content,err = hread(url)
   if not content then error("webquire: " .. err) end
-  local lib = load(content,"=webquire_package","t",_ENV)()
+  local lib = load(content,"=webquire_package","t",_ENV)() -- load the content, name it as a `=webquire_package`, make it only load text lua, not bytecode, pass `_ENV` to it.
   return lib
 end
 
@@ -231,15 +247,15 @@ local agreePhrases = {
 --- user interaction functions
 -- @section userinteraction
 
---- confirm does read() and returns a boolean on whether the user agreed or didn't. The arguments are the same as `_G.read()`
--- @treturn boolean whether or not the user agreed.
+--- Read user input, compare it to a table of agree phrases.
+-- @treturn boolean Whether or not the user agreed to the prompt.
 local function confirm(replaceChar,history,completeFn,default)
   local answer = read(replaceChar,history,completeFn,default)
   return not not agreePhrases[answer:upper()]
 end
 
---- readNumber does read() and return the `tonumber()` result of it. The arguments are the same as `_G.read()`
--- @treturn number `tonumber()` of the input.
+--- Read user input, return `tonumber()` of it.
+-- @treturn number Number the user input.
 local function readNumber(replaceChar,history,completeFn,default)
   local answer = read(replaceChar,history,completeFn,default)
   return tonumber(answer)
@@ -248,9 +264,9 @@ end
 --- asset loading routines
 -- @section assets
 
---- load loads a file and prepares it for use by drawing routines
--- @tparam string path to the file, supported types are ".skimg", ".skgrp", ".blit", ".nfp", and ".nft".
--- @treturn table the image file, to be fed into a drawing routine
+--- Load an image file.
+-- @tparam string path Path to the file, supported types are ".skimg", ".skgrp", ".blit", ".nfp", and ".nft".
+-- @treturn table The image file, to be fed into a drawing routine.
 local function load(file)
   expect(1,file,"string")
   if not fs.exists(file) then
@@ -289,6 +305,8 @@ local function load(file)
 end
 
 -- THIS FILETYPE IS DEPRECATED, DO NOT USE. (not documented)
+--- Draw the given `skgrp` file.
+-- @tparam table Table of instructions to draw.
 local function drawSkgrp(tbl)
   expect(1,tbl,"table")
   for i=1,#tbl do
@@ -309,10 +327,10 @@ local function drawSkgrp(tbl)
 end
 
 --- drawSkimg takes a skimg table, and draws it at the specified location
--- @tparam table skimg image
--- @tparam number x coordinate, defaults to 1
--- @tparam number y coordinate, defaults to 1
--- @tparam table output terminal, defaults to `term.current()`
+-- @tparam table skimg The skimg image to draw.
+-- @tparam[opt] number x X coordinate, defaults to 1.
+-- @tparam[opt] number y Y coordinate, defaults to 1.
+-- @tparam[opt] table output Output terminal, defaults to `term.current()`
 local function drawSkimg(tbl,x,y,tOutput)
   expect(1,tbl,"table")
   expect(2,x,"number")
@@ -337,10 +355,10 @@ local function drawSkimg(tbl,x,y,tOutput)
 end
 
 --- drawBlit is like drawSkimg, but for a normal blit table.concat
--- @tparam table blit image
--- @tparam number x coordinate of the image, defaults to 1
--- @tparam number y coordinate of the image, defaults to 1
--- @tparam table output terminal, defaults to `term.current()`
+-- @tparam table blit Blit image to draw.
+-- @tparam number x X coordinate of the image, defaults to 1.
+-- @tparam number y X coordinate of the image, defaults to 1.
+-- @tparam table output Output terminal, defaults to `term.current()`.
 local function drawBlit(tbl,x,y,tOutput)
   expect(1,tbl,"table")
   expect(2,x,"number")
@@ -356,11 +374,11 @@ local function drawBlit(tbl,x,y,tOutput)
   end
 end
 
---- generateDefaultSkimg takes some arguments, and makes a skimg with white "O"s on a green background.
--- @tparam number width of the image
--- @tparam number height of the image
--- @tparam string creator of the image
--- @tparam boolean whether or not the file is locked from editing
+--- Generates a `skimg` image with the provided width, and height.
+-- @tparam number width Width of the image.
+-- @tparam number height Height of the image.
+-- @tparam string creator Creator of the image.
+-- @tparam boolean locked Whether or not the file is locked from editing.
 local function generateDefaultSkimg(width,height,creator,locked)
   local defaultfg = "0"
   local defaultbg = "d"
@@ -389,12 +407,15 @@ local function generateDefaultSkimg(width,height,creator,locked)
 end
 
 -- This accepts either a file or a table to get attributes from (not working, not documented)
+--- Get the attributes of a `.skimg` file or image table.
+-- @tparam string|table image Path to a file, or a `.skimg` table.
+-- @treturn table Attributes of the image.
 local function getAttributes(fileTable)
   expect(1,fileTable,"string","table")
   local tbl = {}
   if fs.exists(fileTable) then
     -- its a file, read the contents and put them into the internal table
-    tbl = textutils.encfread(fileTable)
+    tbl = load(fileTable)
   else
     -- it's not a file, take input and put it into the internal table
     tbl = fileTable
@@ -418,6 +439,7 @@ return {
     },
   },
   numericallyContains = numericallyContains,
+  keyContains = keyContains,
   getFile = getFile,
   split = split,
   countLines = countLines,

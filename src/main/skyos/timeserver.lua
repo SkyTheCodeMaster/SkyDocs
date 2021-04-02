@@ -14,9 +14,9 @@ end
 
 local ts = {}
  
---- get simply contacts the timeserver, and returns what the timeserver sends back.
--- @tparam number offset offset in hours for the time
--- @treturn table table containing: [1] contents of os.date() with the offset, [2] string with HH:MM, [3] string with HH:MM:SS
+--- Contact the timeserver, return what the timeserver sends back. This function is dangerous and insecure as it simply returns whatever it receives in a `modem_message` event.
+-- @tparam number offset Offset in hours for the timeserver to process.
+-- @treturn table Table containing: [1] contents of os.date() with the offset, [2] string with HH:MM, [3] string with HH:MM:SS.
 function ts.get(offset)
   if not SkyOS.settings.timeServerEnabled or not modem then
     local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * SkyOS.settings.timeZone) 

@@ -1,7 +1,7 @@
 --- roll20 is just a library of various functions to condition text & files into roll20 macros/statements
 -- @module[kind=misc] roll20
 
---- conditionCharacters swaps out characters for code equivalent, making them not mess up the macro.
+--- Swap out characters for the code equivalent `&#` character.
 -- @tparam string str The string to condition.
 -- @treturn string outputStr The resultant string.
 local function conditionCharacters(str)
@@ -9,7 +9,7 @@ local function conditionCharacters(str)
   return outputStr
 end
 
---- makePrompt takes a prompt name and a table of choices, and assembles a roll20 prompt
+--- Takes a prompt and a table of choices, and generates a roll20 prompt string.
 -- @tparam string promptName The prompt text.
 -- @tparam table choices The various choices and outputs of the choices
 -- @treturn string The resultant string.
@@ -21,7 +21,7 @@ local function makePrompt(promptName,choices)
   return str
 end
 
---- madeDiceRoll takes some parameters and generates a dice roll string
+--- Take some parameters, spit out a dice roll string.
 -- @tparam string numDice How many dice to roll.
 -- @tparam string diceSides How many sides of the die.
 -- @tparam string modifier Modifier of the dice roll.

@@ -51,12 +51,12 @@ local function hread(url)
 end
 
 --- downloadRepo takes a github user, repository, branch, and path to save to, and downloads the repository.
--- @tparam string user github user to download repository from
--- @tparam string repo github repository to download
--- @tparam string branch repository branch to download. Defaults to "master"
--- @tparam string path path to download to. Defaults to ""
--- @treturn number filecount the amount of files in the repository
--- @treturn number downloaded the amount of files downloaded
+-- @tparam string user Github user to download repository from.
+-- @tparam string repo Github repository to download.
+-- @tparam string branch Repository branch to download. Defaults to "master".
+-- @tparam string path Path to download to. Defaults to "".
+-- @treturn number filecount The amount of files in the repository.
+-- @treturn number downloaded The amount of files downloaded.
 local function downloadRepo(user,repo,branch,path)
   expect(1,user,"string","nil")
   expect(2,repo,"string","nil")
@@ -102,7 +102,7 @@ local function downloadRepo(user,repo,branch,path)
 end
 
 --- updateSkyOS simply updates SkyOS from the github repository
--- @tparam[opt=false] boolean reboot after update. Defaults to false
+-- @tparam[opt=false] boolean Reboot after update. Defaults to false.
 local function updateSkyOS(reboot)
   expect(1,reboot,"boolean","nil")
   reboot = reboot or false
