@@ -108,6 +108,27 @@ local function getSize(path)
   return size
 end
 
+--- Splice and insert a character into a string.
+-- @tparam string str String to be spliced.
+-- @tparam number pos Where to insert the character.
+-- @tparam string char Character to insert.
+-- @tparam[opt] boolean replace Replace the character, or just insert a new one. Defaults to false.
+-- @treturn string The spliced string.
+local function splice(str,pos,char,replace)
+  local len = str:len()
+  local one = str:sub(1,pos)
+  local two = str:sub(pos,len)
+  local final
+  if not replace then
+    final = one .. char .. two
+    return final
+  else
+    local temp = two:sub(2)
+    final = one .. char .. temp
+    return final
+  end
+end
+
 --- Generate a random number based on math.random(), and the current time.
 -- @treturn number A mostly random number.
 local function generateRandom()
