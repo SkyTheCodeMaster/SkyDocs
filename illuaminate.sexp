@@ -12,7 +12,7 @@
 
   (site
     (title "SkyDocs")
-    ;;(logo src/main/resources/pack.png)
+    (logo src/main/pack.png)
     (url https://skydocs.madefor.cc/)
     (source-link https://github.com/SkyTheCodeMaster/SkyDocs/blob/${commit}/${path}#L${line})
 
