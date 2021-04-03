@@ -463,6 +463,7 @@ return {
   keyContains = keyContains,
   getFile = getFile,
   split = split,
+  splice = splice,
   countLines = countLines,
   getSize = getSize,
   generateRandom = generateRandom,
