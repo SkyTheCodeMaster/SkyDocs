@@ -18,6 +18,7 @@ local function makePrompt(promptName,choices)
   for k,v in pairs(choices) do
     str = str .. "|" .. tostring(k) .. "," .. tostring(v)
   end
+  str = str .. "}"
   return str
 end
 
