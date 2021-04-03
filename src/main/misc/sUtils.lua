@@ -116,8 +116,8 @@ end
 -- @treturn string The spliced string.
 local function splice(str,pos,char,replace)
   local len = str:len()
-  local one = str:sub(1,pos)
-  local two = str:sub(pos,len)
+  local one = str:sub(1,pos-1)
+  local two = str:sub(pos+1,len)
   local final
   if not replace then
     final = one .. char .. two
