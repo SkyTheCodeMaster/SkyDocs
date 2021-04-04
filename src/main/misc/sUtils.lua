@@ -91,6 +91,10 @@ local function countLines(path)
   return lines
 end
 
+local function isOdd(num)
+  return num % 2 == 0
+end
+
 --- Recursively get the size of a folder.
 -- @tparam string path Path to the folder or file.
 -- @treturn number size Size of the folder or file.
@@ -462,6 +466,7 @@ return {
   numericallyContains = numericallyContains,
   keyContains = keyContains,
   getFile = getFile,
+  isOdd = isOdd,
   split = split,
   splice = splice,
   countLines = countLines,
