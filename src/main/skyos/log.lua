@@ -2,7 +2,7 @@
 -- @module[kind=skyos] log
 
 local function genTime()
-  local time = os.date("!*t")
+  local t = os.date("!*t")
   local str = "["..tostring(t.hour)..":"..tostring(t.min)..":"..tostring(t.sec).."] "
   return str
 end

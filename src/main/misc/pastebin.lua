@@ -18,7 +18,7 @@ local function extractId(paste)
   return nil
 end
 
---- get retrieves the paste from pastebin
+--- Get a string from pastebin.
 -- @tparam string id The paste id that you want to download.
 -- @treturn string|nil The string containing the paste, or nil.
 -- @treturn nil|string The reason why it couldn't be retrieved.
