@@ -1,0 +1,9 @@
+{
+  "Lua.diagnostics.disable": [
+    "unused-local",
+    "lowercase-global",
+    "unused-function",
+    "undefined-field",
+    "undefined-doc-name"
+  ]
+}
