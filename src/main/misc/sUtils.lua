@@ -358,9 +358,9 @@ end
 -- @tparam[opt] table output Output terminal, defaults to `term.current()`
 local function drawSkimg(tbl,x,y,tOutput)
   expect(1,tbl,"table")
-  expect(2,x,"number")
-  expect(3,y,"number")
-  expect(4,tOutput,"table") -- tOutput is a term-like object. MUST SUPPORT BLIT!!!
+  expect(2,x,"number","nil")
+  expect(3,y,"number","nil")
+  expect(4,tOutput,"table","nil") -- tOutput is a term-like object. MUST SUPPORT BLIT!!!
   x = x or 1
   y = y or 1
   tOutput = tOutput or term.current()
@@ -381,14 +381,14 @@ end
 
 --- drawBlit is like drawSkimg, but for a normal blit table.concat
 -- @tparam table blit Blit image to draw.
--- @tparam number x X coordinate of the image, defaults to 1.
--- @tparam number y X coordinate of the image, defaults to 1.
--- @tparam table output Output terminal, defaults to `term.current()`.
+-- @tparam[opt] number x X coordinate of the image, defaults to 1.
+-- @tparam[opt] number y X coordinate of the image, defaults to 1.
+-- @tparam[opt] table output Output terminal, defaults to `term.current()`.
 local function drawBlit(tbl,x,y,tOutput)
   expect(1,tbl,"table")
-  expect(2,x,"number")
-  expect(3,y,"number")
-  expect(4,tOutput,"table")
+  expect(2,x,"number","nil")
+  expect(3,y,"number","nil")
+  expect(4,tOutput,"table","nil")
   x = x or 1
   y = y or 1
   tOutput = tOutput or term.current()
