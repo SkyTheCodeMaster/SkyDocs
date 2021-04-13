@@ -112,6 +112,16 @@ local function getSize(path)
   return size
 end
 
+--- Cut or pad a string to length.
+-- @tparam string str String to cut or pad.
+-- @tparam number len Length to cut or pad to.
+-- @tparam[opt] string pad Padding to extend the string if necessary. Defaults to " ".
+-- @treturn string Cut or padded string.
+local function cut(str,len,pad)
+  pad = pad or " "
+  return str:sub(1,len) .. pad:rep(len - #str)
+end
+
 --- Splice and insert a character into a string.
 -- @tparam string str String to be spliced.
 -- @tparam number pos Where to insert the character.
@@ -453,11 +463,13 @@ local function getAttributes(fileTable)
 end
 
 return {
+  --- Asset functions.
   asset = {
     load = load,
     drawSkgrp = drawSkgrp,
     drawSkimg = drawSkimg,
     drawBlit = drawBlit,
+    -- Skimg asset functions.
     skimg = {
       getAttributes = getAttributes,
       generateDefaultSkimg = generateDefaultSkimg,
