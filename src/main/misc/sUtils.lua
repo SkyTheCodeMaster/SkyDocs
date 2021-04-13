@@ -469,7 +469,7 @@ return {
     drawSkgrp = drawSkgrp,
     drawSkimg = drawSkimg,
     drawBlit = drawBlit,
-    -- Skimg asset functions.
+    --- Skimg asset functions.
     skimg = {
       getAttributes = getAttributes,
       generateDefaultSkimg = generateDefaultSkimg,
