@@ -70,7 +70,7 @@ end
 -- @tparam string inputstr String to split.
 -- @tparam string sep Separator to split the string by.
 -- @treturn table Table containing the split string.
-local function split (inputstr, sep)
+local function split(inputstr, sep)
   expect(1,inputstr,"string")
   expect(1,sep,"string")
   sep = sep or "%s"
@@ -483,6 +483,7 @@ return {
   getFile = getFile,
   isOdd = isOdd,
   split = split,
+  cut = cut,
   splice = splice,
   countLines = countLines,
   getSize = getSize,
