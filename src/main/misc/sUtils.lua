@@ -91,6 +91,9 @@ local function countLines(path)
   return lines
 end
 
+--- Returns a boolean on if the number is odd or not.
+-- @tparam number num Number to check the oddness.
+-- @treturn boolean odd True if the number is odd.
 local function isOdd(num)
   return num % 2 == 0
 end
