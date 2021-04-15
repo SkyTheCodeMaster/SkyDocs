@@ -114,9 +114,40 @@ local function executeButtons(tEvent,bDrag)
   end
 end
 
+--- Edit a button, changing it's function, position, or whatnot.
+-- @tparam string id ID of the button to change.
+-- @tparam[opt] number x X coordinate of the button.
+-- @tparam[opt] number y Y coordinate of the button.
+-- @tparam[opt] number width Width of the button.
+-- @tparam[opt] number height Height of the button.
+-- @tparam[opt] function func Function to execute when the button is clicked.
+-- @tparam[opt] table image Table of blit lines to draw where the button is.
+local function edit(id,x,y,w,h,func,image)
+  if not buttons[id] then
+    error("Button " .. id .. " does not exist.")
+  end
+  x = x or buttons[id].x
+  y = y or buttons[id].y
+  w = w or buttons[id].w
+  h = h or buttons[id].h
+  fFunc = func or buttons[id].fFunc
+  tDraw = tDraw or buttons[id].tDraw
+  enabled = buttons[id].enabled
+  buttons[id] = {
+    x = x,
+    y = y,
+    w = w,
+    h = h,
+    fFunc = fFunc,
+    tDraw = tDraw,
+    enabled = enabled,
+  }
+end
+
 return {
   newButton = newButton,
   deleteButton = deleteButton,
   enableButton = enableButton,
+  edit = edit,
   executeButtons = executeButtons,
 }
