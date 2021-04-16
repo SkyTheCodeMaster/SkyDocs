@@ -509,8 +509,8 @@ return {
   },
   --- Cache functions, stores files in a cache for faster access. (Read only)
   cache = {
-    cache = cache,
-    load = cacheLoad,
+    cacheData = cache,
+    cacheLoad = cacheLoad,
     reload = reload,
   },
   numericallyContains = numericallyContains,
