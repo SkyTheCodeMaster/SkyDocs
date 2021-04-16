@@ -26,7 +26,7 @@ end
 
 local function update(bar,percent)
   -- Calculate pixel requirements
-  if percent > 100 then fill = 100 end
+  if percent > 100 then percent = 100 end
   local pixels = math.floor((percent / (100 / bar.w)) + 0.5) -- The math.floor + 0.5 acts as a rounding function.
   -- percent / (100 / barWidth) calculates how many pixels should be filled in the bar
   dfb(bar.x,bar.y,(bar.x+bar.w),(bar.y+bar.h),bar.bg)

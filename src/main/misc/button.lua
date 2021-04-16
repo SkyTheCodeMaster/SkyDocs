@@ -130,9 +130,9 @@ local function edit(id,x,y,w,h,func,image)
   y = y or buttons[id].y
   w = w or buttons[id].w
   h = h or buttons[id].h
-  fFunc = func or buttons[id].fFunc
-  tDraw = tDraw or buttons[id].tDraw
-  enabled = buttons[id].enabled
+  local fFunc = func or buttons[id].fFunc
+  local tDraw = image or buttons[id].tDraw
+  local enabled = buttons[id].enabled
   buttons[id] = {
     x = x,
     y = y,
