@@ -67,8 +67,7 @@ local function downloadRepo(user,repo,branch,path)
   branch = branch or presets.github.branch
   path = path or presets.github.path
 
-  local dejson = textutils.unserializeJSON
-  local data = dejson(hread("https://api.github.com/repos/"..user.."/"..repo.."/git/trees/"..repo.."?recursive=1"))
+  local data = textutils.unserializeJSON(hread("https://api.github.com/repos/"..user.."/"..repo.."/git/trees/"..repo.."?recursive=1"))
   
   local filecount = 0
   local downloaded = 0
@@ -102,7 +101,7 @@ local function downloadRepo(user,repo,branch,path)
 end
 
 --- updateSkyOS simply updates SkyOS from the github repository
--- @tparam[opt=false] boolean Reboot after update. Defaults to false.
+-- @tparam[opt] boolean Reboot after update. Defaults to false.
 local function updateSkyOS(reboot)
   expect(1,reboot,"boolean","nil")
   reboot = reboot or false

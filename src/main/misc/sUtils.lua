@@ -299,6 +299,35 @@ local function readNumber(replaceChar,history,completeFn,default)
   return tonumber(answer)
 end
 
+--- Caching section
+-- @section cache
+
+--- Cache where the files are stored, it's key/value with `cache[path] = contents`.
+local cache = {}
+
+--- Load a file, checks if it's in the cache, if so, return that, if not, return the file and put it in cache.
+-- @tparam string path Path to the file.
+-- @treturn string Contents of the file
+local function cacheLoad(path)
+  if cache[path] then
+    return cache[path]
+  else
+    local contents = fread(path)
+    cache[path] = contents
+    return contents
+  end
+end
+
+--- Reload a file in the cache, overwriting it with the new contents.
+-- @tparam string path Path to the file to reload.
+-- @treturn string The old contents of the file.
+local function reload(path)
+  local contents = fread(path)
+  local old = cache[path]
+  cache[path] = contents
+  return old
+end
+
 --- asset loading routines
 -- @section assets
 
