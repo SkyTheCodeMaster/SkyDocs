@@ -507,6 +507,12 @@ return {
       generateDefaultSkimg = generateDefaultSkimg,
     },
   },
+  --- Cache functions, stores files in a cache for faster access. (Read only)
+  cache = {
+    cache = cache,
+    load = cacheLoad,
+    reload = reload,
+  },
   numericallyContains = numericallyContains,
   keyContains = keyContains,
   getFile = getFile,
