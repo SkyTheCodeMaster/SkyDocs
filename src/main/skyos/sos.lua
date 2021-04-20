@@ -2,6 +2,7 @@
 -- @module[kind=skyos] sos
 
 local expect = require("cc.expect").expect
+local sUtils = require("libraries.sUtils")
 
 local presets = {
   github = {
@@ -101,7 +102,7 @@ local function downloadRepo(user,repo,branch,path)
 end
 
 --- updateSkyOS simply updates SkyOS from the github repository
--- @tparam[opt] boolean Reboot after update. Defaults to false.
+-- @tparam[opt] boolean reboot Reboot after update. Defaults to false.
 local function updateSkyOS(reboot)
   expect(1,reboot,"boolean","nil")
   reboot = reboot or false
@@ -109,7 +110,110 @@ local function updateSkyOS(reboot)
   if reboot then os.reboot() end
 end
 
+--- Check for an app on the specified screen, x, and y position.
+-- @tparam number screen Screen to check for the app on.
+-- @tparam number x X coordinate to check on the screen.
+-- @tparam number y Y coordinate to check on the screen.
+-- @treturn[1] table Key value table containing the app's `name`, `program`, `image`, and `args`.
+-- @treturn[2] nil If app is not found, returns nil.
+local function checkPosition(screen,x,y)
+  local desktop = encfread("settings/desktop.dat")
+  if not desktop[screen] or not desktop[screen][y] or not desktop[screen][y][x] then return nil end -- Check if the screen doesn't exist, then check if the y line doesn't exist, then check if the x doesn't exist.
+  local app = desktop[screen][y][x]
+  local tbl = {
+    name = app.name,
+    image = app.image,
+    program = app.program,
+    args = app.args,
+  }
+  return tbl
+end
+
+--- Insert an app into the desktop.
+-- @tparam string name Name of the app.
+-- @tparam string image Path to the image of the app.
+-- @tparam string program Path to the program to run.
+-- @tparam string args Arguments of the program.
+-- @tparam number screen Screen to put it on.
+-- @tparam number x X coordinate of the screen to put it on.
+-- @tparam number y Y coordinate of the screen to put it on.
+local function addApp(name,image,program,args,screen,x,y)
+  args = args or ""
+  if not checkPosition(screen,x,y) then
+    local desktop = encfread("settings/desktop.dat")
+    desktop[screen][y][x] = {
+      name = name,
+      image = image,
+      program = program,
+      args = args
+    }
+    encfwrite("settings/desktop.dat",desktop)
+  end
+end
+
+--- Edit an app on a screen.
+-- @tparam number screen Screen of the app.
+-- @tparam number x X coordinate of the app.
+-- @tparam number y Y coordinate of the app.
+-- @tparam[opt] string name Name to change to, defaults to previous name.
+-- @tparam[opt] string image Path to the image, defaults to previous path.
+-- @tparam[opt] string program Path to the program, defaults to the previous path.
+-- @tparam[opt] string args Arguments of the program, defaults to previous arguments.
+local function editApp(screen,x,y,name,image,program,args)
+  local app = checkPosition(screen,x,y)
+  if app then
+    local desktop = encfread("settings/desktop.dat")
+    name = name or app.name
+    image = image or app.image
+    program = program or app.program
+    args = args or app.args
+    desktop[screen][y][x] = {
+      name = name,
+      image = image,
+      program = program,
+      args = args,
+    }
+  end
+end
+
+--- Delete an app from the screen.
+-- @tparam number screen Screen of the app.
+-- @tparam number x X coordinate of the app.
+-- @tparam number y Y coordinate of the app.
+-- @treturn[1] table App details if the app was there.
+-- @treturn[2] nil Nothing if there was no app there.
+local function deleteApp(screen,x,y)
+  local app = checkPosition(screen,x,y)
+  local desktop = encfread("settings/desktop.dat")
+  if app then
+    desktop[screen][y][x] = nil
+    desktop = encfwrite("settings/desktop.dat")
+    return app
+  end
+end
+
+local function drawApps(screen)
+  local desktop = encfread("settings/desktop.dat")
+  local screen = desktop[screen]
+  for i=1,#screen do
+    local y = 3*(2*i-1)
+    for o=1,#screen[i] do
+      local x = 2*(3*o-2)
+      local app = screen[i][o]
+      sUtils.asset.drawSkimg(app.image,o,i)
+    end
+  end
+end
+
 return {
   downloadRepo = downloadRepo,
   updateSkyOS = updateSkyOS,
+  --- Functions to interact with the desktop file.
+  desktop = {
+    checkPosition = checkPosition,
+    addApp = addApp,
+    editApp = editApp,
+    deleteApp = deleteApp,
+    drawApps = drawApps,
+  }
 }
