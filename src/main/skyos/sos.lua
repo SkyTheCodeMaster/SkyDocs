@@ -192,15 +192,21 @@ local function deleteApp(screen,x,y)
   end
 end
 
+--- Parse the desktop file and draw all the apps to the screen.
+-- @tparam number screen Which screen to draw.
 local function drawApps(screen)
   local desktop = encfread("settings/desktop.dat")
   local screen = desktop[screen]
   for i=1,#screen do
     local y = 3*(2*i-1)
+    local _,_,linebg = term.current().getLine(y)
     for o=1,#screen[i] do
       local x = 2*(3*o-2)
       local app = screen[i][o]
       sUtils.asset.drawSkimg(app.image,o,i)
+      local bg = linebg:sub(x,x+5)
+      term.setCursorPos(x,y+5)
+      term.blit(sUtils.cut(app.name,5),"00000",bg)
     end
   end
 end
