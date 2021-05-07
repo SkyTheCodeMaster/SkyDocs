@@ -1,4 +1,4 @@
---- Provides various cipher functions, such as a caesar cipher.
+--- Provides various cipher functions, such as a Caesar cipher, and Viginere cipher.
 -- @module[kind=misc] cipher
 
 -- Setup local functions
