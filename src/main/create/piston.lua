@@ -16,7 +16,7 @@ local mt = {["__index"] = myPiston}
 
 --- Raise the piston a set amount of blocks.
 -- @tparam[opt=1] number blocks Amount of blocks to raise the piston by.
-function myPiston:raise(self,blocks)
+function myPiston:raise(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local endHeight = math.abs(blocks) + self.curHeight
@@ -35,7 +35,7 @@ end
 
 --- Lower the piston a set amount of blocks.
 -- @tparam[opt=1] number blocks Amount of blocks to lower the piston by
-function myPiston:lower(self,blocks)
+function myPiston:lower(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local endHeight = self.curHeight - math.abs(blocks)
@@ -52,7 +52,7 @@ function myPiston:lower(self,blocks)
 end
 
 --- Lower the piston to the bottom.
-function myPiston:ground(self)
+function myPiston:ground()
   for i=self.curHeight,0,-1 do
     redstone.setOutput(lowerSide,true) 
     sleep(pulseSpeed/2)
@@ -63,7 +63,7 @@ function myPiston:ground(self)
 end
 
 --- Raise the piston to it's maximum extension
-function myPiston:max(self)
+function myPiston:max()
   for i=self.curHeight,self.maxHeight do
     redstone.setOutput(raiseSide,true) 
     sleep(pulseSpeed/2)
