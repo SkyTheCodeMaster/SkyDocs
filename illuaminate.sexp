@@ -3,6 +3,7 @@
 (sources
   /src/main/misc/
   /src/main/skyos/
+  /src/main/create/
 )
 
 
