@@ -1,6 +1,6 @@
 --- A small api to control a Create Mechanical Piston
---- The setup requires (by default) a redstone line to *lower* the piston on the right, and a redstone line to *raise* the piston on the left.
---- The recommended setup for the sequenced gearshifts is: spin 90° on double input speed.
+-- The setup requires (by default) a redstone line to *lower* the piston on the right, and a redstone line to *raise* the piston on the left.
+-- The recommended setup for the sequenced gearshifts is: spin 90° on double input speed.
 -- @module[kind=create] piston
 
 local expect = require("cc.expect").expect
@@ -93,3 +93,5 @@ local function create(curHeight,maxHeight)
   }
   return setmetatable(piston,mt)
 end
+
+return {create=create}
