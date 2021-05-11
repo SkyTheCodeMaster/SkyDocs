@@ -22,7 +22,8 @@
 
   (module-kinds
     (skyos SkyOS)
-    (misc Misc))
+    (misc Misc)
+    (create Create))
 
   (library-path
     /src/main/skyos/
