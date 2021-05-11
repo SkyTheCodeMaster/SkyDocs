@@ -1,9 +1,9 @@
 ; -*- mode: Lisp;-*-
 
 (sources
-  /src/main/misc/
-  /src/main/skyos/
   /src/main/create/
+  /src/main/skyos/
+  /src/main/misc/
 )
 
 
@@ -27,6 +27,7 @@
     (create Create))
 
   (library-path
+    /src/main/create/
     /src/main/skyos/
     /src/main/misc/))
 
