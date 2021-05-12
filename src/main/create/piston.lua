@@ -19,18 +19,18 @@ local mt = {["__index"] = myPiston}
 function myPiston:raise(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
-  local endHeight = math.abs(blocks) + self.curHeight
-  if endHeight > self.maxHeight then
-    endHeight = self.maxHeight
+  local endHeight = math.abs(blocks) + myPiston.curHeight
+  if endHeight > myPiston.maxHeight then
+    endHeight = myPiston.maxHeight
   end
-  local difference = endHeight - self.curHeight
+  local difference = endHeight - myPiston.curHeight
   for i=1,difference do
     redstone.setOutput(raiseSide,true) 
     sleep(pulseSpeed/2)
     redstone.setOutput(raiseSide,false)
     sleep(pulseSpeed/2)
   end
-  self.curHeight = endHeight
+  myPiston.curHeight = endHeight
 end
 
 --- Lower the piston a set amount of blocks.
@@ -38,33 +38,33 @@ end
 function myPiston:lower(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
-  local endHeight = self.curHeight - math.abs(blocks)
+  local endHeight = myPiston.curHeight - math.abs(blocks)
   if endHeight < 0 then
     endHeight = 0
   end
-  for i=self.curHeight,endHeight,-1 do
+  for i=myPiston.curHeight,endHeight,-1 do
     redstone.setOutput(lowerSide,true) 
     sleep(pulseSpeed/2)
     redstone.setOutput(lowerSide,false)
     sleep(pulseSpeed/2)
   end
-  self.curHeight = endHeight
+  myPiston.curHeight = endHeight
 end
 
 --- Lower the piston to the bottom.
 function myPiston:ground()
-  for i=self.curHeight,0,-1 do
+  for i=myPiston.curHeight,0,-1 do
     redstone.setOutput(lowerSide,true) 
     sleep(pulseSpeed/2)
     redstone.setOutput(lowerSide,false)
     sleep(pulseSpeed/2)
   end
-  self.curHeight = 0
+  myPiston.curHeight = 0
 end
 
 --- Raise the piston to it's maximum extension
 function myPiston:max()
-  for i=self.curHeight,self.maxHeight do
+  for i=myPiston.curHeight,myPiston.maxHeight do
     redstone.setOutput(raiseSide,true) 
     sleep(pulseSpeed/2)
     redstone.setOutput(raiseSide,false)
