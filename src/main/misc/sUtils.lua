@@ -552,4 +552,5 @@ return {
   encfwrite = encfwrite,
   encfread = encfread,
   webquire = webquire,
+  savequire = savequire,
 }
