@@ -249,7 +249,7 @@ local function poke(file)
   fs.open(file,"a").close()
 end
 
---- webquire is a `require` but for URLs
+--- Webquire is a `require` but for URLs
 -- @tparam string url URL to download the module from.
 -- @treturn The loaded module, like what `require` would return.
 local function webquire(url)
@@ -257,6 +257,24 @@ local function webquire(url)
   if not content then error("webquire: " .. err) end
   local lib = load(content,"=webquire_package","t",_ENV)() -- load the content, name it as a `=webquire_package`, make it only load text lua, not bytecode, pass `_ENV` to it.
   return lib
+end
+
+--- savequire uses @{sUtils.webquire|webquire} but will also save the file and use that if it's found.
+-- @tparam string url URL to download the module from.
+-- @treturn The loaded module, like what `require` would return.
+local function savequire(url)
+  local splitURL = split(url,"/") -- Split url to get the individual pieces, used to grab the filename.
+  local name = splitURL[#splitURL]
+  local package
+  if not fs.exists(fs.combine("savequire",name)) then -- We dont have the package locally, download it from the web
+    local content,err = hread(url)
+    if not content then error("savequire: " .. err) end
+    fwrite(fs.combine("savequire",name),content.readAll())
+    package = require(fs.combine("savequire",name))
+  else
+    package = require(fs.combine("savequire",name))
+  end
+  return package
 end
 
 local agreePhrases = {
