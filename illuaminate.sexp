@@ -4,6 +4,7 @@
   /src/main/create/
   /src/main/skyos/
   /src/main/misc/
+  /src/main/articles/
 )
 
 
@@ -24,12 +25,15 @@
   (module-kinds
     (skyos SkyOS)
     (misc Misc)
-    (create Create))
+    (create Create)
+    (wip WIP)
+    (articles Articles))
 
   (library-path
     /src/main/create/
     /src/main/skyos/
-    /src/main/misc/))
+    /src/main/misc/
+    /src/main/articles))
 
 (at /
   (linters

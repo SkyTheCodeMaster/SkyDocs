@@ -1,5 +1,5 @@
 --- Send packets of data, and make sure they're received. This operates similar to Rednet, in that you send data to a specific ID, which is running a tcp server (refer to tcp installation guide)
--- @module[kind=misc] tcp
+-- @module[kind=wip] tcp
 
 --- Channel that messages will be sent on.
 local tcp_channel = 30000
