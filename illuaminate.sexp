@@ -33,7 +33,7 @@
     /src/main/create/
     /src/main/skyos/
     /src/main/misc/
-    /src/main/articles))
+    /src/main/articles/))
 
 (at /
   (linters
