@@ -326,9 +326,15 @@ end
 
 --- "Americanify" a text.
 -- @tparam string text Text to americanify.
--- @tparam string American text.
-local function americanify(text)
-  return "I'm walkin here! " .. text .. " Forget about it!"
+-- @tparam[opt=1] number case Which type of modification to use. 1 = "I'm walkin here!" .. text .. " Forget about it!", 2 = "Oil? " .. text .. " The First Amendment."
+-- @treturn string American text.
+local function americanify(text,case)
+  case = case or 1
+  if case == 1 then
+    return "I'm walkin here! " .. text .. " Forget about it!"
+  elseif case == 2 then
+    return "Oil? " .. text .. " The First Amendment."
+  end
 end
 
 --- Caching section
