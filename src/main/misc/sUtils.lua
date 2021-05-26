@@ -317,6 +317,20 @@ local function readNumber(replaceChar,history,completeFn,default)
   return tonumber(answer)
 end
 
+--- "Canadianify" a text.
+-- @tparam string text Text to candianify.
+-- @treturn string Canadian text.
+local function canadianify(text)
+  return "sorry " .. text .. " eh"
+end
+
+--- "Americanify" a text.
+-- @tparam string text Text to americanify.
+-- @tparam string American text.
+local function americanify(text)
+  return "can you break a " .. text
+end
+
 --- Caching section
 -- @section cache
 
@@ -553,4 +567,6 @@ return {
   encfread = encfread,
   webquire = webquire,
   savequire = savequire,
+  canadianify = canadianify,
+  americanify = americanify
 }
