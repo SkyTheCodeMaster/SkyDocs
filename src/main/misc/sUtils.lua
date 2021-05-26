@@ -328,7 +328,7 @@ end
 -- @tparam string text Text to americanify.
 -- @tparam string American text.
 local function americanify(text)
-  return "can you break a " .. text
+  return "I'm walkin here! " .. text .. " Forget about it!"
 end
 
 --- Caching section
