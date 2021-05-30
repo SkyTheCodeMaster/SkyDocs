@@ -45,7 +45,6 @@ end
 local function dfb(x,y,w,h,col,tOutput) 
   local tbl = save()
   x,w,y,h = sort(x,y,w,h)
-  print(x,y,w,h)
   local width = w - x + 1
   -- Pretty simple, just fills in the space
   for o = y,h do
@@ -103,7 +102,7 @@ local function create(x,y,w,h,fg,bg,fill,terminal)
     fill = fill,
     terminal = terminal,
   }
-  if fill ~= 0 then update(bar,fill) end
+  update(bar,fill)
   return setmetatable(bar,mt)
 end
 
