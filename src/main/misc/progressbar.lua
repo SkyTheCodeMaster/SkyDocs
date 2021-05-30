@@ -18,9 +18,38 @@ local function restore(tbl)
   term.setBackgroundColour(tbl.bg)
 end
 
-local function dfb(x,y,w,h,col) -- draw filled box
+-- Soort coordinates. ex: 34,2 -> 21,34. (Sorts the x/y coordinates)
+-- This function is written w/ paintutils' one in mind, so it acts similar.
+local function sort(x,y,w,h)
+  local lowX,highX,lowY,highY
+  -- If the width is smaller than x, swap em around
+  if w <= x then
+    lowX = w
+    highX = x
+  else -- Leave them be 
+    lowX = x
+    highX = w
+  end
+  -- Do the same, but for height
+  if h <= y then
+    lowY = h
+    highY = y
+  else -- Leave them be 
+    lowY = y 
+    highY = h
+  end
+  return lowX,highX,lowY,highY
+end
+
+-- draw filled box
+local function dfb(x,y,w,h,col,tOutput) 
   local tbl = save()
-  paintutils.drawFilledBox(x,y,w,h,col)
+  x,w,y,h = sort(x,y,w,h)
+  local width = x - w + 1
+  for o = y,h do
+    tOutput.setCursorPos(x,o)
+    tOutput.blit((" "):rep(width),("f"):rep(width),(colours.toBlit(col)):rep(width))
+  end
   restore(tbl)
 end
 
@@ -29,9 +58,9 @@ local function update(bar,percent)
   if percent > 100 then percent = 100 end
   local pixels = math.floor((percent / (100 / bar.w)) + 0.5) -- The math.floor + 0.5 acts as a rounding function.
   -- percent / (100 / barWidth) calculates how many pixels should be filled in the bar
-  dfb(bar.x,bar.y,(bar.x+bar.w),(bar.y+bar.h),bar.bg)
+  dfb(bar.x,bar.y,(bar.x+bar.w),(bar.y+bar.h),bar.bg,bar.terminal)
   if pixels ~= 0 then
-    dfb(bar.x,bar.y,(bar.x+pixels),(bar.y+bar.h),bar.fg)
+    dfb(bar.x,bar.y,(bar.x+pixels),(bar.y+bar.h),bar.fg,bar.terminal)
   end
   return percent
 end
@@ -58,8 +87,10 @@ end
 -- @tparam number fg The colour of the filled in bar.
 -- @tparam number bg The colour of the background of the bar.
 -- @tparam[opt] number fill The pre filled portion of the bar. Defaults to 0.
-local function create(x,y,w,h,fg,bg,fill)
+-- @tparam[opt] table terminal The terminal to draw the bar on. Defaults to `term.current()`.
+local function create(x,y,w,h,fg,bg,fill,terminal)
   fill = fill or 0
+  terminal = terminal or term.current()
   local bar = {
     x = x,
     y = y,
@@ -68,6 +99,7 @@ local function create(x,y,w,h,fg,bg,fill)
     fg = fg,
     bg = bg,
     fill = fill,
+    terminal = terminal,
   }
   if fill ~= 0 then update(bar,fill) end
   return setmetatable(bar,mt)

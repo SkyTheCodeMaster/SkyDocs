@@ -281,16 +281,16 @@ local function hijack()
 end
 
 return {
-  dirLookup =   dirLookup,
-  forward =     forward,
-  back =        back,
-  up =          up,
-  down =        down,
-  turnLeft =    turnLeft,
-  turnRight =   turnRight,
-  getFacing =   getFacing,
-  calcFacing =  calcFacing,
+    dirLookup = dirLookup,
+      forward = forward,
+         back = back,
+           up = up,
+         down = down,
+     turnLeft = turnLeft,
+    turnRight = turnRight,
+    getFacing = getFacing,
+   calcFacing = calcFacing,
   getPosition = getPosition,
   setPosition = setPosition,
-  hijack =      hijack,
+       hijack =  hijack,
 }
