@@ -46,6 +46,7 @@ local function dfb(x,y,w,h,col,tOutput)
   local tbl = save()
   x,w,y,h = sort(x,y,w,h)
   local width = x - w + 1
+  -- Pretty simple, just fills in the space
   for o = y,h do
     tOutput.setCursorPos(x,o)
     tOutput.blit((" "):rep(width),("f"):rep(width),(colours.toBlit(col)):rep(width))
