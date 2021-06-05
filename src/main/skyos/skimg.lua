@@ -3,16 +3,6 @@
 
 local expect = require("cc.expect").expect
 
---- Load a skimg from a file.
--- @tparam string path Path to the skimg file.
--- @treturn table The loaded skimg.
-local function load(path)
-  local f = fs.open(path,"r")
-  local skimg = textutils.unserialize(f.readAll())
-  f.close()
-  return skimg
-end
-
 --- Draw a skimg.
 -- @tparam table skimg The skimg image to draw.
 -- @tparam[opt] number x X coordinate, defaults to 1.
@@ -41,7 +31,22 @@ local function draw(tbl,x,y,tOutput)
   end
 end
 
-return {
+--- Load a skimg from a file. The `__call` metamethod will call the draw function, so instead of `skimg.draw(img[, x[, y[, tOutput]]])`, you can do `img([x[, y[, tOutput]]])`
+-- @tparam string path Path to the skimg file.
+-- @treturn table The loaded skimg.
+local function load(path)
+  expect(1,path,"string")
+  local f = fs.open(path,"r")
+  local skimg = textutils.unserialize(f.readAll())
+  f.close()
+  return setmetatable(skimg,{
+    __call = function(_,...) return draw(skimg,...) end
+  })
+end
+
+return setmetatable({
   load = load,
   draw = draw,
-}
+},{
+  __call = function(_,...) return load(...) end,
+})
