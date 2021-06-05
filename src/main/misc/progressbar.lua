@@ -107,7 +107,7 @@ local function create(x,y,w,h,fg,bg,fill,terminal)
     terminal = terminal,
   }
   -- draw the background
-  dfb(x,y,x+w-1,y+h-1)
+  dfb(x,y,x+w-1,y+h-1,bg,terminal)
   if fill ~= 0 then update(bar,fill) end
   return setmetatable(bar,mt)
 end
