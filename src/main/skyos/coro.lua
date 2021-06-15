@@ -4,6 +4,8 @@
 --- Currently running coroutines. This is stored in `SkyOS.coro.coros`
 local coros = {}
 
+local running = true
+
 --- Make a new coroutine and add it to the currently running list.
 -- @tparam function func Function to run forever.
 -- @tparam[opt] string name Name of the coroutine, defaults to `coro`.
@@ -29,19 +31,19 @@ end
 
 --- Run the coroutines. This doesn't take any parameters nor does it return any.
 local function runCoros()
-  while true do
+  while running do
     local e = {os.pullEventRaw()}
-    for i=1,#coros do
-      if coroutine.status(coros[i].coro) == "dead" then
-        table.remove(coros,i)
+    for k,v in pairs(coros) do
+      if coroutine.status(v.coro) == "dead" then
+        table.remove(coros,k)
       else
-        if not coros[i].filter or coros[i].filter == e[1] or e[1] == "terminate" then -- If unfiltered, pass all events, if filtered, pass only filter
-          local ok,filter = coroutine.resume(coros[i].coro,table.unpack(e))
+        if not v.filter or v.filter == e[1] or e[1] == "terminate" then -- If unfiltered, pass all events, if filtered, pass only filter
+          local ok,filter = coroutine.resume(v.coro,table.unpack(e))
           if ok then
-            coros[i].filter = filter -- okie dokie
+            v.filter = filter -- okie dokie
           else
             if SkyOS then -- We be inside of SkyOS environment
-              SkyOS.displayError(coros[i].name .. ": " .. filter)
+              SkyOS.displayError(v.name .. ": " .. debug.traceback(v.coro))
             else 
               error(filter)
             end
@@ -49,7 +51,14 @@ local function runCoros()
         end
       end
     end 
-  end 
+    os.queueEvent("coro_yield")
+  end
+  running = true
+end
+
+--- Stop the coroutine manager, halting all threads after current loop. Note that this will not stop it immediately.
+local function stop()
+  running = false
 end
 
 return {
@@ -57,4 +66,5 @@ return {
   newCoro = newCoro,
   killCoro = killCoro,
   runCoros = runCoros,
+  stop = stop,
 }
