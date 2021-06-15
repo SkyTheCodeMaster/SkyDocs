@@ -337,6 +337,67 @@ local function americanify(text,case)
   end
 end
 
+--- Table functions
+-- @section table
+
+--- Check if a value is already in a table, if not, insert it.
+-- @tparam table tbl Table to insert to.
+-- @param value Value to insert.
+-- @treturn table Modified table.
+local function insert(tbl,value)
+  local present = false
+  for _,v in pairs(tbl) do
+    if v == value then
+      present = true
+    end
+  end
+  if not present then
+    table.insert(tbl,value)
+  end
+  return tbl
+end
+
+--- Remove all values from a table. 
+-- @tparam table tbl Table to remove from.
+-- @param value Value to remove.
+-- @treturn table Modified table.
+local function remove(tbl,value)
+  for k,v in pairs(tbl) do
+    if v == value then
+      if type(k) == "number" then -- This is a numerically indiced table, we need to shift the other elements.
+        table.remove(tbl,k)
+      else -- key/value, just set to nil.
+        tbl[k] = nil
+      end
+    end
+  end
+  return tbl
+end
+
+--- Shallow copy a table, not recursive so doesn't copy table elements.
+-- @tparam table tbl Table to copy.
+-- @treturn table Copied table. 
+local function shallowCopy(tbl)
+  local newTbl = {}
+  for k,v in tbl do
+    newTbl[k] = v
+  end
+end
+
+--- Deep copy a table, recurses to nested tables.
+-- @tparam table tbl Table to copy. 
+-- @treturn table Copied table. 
+local function deepCopy(tbl)
+  local newTbl = {}
+  for k,v in tbl do
+    if type(v) == "table" then
+      tbl[k] = deepCopy(v)
+    else
+      tbl[k] = v
+    end
+  end
+end
+
 --- Caching section
 -- @section cache
 
@@ -574,5 +635,9 @@ return {
   webquire = webquire,
   savequire = savequire,
   canadianify = canadianify,
-  americanify = americanify
+  americanify = americanify,
+  insert = insert,
+  remove = remove,
+  shallowCopy = shallowCopy,
+  deepCopy = deepCopy,
 }
