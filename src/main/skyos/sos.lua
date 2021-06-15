@@ -211,9 +211,64 @@ local function drawApps(screen)
   end
 end
 
+local function genTimeString()
+  local offset
+  if SkyOS and SkyOS.settings and SkyOS.settings.timezone then
+    offset = SkyOS.settings.timezone
+  else
+    offset = 0
+  end
+  local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * offset)
+  local t = os.date("!*t",epoch)
+  local time = {
+    sec = t.sec,
+    min = t.min,
+    hour = t.hour,
+    day = t.day,
+    month = t.month,
+    year = t.year,
+  }
+  for k,v in pairs(time) do
+    local str = tostring(v)
+    if str:len() == 1 then
+      str = "0" .. str
+    end
+    time[k] = str
+  end
+  local filepath = "screenshots/" .. time.hour .. time.min .. time.sec .. "-" .. time.day .. time.month .. time.year .. ".skimg"
+  return filepath
+end
+
+--- Screenshot the screen, and save it to `/screenshots/hhmmss-ddmmyyyy.skimg`
+local function screenshot()
+  if not term.current().getLine then
+    -- We don't have screenshotting available, yikes.
+    return
+  end
+  local x,y = term.getHeight()
+  local data = {}
+  for i=1,y do
+    local text,fg,bg = term.current().getLine(i)
+    data[i] = {text,fg,bg,i}
+  end
+  local creator = os.getComputerLabel() or "SkyOS"
+  local attributes = {
+    x=x,
+    y=y,
+    creator=creator,
+    locked=false,
+    type=1
+  }
+  local skimg = {attributes=attributes,data=data}
+  local filepath = genTimeString()
+  encfwrite(filepath,skimg)
+end
+
+
 return {
   downloadRepo = downloadRepo,
   updateSkyOS = updateSkyOS,
+  screenshot = screenshot,
   --- Functions to interact with the desktop file.
   desktop = {
     checkPosition = checkPosition,

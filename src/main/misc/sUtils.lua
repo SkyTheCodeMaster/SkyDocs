@@ -177,7 +177,7 @@ local function diceRoll(size,modifier,dc)
 end
 
 --- Get the current time with an offset from UTC.
--- @tparam number offset Offset from UTC.
+-- @tparam[opt] number offset Offset from UTC.
 -- @treturn table Table containing the time.
 local function getTime(offset)
   expect(1,offset,"number","nil")
@@ -185,6 +185,30 @@ local function getTime(offset)
   local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * offset)
   local t = os.date("!*t",epoch)
   return t
+end
+
+--- Get the current time in a table of strings prepended with `0` if they're single digit.
+-- @tparam[opt] number offset Offset from UTC.
+-- @treturn table Table containing the time.
+local function getZeroTime(offset)
+  expect(1,offset,"number","nil")
+  local t = getTime(offset)
+  local time = {
+    sec = t.sec,
+    min = t.min,
+    hour = t.hour,
+    day = t.day,
+    month = t.month,
+    year = t.year,
+  }
+  for k,v in pairs(time) do
+    local str = tostring(v)
+    if str:len() == 1 then
+      str = "0" .. str
+    end
+    time[k] = str
+  end
+  return time
 end
 
 --- file oriented functions
@@ -627,6 +651,7 @@ return {
   fwrite = fwrite,
   hread = hread,
   getTime = getTime,
+  getZeroTime = getZeroTime,
   confirm = confirm,
   readNumber = readNumber,
   poke = poke,
