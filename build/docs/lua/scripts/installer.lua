@@ -71,7 +71,7 @@ local function getFiles(recursive,url,filter)
   local apiURL
   if filter then
     local splitURL = split(url,"/")
-    local apiURL = ("https://api.github.com/repos/%s/%s/contents/%s?ref=%s"):format(splitURL[3], splitURL[4], table.concat(splitURL, "/", 7), splitURL[6]) -- Thanks, JackMacWindows!
+    apiURL = ("https://api.github.com/repos/%s/%s/contents/%s?ref=%s"):format(splitURL[3], splitURL[4], table.concat(splitURL, "/", 7), splitURL[6]) -- Thanks, JackMacWindows!
   else
     apiURL = url
   end
