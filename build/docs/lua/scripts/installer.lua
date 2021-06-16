@@ -66,14 +66,20 @@ local function split(inputstr, sep)
 end
 
 -- Will get  all files in a directory, with a download link and path.
-local function getFiles(recursive,url)
-  local splitURL = split(url,"/")
-  local apiURL = ("https://api.github.com/repos/%s/%s/contents/%s?ref=%s"):format(splitURL[3], splitURL[4], table.concat(splitURL, "/", 7), splitURL[6]) -- Thanks, JackMacWindows!
+local function getFiles(recursive,url,filter)
+  filter = filter or true
+  local apiURL
+  if filter then
+    local splitURL = split(url,"/")
+    local apiURL = ("https://api.github.com/repos/%s/%s/contents/%s?ref=%s"):format(splitURL[3], splitURL[4], table.concat(splitURL, "/", 7), splitURL[6]) -- Thanks, JackMacWindows!
+  else
+    apiURL = url
+  end
   local contents = textutils.unserializeJSON(hread(apiURL))
   local files = {}
   for _,v in pairs(contents) do
     if v.type == "dir" and recursive then
-      local newFiles = getFiles(true,v["_links"].self)
+      local newFiles = getFiles(true,v["_links"].self,false)
       for _,file in pairs(newFiles) do table.insert(files,file) end
     end
     if v.type == "file" then
