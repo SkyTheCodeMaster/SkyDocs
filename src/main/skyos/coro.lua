@@ -1,6 +1,8 @@
 --- Coroutine manager for SkyOS. Might work, might not, who knows.
 -- @module[kind=skyos] coro
 
+local crash = require("libraries.crash") -- Crash reporting!
+
 --- Currently running coroutines. This is stored in `SkyOS.coro.coros`
 local coros = {}
 
@@ -42,6 +44,8 @@ local function runCoros()
           if ok then
             v.filter = filter -- okie dokie
           else
+            local traceback = debug.traceback(v.coro)
+            crash(traceback)
             if SkyOS then -- We be inside of SkyOS environment
               SkyOS.displayError(v.name .. ": " .. debug.traceback(v.coro))
             else 

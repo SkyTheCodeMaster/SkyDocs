@@ -72,7 +72,7 @@ end
 -- @treturn table Table containing the split string.
 local function split(inputstr, sep)
   expect(1,inputstr,"string")
-  expect(1,sep,"string")
+  expect(1,sep,"string","nil")
   sep = sep or "%s"
   local t={}
   for str in string.gmatch(inputstr, "([^"..sep.."]+)") do

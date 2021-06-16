@@ -40,6 +40,7 @@
     "window",
     "_ENV",
     "bit32",
-    "redstone"
+    "redstone",
+    "_HOST"
   ]
 }
