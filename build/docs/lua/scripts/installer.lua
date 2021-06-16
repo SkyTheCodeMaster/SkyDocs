@@ -23,7 +23,7 @@ end
 
 local function fwrite(file,contents)
   local f,err = fs.open(file,"r")
-  if not f and err == "No such file" then return "" end
+  if not f and err:match("No such file") then return "" end
   if not f then error("Error opening " .. file .. ": " .. err) end
   f.write(contents) f.close()
 end
