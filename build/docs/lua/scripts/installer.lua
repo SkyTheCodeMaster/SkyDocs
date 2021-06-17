@@ -62,7 +62,7 @@ local function getFiles(recursive,url,filter,path)
   local files = {}
   for _,v in pairs(contents) do
     if v.type == "dir" and recursive then
-      local newFiles = getFiles(true,v["_links"].self,false)
+      local newFiles = getFiles(true,v["_links"].self,false,fs.combine(path,v.name))
       for _,file in pairs(newFiles) do table.insert(files,file) end
     end
     if v.type == "file" then
