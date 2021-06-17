@@ -22,25 +22,9 @@ local function fread(file)
 end
 
 local function fwrite(file,contents)
-  local f,err = fs.open(file,"r")
-  if not f and err:match("No such file") then return "" end
+  local f,err = fs.open(file,"w")
   if not f then error("Error opening " .. file .. ": " .. err) end
   f.write(contents) f.close()
-end
-
---- Compare 2 sha256 hashes of a url and file.
--- @tparam string file File to get hash of.
--- @tparam string url URL to get hash of.
--- @treturn boolean Whether or not the files are the same.
-local function compareHash(file,url)
-  if not fs.exists(file) then
-    return false
-  end
-  local fileContents = fread(file)
-  local fileHash = sha256.digest(fileContents):toHex()
-  local urlContents = hread(url)
-  local urlHash = sha256.digest(urlContents):toHex()
-  return fileHash == urlHash
 end
 
 -- It's a URL. Let's download it.
@@ -60,22 +44,21 @@ local function split(inputstr, sep)
   sep = sep or "%s"
   local t={}
   for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-          table.insert(t, str)
+    table.insert(t, str)
   end
   return t
 end
 
 -- Will get  all files in a directory, with a download link and path.
 local function getFiles(recursive,url,filter)
-  filter = filter or true
-  local apiURL
+  local contents
   if filter then
     local splitURL = split(url,"/")
-    apiURL = ("https://api.github.com/repos/%s/%s/contents/%s?ref=%s"):format(splitURL[3], splitURL[4], table.concat(splitURL, "/", 7), splitURL[6]) -- Thanks, JackMacWindows!
+    local apiURL = ("https://api.github.com/repos/%s/%s/contents/%s?ref=%s"):format(splitURL[3], splitURL[4], table.concat(splitURL, "/", 7), splitURL[6]) -- Thanks, JackMacWindows!
+    contents = textutils.unserializeJSON(hread(apiURL))
   else
-    apiURL = url
+    contents = textutils.unserializeJSON(hread(url))
   end
-  local contents = textutils.unserializeJSON(hread(apiURL))
   local files = {}
   for _,v in pairs(contents) do
     if v.type == "dir" and recursive then
@@ -86,28 +69,25 @@ local function getFiles(recursive,url,filter)
       table.insert(files,{url=v.download_url,path=v.path})
     end
   end
+  return files
 end
 
 -- Download the output of getFiles.
 local function downloadFiles(files)
   for _,v in pairs(files) do
-    if compareHash(v.path,v.url) then
-      local content = hread(v.url)
-      print("Downloading",v.path)
-      fwrite(v.path,content)
-    end
+    local content = hread(v.url)
+    print("Downloading",v.path)
+    fwrite(v.path,content)
   end
 end
 
 for url,data in pairs(requirements) do
   if not data.folder then
     -- Easy, just download file into specified path.
-    if not compareHash(data.path,url) then -- If the files are different, collect the new one.
-      print("Collecting",data.path)
-      fwrite(data.path,hread(url))
-    end
+    print("Collecting",data.path)
+    fwrite(data.path,hread(url))
   else
-    local folder = getFiles(data.recursive,url)
+    local folder = getFiles(data.recursive,url,true)
     downloadFiles(folder)
   end
   print("Collected",data.path)
