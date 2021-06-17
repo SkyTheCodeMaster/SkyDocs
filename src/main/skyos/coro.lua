@@ -33,8 +33,8 @@ end
 
 --- Run the coroutines. This doesn't take any parameters nor does it return any.
 local function runCoros()
+  local e = {n = 0}
   while running do
-    local e = table.pack(os.pullEventRaw())
     for k,v in pairs(coros) do
       if coroutine.status(v.coro) == "dead" then
         table.remove(coros,k)
@@ -54,8 +54,8 @@ local function runCoros()
           end
         end
       end
-    end 
-    os.queueEvent("coro_yield")
+    end
+    e = table.pack(os.pullEventRaw())
   end
   running = true
 end
