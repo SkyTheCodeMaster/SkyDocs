@@ -50,7 +50,7 @@ local function split(inputstr, sep)
 end
 
 -- Will get  all files in a directory, with a download link and path.
-local function getFiles(recursive,url,filter)
+local function getFiles(recursive,url,filter,path)
   local contents
   if filter then
     local splitURL = split(url,"/")
@@ -66,7 +66,9 @@ local function getFiles(recursive,url,filter)
       for _,file in pairs(newFiles) do table.insert(files,file) end
     end
     if v.type == "file" then
-      table.insert(files,{url=v.download_url,path=v.path})
+      local name = fs.getName(v.path)
+      local path = fs.combine(path,name)
+      table.insert(files,{url=v.download_url,path=path})
     end
   end
   return files
@@ -87,7 +89,7 @@ for url,data in pairs(requirements) do
     print("Collecting",data.path)
     fwrite(data.path,hread(url))
   else
-    local folder = getFiles(data.recursive,url,true)
+    local folder = getFiles(data.recursive,url,true,data.path)
     downloadFiles(folder)
   end
   print("Collected",data.path)
