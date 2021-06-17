@@ -45,9 +45,9 @@ local function runCoros()
             v.filter = filter -- okie dokie
           else
             local traceback = debug.traceback(v.coro)
-            crash(traceback)
+            crash(traceback,filter)
             if SkyOS then -- We be inside of SkyOS environment
-              SkyOS.displayError(v.name .. ": " .. debug.traceback(v.coro))
+              SkyOS.displayError(v.name .. ":" .. filter .. ":" .. debug.traceback(v.coro))
             else 
               error(filter)
             end

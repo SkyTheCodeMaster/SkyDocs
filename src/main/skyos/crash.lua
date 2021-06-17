@@ -69,9 +69,9 @@ local function systemInformation()
   return diagstr 
 end
 
-local function crashreport(stacktrace)
+local function crashreport(stacktrace,err)
   local diagstr = systemInformation()
-  local crashstr = string.format("---DIAGNOSTIC INFORMATION---\n%s\n---STACKTRACE---\n%s",diagstr,stacktrace)
+  local crashstr = string.format("---DIAGNOSTIC INFORMATION---\n%s\n---ERROR---\n%s\n---STACKTRACE---\n%s",diagstr,err,stacktrace)
   local file = genTimeString("crash-reports","log")
   local f = fs.open(file,"w")
   f.write(crashstr) 
