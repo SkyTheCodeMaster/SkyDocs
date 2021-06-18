@@ -26,7 +26,7 @@ if err then error("Something went wrong whilst downloading sUtils!") end
 local content = h.readAll() h.close()
 local sUtils = load(content,"=prewebquire-package","t",_ENV)()
 local button = sUtils.webquire("https://raw.githubusercontent.com/SkyTheCodeMaster/SkyDocs/ddec75606d183c743c9a92bd08d28b60f8caae3a/src/main/misc/button.lua")
-local paintutils = sUtils.webquire("https://raw.githubusercontent.com/SkyTheCodeMaster/SkyOS/d3f09dd883938648ab2cceead62214c240d1d547/libraries/apis/paintutils.lua") -- paintutils is always online :D
+local paintutils = sUtils.webquire("https://skydocs.madefor.cc/scriptdata/paintutils.lua") -- paintutils is always online :D
 
 --[[
   Standard `.skimg` attributes tablelib

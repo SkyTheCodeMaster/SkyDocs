@@ -73,10 +73,10 @@ end
 local function split(inputstr, sep)
   expect(1,inputstr,"string")
   expect(1,sep,"string","nil")
-  sep = sep or "%s"
+  sep = sep or ","
   local t={}
   for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
-          table.insert(t, str)
+    table.insert(t, str)
   end
   return t
 end
