@@ -245,7 +245,7 @@ local function screenshot()
     -- We don't have screenshotting available, yikes.
     return
   end
-  local x,y = term.getHeight()
+  local x,y = term.getSize()
   local data = {}
   for i=1,y do
     local text,fg,bg = term.current().getLine(i)

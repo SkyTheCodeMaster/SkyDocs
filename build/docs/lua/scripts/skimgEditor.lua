@@ -509,7 +509,7 @@ term.setCursorPos(1,canvasY+4)
 
 local function handleEvent(event)
   ram.event = event
-  debugWrite(textutils.serialize(event))
+  --debugWrite(textutils.serialize(event))
   if event[1] == "mouse_click" then
     button.executeButtons(event)
   elseif event[1] == "mouse_drag" then

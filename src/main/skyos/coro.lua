@@ -6,14 +6,32 @@ local crash = require("libraries.crash") -- Crash reporting!
 --- Currently running coroutines. This is stored in `SkyOS.coro.coros`
 local coros = {}
 
+--- The amount of processes that have been created.
+local pids = 0
+
 local running = true
+
+--- Events that are blocked for non active coroutines. (aka not on top)
+local blocked = {
+  ["mouse_click"] = true,
+  ["mouse_drag"] = true,
+  ["mouse_scroll"] = true,
+  ["mouse_up"] = true, 
+  ["paste"] = true,
+  ["key"] = true,
+  ["key_up"] = true,
+  ["char"] = true
+}
 
 --- Make a new coroutine and add it to the currently running list.
 -- @tparam function func Function to run forever.
 -- @tparam[opt] string name Name of the coroutine, defaults to `coro`.
--- @treturn number PID of the coroutine. Subject to change :).
+-- @treturn number PID of the coroutine. This shouldn't change.
 local function newCoro(func,name)
-  table.insert(coros,{coro=coroutine.create(func),filter=nil,name=name or "coro"})
+  local pid = pids + 1
+  pids = pid
+  table.insert(coros,{coro=coroutine.create(func),filter=nil,name=name or "coro",pid = pid})
+  return pid
 end
 
 --- Kill a coroutine, and remove it from the coroutine table.
@@ -37,7 +55,7 @@ local function runCoros()
   while running do
     for k,v in pairs(coros) do
       if coroutine.status(v.coro) == "dead" then
-        table.remove(coros,k)
+        coros[k] = nil
       else
         if not v.filter or v.filter == e[1] or e[1] == "terminate" then -- If unfiltered, pass all events, if filtered, pass only filter
           local ok,filter = coroutine.resume(v.coro,table.unpack(e))
