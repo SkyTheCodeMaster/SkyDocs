@@ -1,3 +1,4 @@
+-- Copyright 2021 SkyTheCodeMaster - All Rights Reserved.
 term.clear()
 term.setBackgroundColour(colours.black)
 term.setTextColour(colours.yellow)

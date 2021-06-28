@@ -1,3 +1,4 @@
+-- This code follows the same licence as ComputerCraft: Tweaked, but is slightly modified as to make it `require`able.
 local paintutils = {}
 
 local function toBlit(color)

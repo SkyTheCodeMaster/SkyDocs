@@ -1,3 +1,4 @@
+-- Copyright 2021 SkyTheCodeMaster - All Rights Reserved.
 -- This script will convert skimg files to other files using the `skimgconvert` api.
 -- Collect a version of sUtils with file read/write functions, and webquire..
 local h,err = http.get("https://raw.githubusercontent.com/SkyTheCodeMaster/SkyDocs/fdf3d62fcbdaa39a957f7a074ebef95bff4a79a1/src/main/misc/sUtils.lua")

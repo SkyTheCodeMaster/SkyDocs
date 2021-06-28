@@ -1,3 +1,4 @@
+-- Copyright 2021 SkyTheCodeMaster - All Rights Reserved.
 local redrun = require("redrun")
 
 local modem = peripheral.find("modem")

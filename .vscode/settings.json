@@ -41,7 +41,8 @@
     "_ENV",
     "bit32",
     "redstone",
-    "_HOST"
+    "_HOST",
+    "vector"
   ],
   "Lua.runtime.version": "Lua 5.2"
 }

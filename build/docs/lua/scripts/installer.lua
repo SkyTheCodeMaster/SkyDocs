@@ -1,3 +1,5 @@
+-- Copyright 2021 SkyTheCodeMaster - All Rights Reserved.
+
 local expect = require("cc.expect").expect
 
 -- Parse a `requirements.json` local file, or url.
