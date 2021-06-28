@@ -1,7 +1,3 @@
-local h,err = http.get("https://pastebin.com/raw/6UV4qfNF")
-if err then error("Something went wrong whilst downloading sha256!") end
-local content = h.readAll() h.close()
-local sha256 = load(content,"=sha256-package","t",_ENV)()
 local expect = require("cc.expect").expect
 
 -- Parse a `requirements.json` local file, or url.

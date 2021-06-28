@@ -3,6 +3,20 @@
 
 local crash = require("libraries.crash") -- Crash reporting!
 
+-- Localize coroutine library, because it gets used quite a bit, surprisingly.
+local coroutine = coroutine
+
+--- Currently active coroutines, with pid as key.
+local activeCoros = {}
+
+--- Check if a coroutine is active
+-- @tparam table coro Coroutine table to check.
+-- @treturn boolean Whether or not the coroutine is active.
+local function isActive(coroTable)
+  if activeCoros[coroTable.pid] then return true end -- Check if coroutine itself is active.
+  if activeCoros[coroTable.parent] then return true end -- Check if coroutine's parent is active.
+  return coroTable.forceActive -- Finally, just return it's force active status. either nil or true. (or any other truthy/falsey value)
+end
 --- Currently running coroutines. This is stored in `SkyOS.coro.coros`
 local coros = {}
 
@@ -26,11 +40,14 @@ local blocked = {
 --- Make a new coroutine and add it to the currently running list.
 -- @tparam function func Function to run forever.
 -- @tparam[opt] string name Name of the coroutine, defaults to `coro`.
+-- @tparam[opt] number parent Parent PID, mirrors it's active state.
+-- @tparam[opt] table env Custom environment to use for coroutine, defaults to `_ENV`.
+-- @tparam[opt] boolean forceActive Whether or not this coroutine will always have user events.
 -- @treturn number PID of the coroutine. This shouldn't change.
-local function newCoro(func,name)
+local function newCoro(func,name,parent,forceActive)
   local pid = pids + 1
   pids = pid
-  table.insert(coros,{coro=coroutine.create(func),filter=nil,name=name or "coro",pid = pid})
+  table.insert(coros,{coro=coroutine.create(func),filter=nil,name=name or "coro",pid = pid,parent=parent,forceActive = forceActive})
   return pid
 end
 
@@ -58,18 +75,34 @@ local function runCoros()
         coros[k] = nil
       else
         if not v.filter or v.filter == e[1] or e[1] == "terminate" then -- If unfiltered, pass all events, if filtered, pass only filter
-          local ok,filter = coroutine.resume(v.coro,table.unpack(e))
-          if ok then
-            v.filter = filter -- okie dokie
-          else
-            local traceback = debug.traceback(v.coro)
-            crash(traceback,filter)
-            if SkyOS then -- We be inside of SkyOS environment
-              SkyOS.displayError(v.name .. ":" .. filter .. ":" .. debug.traceback(v.coro))
-            else 
-              error(filter)
+          -- Check for active coroutine
+          if isActive(v) then
+            local ok,filter = coroutine.resume(v.coro,table.unpack(e))
+            if ok then
+              v.filter = filter -- okie dokie
+            else
+              local traceback = debug.traceback(v.coro)
+              crash(traceback,filter)
+              if SkyOS then -- We be inside of SkyOS environment
+                SkyOS.displayError(v.name .. ":" .. filter .. ":" .. debug.traceback(v.coro))
+              else 
+                error(filter)
+              end
             end
-          end
+          elseif not blocked[e[1]] then -- It's not active, but this isn't a user generated event, so we can safely pass it.
+            local ok,filter = coroutine.resume(v.coro,table.unpack(e)) -- It's probably possible to functionize this, but... eh
+            if ok then
+              v.filter = filter -- okie dokie
+            else
+              local traceback = debug.traceback(v.coro)
+              crash(traceback,filter)
+              if SkyOS then -- We be inside of SkyOS environment
+                SkyOS.displayError(v.name .. ":" .. filter .. ":" .. debug.traceback(v.coro))
+              else 
+                error(filter)
+              end
+            end
+          end  -- Else, we just wont resume the coroutine.
         end
       end
     end
@@ -85,6 +118,7 @@ end
 
 return {
   coros = coros,
+  activeCoros = activeCoros,
   newCoro = newCoro,
   killCoro = killCoro,
   runCoros = runCoros,

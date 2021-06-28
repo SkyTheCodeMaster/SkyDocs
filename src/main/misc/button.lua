@@ -99,7 +99,7 @@ local function enableButton(id,enable)
   buttons[id].enabled = enable
 end
 
---- Takes an event, checks if it's a `mouse_click` or `mouse_drag`, and sees if it's within a button.
+--- Takes an event in a table, checks if it's a `mouse_click` or `mouse_drag`, and sees if it's within a button, if so, execute it's function.
 -- @tparam table event Event table to check for `mouse_click` or `mouse_drag`.
 -- @tparam[opt] boolean drag Enable button trigger on a `mouse_drag` event. Defaults to false.
 local function executeButtons(tEvent,bDrag)

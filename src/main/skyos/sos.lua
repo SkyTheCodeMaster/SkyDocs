@@ -106,7 +106,7 @@ end
 local function updateSkyOS(reboot)
   expect(1,reboot,"boolean","nil")
   reboot = reboot or false
-  downloadRepo()
+  
   if reboot then os.reboot() end
 end
 

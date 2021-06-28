@@ -46,7 +46,7 @@ local function getFile(sFilename, sNetAddress, nFails)
   expect(1,sNetAddress,"string")
   nFails = nFails or 0
   if nFails > 5 then
-    error("Failed too many times. Stopping.", -1)
+    error("Failed too many times. Stopping.", 2)
   end
  
   local h, err = http.get(sNetAddress)
@@ -57,11 +57,11 @@ local function getFile(sFilename, sNetAddress, nFails)
       h.close()
     else
       h.close()
-      printError("Failed to write file: " .. err2)
+      printError("Failed to write file: " .. err2,2)
       getFile(sFilename, sNetAddress, nFails + 1)
     end
   else
-    printError("Failed to connect: " .. err)
+    printError("Failed to connect: " .. err,2)
     getFile(sFilename, sNetAddress, nFails + 1)
   end
 end
@@ -278,7 +278,7 @@ end
 -- @treturn The loaded module, like what `require` would return.
 local function webquire(url)
   local content,err = hread(url)
-  if not content then error("webquire: " .. err) end
+  if not content then error("webquire: " .. err,2) end
   local lib = load(content,"=webquire_package","t",_ENV)() -- load the content, name it as a `=webquire_package`, make it only load text lua, not bytecode, pass `_ENV` to it.
   return lib
 end
@@ -292,7 +292,7 @@ local function savequire(url)
   local package
   if not fs.exists(fs.combine("savequire",name)) then -- We dont have the package locally, download it from the web
     local content,err = hread(url)
-    if not content then error("savequire: " .. err) end
+    if not content then error("savequire: " .. err,2) end
     fwrite(fs.combine("savequire",name),content.readAll())
     package = require(fs.combine("savequire",name))
   else
@@ -336,8 +336,11 @@ end
 
 --- Read user input, return `tonumber()` of it.
 -- @treturn number Number the user input.
-local function readNumber(replaceChar,history,completeFn,default)
-  local answer = read(replaceChar,history,completeFn,default)
+local function readNumber(...)
+  local answer
+  repeat 
+   answer = tonumber(read(...))
+  until answer
   return tonumber(answer)
 end
 
@@ -460,7 +463,7 @@ end
 local function load(file)
   expect(1,file,"string")
   if not fs.exists(file) then
-    error("file does not exist")
+    error("file does not exist",2)
   end
   local fileName = fs.getName(file)
   local fileType = split(fileName,".")[2]
@@ -531,11 +534,11 @@ local function drawSkimg(tbl,x,y,tOutput)
   tOutput = tOutput or term.current()
   -- make sure it's a valid table with both of the `data` and `attributes` fields.
   if not tbl.attributes or not tbl.data then
-    error("table is not valid .skimg")
+    error("table is not valid .skimg",2)
   end
   -- make sure tOutput has blit and setCursorPos
   if not tOutput.setCursorPos or not tOutput.blit then
-    error("tOutput is incompatible!")
+    error("tOutput is incompatible!",2)
   end
   for i=1,#tbl.data do
     local blitLine = tbl.data[i]
