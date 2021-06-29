@@ -1,5 +1,5 @@
 ---
-module: [kind=skyos] SkyOS Events/Callbacks
+module: [kind=skyos] SkyOS Events Callbacks
 ---
 
 # List of events/callbacks
