@@ -3,7 +3,7 @@ module: [kind=articles] SkyOS Desktop
 ---
 
 The desktop for SkyOS is stored in `settings/desktop.dat`, which is a serialized table (`textutils.serialize()`), and it's data structure goes as follows:
-```lua
+```
 {
   { -- This is the first desktop layout, or the home screen. Each screen is a table in this layer.
     { -- This is Y level 1.
