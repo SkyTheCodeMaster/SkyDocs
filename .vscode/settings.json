@@ -4,8 +4,6 @@
     "lowercase-global",
     "unused-function",
     "undefined-field",
-    "undefined-doc-name",
-    "undefined-doc-name",
     "undefined-doc-name"
   ],
   "Lua.diagnostics.globals": [

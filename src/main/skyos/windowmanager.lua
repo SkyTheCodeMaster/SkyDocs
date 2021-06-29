@@ -8,6 +8,8 @@ local make_package = require("cc.require").make
 
 -- Next window number 
 local nextWin = 1
+
+--- Currently active widnow, index `wins` with this.
 local activeWindow = 0
 -- Windows 
 local wins = {} 
@@ -22,6 +24,7 @@ local window = window
 
 -- Create an environment, with `term` replaced with a supplied window object, also with a `self` variable with stuff like the window, coro pid, etc
 local function makeProgramEnv(custEnv,win)
+  custEnv = custEnv or {}
   local myEnv = {}
   for k,v in pairs(custEnv) do
     myEnv[k] = v
@@ -32,6 +35,7 @@ local function makeProgramEnv(custEnv,win)
   myEnv["SkyOS"]["self"] = {win = win}
   myEnv["SkyOS"]["close"] = function() end
   myEnv["SkyOS"]["visible"] = function(isVisible) end
+  myEnv["SkyOS"]["back"] = function() end
   myEnv["require"],myEnv["package"] = make_package(myEnv,"/")
   return myEnv
 end
@@ -80,6 +84,7 @@ local function newWindow(program,name,visible,env,...)
   local pid = SkyOS.coro.newCoro(runFunc,name)
   programEnv["SkyOS"]["self"]["pid"] = pid
   programEnv["SkyOS"]["self"]["winid"] = nextWin
+  programEnv["SkyOS"]["self"]["path"] = function() return fs.getDir(program) end
   -- Now create the table to stick into the wins table
   local winTable = {
     win = win,
@@ -95,9 +100,7 @@ end
 -- @tparam table win Window, pull from `SkyOS.window.wins`.
 local function closeWindow(win)
   expect(1,win,"table")
-  if win.env.SkyOS.close then
-    win.env.SkyOS.close()
-  end
+  local _ = win.env.SkyOS.close and win.env.SkyOS.close()
   SkyOS.coro.killCoro(win.env.SkyOS.self.pid)
   wins[win.env.SkyOS.self.winid] = nil
 end
@@ -138,6 +141,7 @@ end
 
 return {
   wins = wins,
+  activeWindow = activeWindow,
   bottombarOpen = bottombarOpen,
   topbarOpen = topbarOpen,
   newWindow = newWindow,

@@ -1,7 +1,8 @@
 --- Coroutine manager for SkyOS. Might work, might not, who knows.
 -- @module[kind=skyos] coro
 
-local crash = require("libraries.crash") -- Crash reporting!
+local ok,crash = pcall(require,"libraries.crash") -- Crash reporting!
+if not ok then crash = function() end end -- Override crash function if crash library is not available/is errored
 
 -- Localize coroutine library, because it gets used quite a bit, surprisingly.
 local coroutine = coroutine
@@ -49,7 +50,7 @@ local function newCoro(func,name,parent,forceActive)
   pids = pid
   table.insert(coros,{coro=coroutine.create(func),filter=nil,name=name or "coro",pid = pid,parent=parent,forceActive = forceActive})
   return pid
-end
+end 
 
 --- Kill a coroutine, and remove it from the coroutine table.
 -- @param coro Coroutine to kill, accepts a number (index in table) or a string (name of coroutine).
@@ -74,9 +75,9 @@ local function runCoros()
       if coroutine.status(v.coro) == "dead" then
         coros[k] = nil
       else
-        if not v.filter or v.filter == e[1] or e[1] == "terminate" then -- If unfiltered, pass all events, if filtered, pass only filter
+        if not v.filter or v.filter == e[1] then -- If unfiltered, pass all events, if filtered, pass only filter
           -- Check for active coroutine
-          if isActive(v) then
+          if isActive(v) or not blocked[e[1]] then
             local ok,filter = coroutine.resume(v.coro,table.unpack(e))
             if ok then
               v.filter = filter -- okie dokie
@@ -89,24 +90,11 @@ local function runCoros()
                 error(filter)
               end
             end
-          elseif not blocked[e[1]] then -- It's not active, but this isn't a user generated event, so we can safely pass it.
-            local ok,filter = coroutine.resume(v.coro,table.unpack(e)) -- It's probably possible to functionize this, but... eh
-            if ok then
-              v.filter = filter -- okie dokie
-            else
-              local traceback = debug.traceback(v.coro)
-              crash(traceback,filter)
-              if SkyOS then -- We be inside of SkyOS environment
-                SkyOS.displayError(v.name .. ":" .. filter .. ":" .. debug.traceback(v.coro))
-              else 
-                error(filter)
-              end
-            end
-          end  -- Else, we just wont resume the coroutine.
+          end
         end
       end
     end
-    e = table.pack(os.pullEventRaw())
+    e = table.pack(coroutine.yield())
   end
   running = true
 end

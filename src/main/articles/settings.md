@@ -10,3 +10,4 @@ The current list of settings (subject to change) and their descriptions are as f
 * verifyIntegrity: This runs an integrity check on startup to ensure that all SkyOS files are present. This does nothing unless `internet` is enabled.
 * internet: This enables/disables most of SkyOS' internet-facing features, such as the integrity check.
 * location: This enables/disables the GPS system, if it's off `gps.locate` will only return nil, and the location icon in the top bar red. If it's activated every time gps is used the location icon will flash white from it's default grey.
+* longPressDelay: This is how long in milliseconds a press (and hold) should be before a `long_press` event gets queued once the `mouse_up` event is received.
