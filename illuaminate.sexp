@@ -5,6 +5,7 @@
   /src/main/skyos/
   /src/main/misc/
   /src/main/articles/
+  /src/main/skyos-events-callbacks/
 )
 
 
@@ -27,13 +28,15 @@
     (misc Misc)
     (create Create)
     (wip WIP)
-    (articles Articles))
+    (articles Articles)
+    (skyosevent SkyOS Events/Callbacks))
 
   (library-path
     /src/main/create/
     /src/main/skyos/
     /src/main/misc/
-    /src/main/articles/))
+    /src/main/articles/
+    /src/main/skyos-events-callbacks/))
 
 (at /
   (linters
