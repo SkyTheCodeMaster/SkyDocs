@@ -32,4 +32,5 @@ todo = []
 def findTodo(file):
   with open(file) as f:
     for lineno, n in enumerate(f.lines()):
-      if `TODO` in n.upper():
+      if 'TODO' in n.upper():
+        print("TODO Found!")
