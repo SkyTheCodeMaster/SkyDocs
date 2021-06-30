@@ -22,9 +22,9 @@ newFiles = []
 
 for x in myFiles:
   if 'git' in x:
-    #print(f'Removing {x} from todo search')
+    print(f'Removing {x} from todo search')
   else:
-    #print(f'Adding {x} to todo search')
+    print(f'Adding {x} to todo search')
     newFiles.append(x)
 
 todo = []
