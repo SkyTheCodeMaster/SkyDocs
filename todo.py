@@ -17,12 +17,12 @@ for x in indexedFolders:
   for root,dirs,files in os.walk(x,topdown=False):
     for name in files:
       myFiles.append(os.path.join(root,name))
-    for name in dirs:
-      myFiles.append(os.path.join(root,name))
+    #for name in dirs:
+    #  myFiles.append(os.path.join(root,name))
 
 for x in myFiles:
   print(x)
-  
+
 todo = []
 
 def findTodo(file):
