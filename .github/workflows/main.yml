@@ -19,8 +19,8 @@ jobs:
         test -d bin || mkdir bin
         test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/linux-x86-64/illuaminate
         chmod +x bin/illuaminate
+        python3 ./todo.py ${GITHUB_SHA} ${GITHUB_REF}
         bin/illuaminate doc-gen
-        grep -Rni todo src/ build/docs/lua/scripts build/docs/lua/scriptdata > build/docs/lua/todo.txt
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3
