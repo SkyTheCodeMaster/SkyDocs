@@ -7,7 +7,6 @@ import sys
 
 lArgs = sys.argv
 sha = lArgs[1]
-branch = lArgs[2]
 print(str(lArgs))
 
 myFiles = []
@@ -23,10 +22,29 @@ for x in indexedFolders:
 for x in myFiles:
   print(x)
 
-todo = []
+todo = {}
+
+def makeFileLink(file,ln):
+  return f"https://github.com/SkyTheCodeMaster/SkyDocs/blob/{sha}/{file}#L{ln}"
 
 def findTodo(file):
   with open(file) as f:
     for lineno, n in enumerate(f.lines()):
       if 'TODO' in n.upper():
-        print("TODO Found!")
+        print(f"TODO found in {file} at line number {lineno}. Contents: {n}")
+        todo[n] = makeFileLink(file,lineno)
+      
+for x in myFiles:
+  findTodo(x)
+
+mdDoc = f"""---
+module: [kind=articles] To-Do
+---
+List of TODO: lines in {indexedFolders}:
+"""
+
+for k,v in todo.items():
+  mdDoc += f"* [{k}]({v})\n"
+
+with open("src/main/articles/todo.md","w") as f:
+  f.write(mdDoc)

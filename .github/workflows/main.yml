@@ -19,7 +19,7 @@ jobs:
         test -d bin || mkdir bin
         test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/linux-x86-64/illuaminate
         chmod +x bin/illuaminate
-        python3 ./todo.py ${GITHUB_SHA} ${GITHUB_REF}
+        python3 ./todo.py ${GITHUB_SHA}
         bin/illuaminate doc-gen
 
     - name: Deploy
