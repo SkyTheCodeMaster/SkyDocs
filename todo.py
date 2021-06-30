@@ -13,9 +13,9 @@ print(str(lArgs))
 myFiles = []
 
 for root,dirs,files in os.walk(".",topdown=False):
-  for name in files do:
+  for name in files:
     myFiles.append(os.path.join(root,name))
-  for name in dirs do:
+  for name in dirs:
     myFiles.append(os.path.join(root,name))
 
 newFiles = []
