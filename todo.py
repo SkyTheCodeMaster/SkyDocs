@@ -29,12 +29,16 @@ def makeFileLink(file,ln):
 
 def findTodo(file):
   with open(file) as f:
-    for lineno, n in enumerate(f.lines()):
-      if 'TODO' in n.upper():
-        print(f"TODO found in {file} at line number {lineno}. Contents: {n}")
-        todo[n] = makeFileLink(file,lineno)
+    try:
+      for lineno, n in enumerate(f):
+        if 'TODO' in n.upper():
+          print(f"TODO found in {file} at line number {lineno}. Contents: {n}")
+          todo[n] = makeFileLink(file,lineno)
+    except UnicodeDecodeError:
+      pass # pass lol just don't add it if we can't decode it. ez pz lemon squeezy pcall when please?
       
 for x in myFiles:
+
   findTodo(x)
 
 mdDoc = f"""---
