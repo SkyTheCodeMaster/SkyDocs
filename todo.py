@@ -22,7 +22,7 @@ for x in indexedFolders:
 for x in myFiles:
   print(x)
 
-todo = {}
+todo = []
 
 def makeMDLink(todo,file,ln):
   return f"* [{file}:{ln}:{todo}](https://github.com/SkyTheCodeMaster/SkyDocs/blob/{sha}/{file}#L{ln})\n"
