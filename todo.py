@@ -11,22 +11,18 @@ branch = lArgs[2]
 print(str(lArgs))
 
 myFiles = []
+indexedFolders = ["src/","build/docs/lua/scripts","build/docs/lua/scriptdata"]
 
-for root,dirs,files in os.walk(".",topdown=False):
-  for name in files:
-    myFiles.append(os.path.join(root,name))
-  for name in dirs:
-    myFiles.append(os.path.join(root,name))
-
-newFiles = []
+for x in indexedFolders:
+  for root,dirs,files in os.walk(x,topdown=False):
+    for name in files:
+      myFiles.append(os.path.join(root,name))
+    for name in dirs:
+      myFiles.append(os.path.join(root,name))
 
 for x in myFiles:
-  if 'git' in x:
-    print(f'Removing {x} from todo search')
-  else:
-    print(f'Adding {x} to todo search')
-    newFiles.append(x)
-
+  print(x)
+  
 todo = []
 
 def findTodo(file):
