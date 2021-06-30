@@ -30,8 +30,8 @@
     (create Create)
     (wip WIP)
     (articles Articles)
-    (skyosevent SkyOS Events)
-    (skyoscallback SkyOS Callbacks))
+    (skyosevent "SkyOS Events")
+    (skyoscallback "SkyOS Callbacks"))
 
   (library-path
     /src/main/create/
