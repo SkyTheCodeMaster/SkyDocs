@@ -24,8 +24,8 @@ for x in myFiles:
 
 todo = {}
 
-def makeFileLink(file,ln):
-  return f"https://github.com/SkyTheCodeMaster/SkyDocs/blob/{sha}/{file}#L{ln}"
+def makeMDLink(todo,file,ln):
+  return f"* [{file}:{ln}:{todo}](https://github.com/SkyTheCodeMaster/SkyDocs/blob/{sha}/{file}#L{ln})\n"
 
 def findTodo(file):
   with open(file) as f:
@@ -33,7 +33,7 @@ def findTodo(file):
       for lineno, n in enumerate(f):
         if 'TODO' in n.upper():
           print(f"TODO found in {file} at line number {lineno}. Contents: {n}")
-          todo[n] = makeFileLink(file,lineno)
+          todo.append(makeMDLink(n,file,lineno+1))
     except UnicodeDecodeError:
       pass # pass lol just don't add it if we can't decode it. ez pz lemon squeezy pcall when please?
       
@@ -47,8 +47,8 @@ module: [kind=articles] To-Do
 List of TODO: lines in {indexedFolders}:
 """
 
-for k,v in todo.items():
-  mdDoc += f"* [{k}]({v})\n"
+for x in todo:
+  mdDoc += x
 
 with open("src/main/articles/todo.md","w") as f:
   f.write(mdDoc)
