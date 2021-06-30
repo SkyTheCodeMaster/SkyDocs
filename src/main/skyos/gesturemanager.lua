@@ -64,6 +64,7 @@ local function longPress(debug)
   end
 end
 
+-- TODO: Convert this to `pan_up`, and add `pan` event that triggers every time a `drag` happens.
 --- Run the pan manager, with an optional debug variable.
 -- @tparam[opt=false] boolean debug Whether or not debug messages are printed to the screen. Defaults to false.
 local function pan(debug)

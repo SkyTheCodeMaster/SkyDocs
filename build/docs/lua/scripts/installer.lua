@@ -1,5 +1,8 @@
 -- Copyright 2021 SkyTheCodeMaster - All Rights Reserved.
 
+-- TODO: Add async mode.
+-- TODO: Replace file print with progress bar.
+
 local expect = require("cc.expect").expect
 
 -- Parse a `requirements.json` local file, or url.

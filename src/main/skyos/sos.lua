@@ -1,6 +1,9 @@
 --- sos is a library that contains functions pertaining to SkyOS itself
 -- @module[kind=skyos] sos
 
+-- TODO: Add individual app icon drawing. Useful for the task view mode.
+-- TODO: Add desktop file verification.
+
 local expect = require("cc.expect").expect
 local sUtils = require("libraries.sUtils")
 

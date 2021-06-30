@@ -67,6 +67,7 @@ local function killCoro(coro)
   end
 end
 
+-- TODO: Make calling a custom event on a coroutine easier, possibly `coro.resume(pid,...)`?
 --- Run the coroutines. This doesn't take any parameters nor does it return any.
 local function runCoros()
   local e = {n = 0}

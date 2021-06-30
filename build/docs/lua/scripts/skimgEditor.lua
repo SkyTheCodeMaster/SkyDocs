@@ -20,6 +20,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.]]
 
+-- TODO: Add LevelOS support: Window self resizing, window size locking.
+-- TODO: Add file selection menu if no args are passed instead of printing usage.
+-- TODO: Add screen size check.
+
 -- Get all the shit for bein online
 local h,err = http.get("https://raw.githubusercontent.com/SkyTheCodeMaster/SkyDocs/fdf3d62fcbdaa39a957f7a074ebef95bff4a79a1/src/main/misc/sUtils.lua")
 if err then error("Something went wrong whilst downloading sUtils!") end

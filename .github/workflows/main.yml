@@ -20,6 +20,7 @@ jobs:
         test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/linux-x86-64/illuaminate
         chmod +x bin/illuaminate
         bin/illuaminate doc-gen
+        grep -Ri todo src/ > build/docs/lua/todo.txt
 
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v3

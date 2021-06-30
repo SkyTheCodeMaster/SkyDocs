@@ -1,6 +1,8 @@
 --- Provides a devbin api to interact with devbin without using the devbin shell command.
 -- @module[kind=misc] devbin
 
+-- TODO: Fix `put`, as it errors with `Unsupported Media Type`. Maybe set `Content-Type` in headers?
+
 local api = "https://beta.devbin.dev/api/v2/"
 
 local function extractId(paste)

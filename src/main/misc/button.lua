@@ -19,6 +19,7 @@ local function genRandID(length)
   return str
 end
 
+-- TODO: Overhaul button graphic drawing system to support redrawing at later dates.
 --[[- Create a button, and add it to the internal table of buttons.
   @tparam number x X coordinate of the button.
   @tparam number y Y coordinate of the button.
