@@ -99,3 +99,14 @@
     )
   )
 )
+(at
+  ;; Setup override for wip/old files
+  (src/src/main/skyos/file.lua 
+  src/src/main/graphic.lua 
+  src/src/main/skyos/comms.lua 
+  src/src/main/timeserver.lua 
+  src/src/main/misc/tcp.lua 
+  src/src/main/misc/skyrtle.lua
+  )
+  (linters -all)
+)

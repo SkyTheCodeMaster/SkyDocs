@@ -45,7 +45,7 @@ for i,v in enumerate(indexedFolders):
   if int(i) == (len(indexedFolders)-1):
     indexString += " and {v}"
   else:
-    indexString += "{v}, "
+    indexString += f"{v}, "
 
 
 mdDoc = f"""---
