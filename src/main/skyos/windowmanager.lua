@@ -11,7 +11,7 @@ local nextWin = 1
 
 --- Currently active widnow, index `wins` with this.
 local activeWindow = 0
--- Windows 
+--- Windows that currently exist(and are running)
 local wins = {} 
 
 --- Whether or not the top bar is open.
@@ -100,7 +100,9 @@ end
 -- @tparam table win Window, pull from `SkyOS.window.wins`.
 local function closeWindow(win)
   expect(1,win,"table")
-  local _ = win.env.SkyOS.close and win.env.SkyOS.close()
+  if win.env.SkyOS.close then
+    win.env.SkyOS.close()
+  end
   SkyOS.coro.killCoro(win.env.SkyOS.self.pid)
   wins[win.env.SkyOS.self.winid] = nil
 end
@@ -126,7 +128,7 @@ local function foreground(win)
   end
   -- Remove the old window and coro from being active
   if wins[activeWindow] then -- This only happens on first boot, but still a good check.
-    oldWin = activeWindow
+    local oldWin = activeWindow
     SkyOS.coro.activeCoros[wins[oldWin].pid] = false
     wins[oldWin].env.SkyOS.visible(false)
     wins[oldWin].self.env.term.setVisible(false) -- `term` is actually a window object, here.

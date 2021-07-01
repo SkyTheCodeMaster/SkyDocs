@@ -22,7 +22,7 @@ function graphic.drawFilledBox(nX1,nY1,nX2,nY2,nC,tOutput)
   tOutput = tOutput or term.current()
   local currentX,currentY = tOutput.getCursorPos()
   local col = to_blit[nC]
-  local w = (tonumber(nX2)-tonumber(nX1))+1
+  local w = tonumber(nX2)-tonumber(nX1)+1
   for i=tonumber(nY1),tonumber(nY2) do
     tOutput.setCursorPos(tonumber(nX1),i)
     tOutput.blit(string.rep(" ",w),string.rep(col,w),string.rep(col,w))

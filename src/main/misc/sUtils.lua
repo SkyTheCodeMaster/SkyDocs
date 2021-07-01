@@ -4,10 +4,6 @@
 local expect = require("cc.expect").expect
 local nft = require("cc.image.nft")
 
---- General functions
--- Random, useful functions
--- @section randomfunctions
-
 --- Loop through a table, and check if it contains the value specified
 -- @tparam table Table to loop through.
 -- @tparam any value Value to look for in the table.
@@ -100,16 +96,20 @@ end
 
 --- Recursively get the size of a folder.
 -- @tparam string path Path to the folder or file.
+-- @tparam[opt=false] boolean ignoreRom Whether or not to discard all entries of `rom`.
 -- @treturn number size Size of the folder or file.
-local function getSize(path)
+local function getSize(path,ignoreRom)
   expect(1,path,"string")
+  expect(2,ignoreRom,"boolean","nil")
   local size = 0
   local files = fs.list(path)
-  for i=1,#files do
-    if fs.isDir(fs.combine(path, files[i])) then
-      size = size + getSize(fs.combine(path, files[i]))
-    else
-      size = size + fs.getSize(fs.combine(path, files[i]))
+  for _,v in pairs(files) do
+    if not ignoreRom or v ~= "rom" then
+      if fs.isDir(fs.combine(path, v)) then
+        size = size + getSize(fs.combine(path, v))
+      else
+        size = size + fs.getSize(fs.combine(path, v))
+      end
     end
   end
   return size
@@ -152,9 +152,9 @@ local function generateRandom()
   --[[
     This function is not truly random. It uses a combination of math.random() and the current time to return a pseudo random number.
   ]]
-  local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * math.random(math.random(math.random(1,234),math.random(1,42345))))
+  local epoch = math.floor(os.epoch("utc") / 1000) + 3600 * math.random(math.random(math.random(1,234),math.random(1,42345)))
   local t = os.date("!*t",epoch)
-  return (t.hour * t.min * t.sec) * (t.hour + t.min + t.sec)
+  return t.hour * t.min * t.sec * (t.hour + t.min + t.sec)
 end
 
 --- Roll a dice with a specified modifier, and check if it passes the DC.
@@ -182,7 +182,7 @@ end
 local function getTime(offset)
   expect(1,offset,"number","nil")
   offset = offset or 0
-  local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * offset)
+  local epoch = math.floor(os.epoch("utc") / 1000) + 3600 * offset
   local t = os.date("!*t",epoch)
   return t
 end
@@ -210,9 +210,6 @@ local function getZeroTime(offset)
   end
   return time
 end
-
---- file oriented functions
--- @section file
 
 --- Read the contents of a file.
 -- @tparam string file Path to the file.
@@ -275,7 +272,7 @@ end
 
 --- Webquire is a `require` but for URLs
 -- @tparam string url URL to download the module from.
--- @treturn The loaded module, like what `require` would return.
+-- @return The loaded module, like what `require` would return.
 local function webquire(url)
   local content,err = hread(url)
   if not content then error("webquire: " .. err,2) end
@@ -285,7 +282,7 @@ end
 
 --- savequire uses @{sUtils.webquire|webquire} but will also save the file and use that if it's found.
 -- @tparam string url URL to download the module from.
--- @treturn The loaded module, like what `require` would return.
+-- @return The loaded module, like what `require` would return.
 local function savequire(url)
   local splitURL = split(url,"/") -- Split url to get the individual pieces, used to grab the filename.
   local name = splitURL[#splitURL]
@@ -324,9 +321,6 @@ local agreePhrases = {
   ["AFFIRMATIVE"] = true,
 }
 
---- user interaction functions
--- @section userinteraction
-
 --- Read user input, compare it to a table of agree phrases.
 -- @treturn boolean Whether or not the user agreed to the prompt.
 local function confirm(replaceChar,history,completeFn,default)
@@ -363,9 +357,6 @@ local function americanify(text,case)
     return "Oil? " .. text .. " The First Amendment."
   end
 end
-
---- Table functions
--- @section table
 
 --- Check if a value is already in a table, if not, insert it.
 -- @tparam table tbl Table to insert to.
@@ -409,6 +400,7 @@ local function shallowCopy(tbl)
   for k,v in tbl do
     newTbl[k] = v
   end
+  return newTbl
 end
 
 --- Deep copy a table, recurses to nested tables.
@@ -418,15 +410,13 @@ local function deepCopy(tbl)
   local newTbl = {}
   for k,v in tbl do
     if type(v) == "table" then
-      tbl[k] = deepCopy(v)
+      newTbl[k] = deepCopy(v)
     else
-      tbl[k] = v
+      newTbl[k] = v
     end
   end
+  return newTbl
 end
-
---- Caching section
--- @section cache
 
 --- Cache where the files are stored, it's key/value with `cache[path] = contents`.
 local cache = {}
@@ -453,9 +443,6 @@ local function reload(path)
   cache[path] = contents
   return old
 end
-
---- asset loading routines
--- @section assets
 
 --- Load an image file.
 -- @tparam string path Path to the file, supported types are ".skimg", ".skgrp", ".blit", ".nfp", and ".nft".
@@ -605,7 +592,7 @@ end
 -- @treturn table Attributes of the image.
 local function getAttributes(fileTable)
   expect(1,fileTable,"string","table")
-  local tbl = {}
+  local tbl
   if fs.exists(fileTable) then
     -- its a file, read the contents and put them into the internal table
     tbl = load(fileTable)
@@ -613,8 +600,8 @@ local function getAttributes(fileTable)
     -- it's not a file, take input and put it into the internal table
     tbl = fileTable
   end
-  if fileTable.attributes then
-    return fileTable.attributes
+  if tbl.attributes then
+    return tbl.attributes
   else
     return nil,"not found"
   end

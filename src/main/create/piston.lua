@@ -10,7 +10,7 @@ local raiseSide = "left"
 local lowerSide = "right"
 local pulseSpeed = 0.1 -- Create only allows 10 pulses per second.
 
-
+--- Piston object.
 local myPiston = {} --- @type piston
 local mt = {["__index"] = myPiston}
 
@@ -24,7 +24,7 @@ function myPiston:raise(blocks)
     endHeight = myPiston.maxHeight
   end
   local difference = endHeight - myPiston.curHeight
-  for i=1,difference do
+  for _=1,difference do
     redstone.setOutput(raiseSide,true) 
     sleep(pulseSpeed/2)
     redstone.setOutput(raiseSide,false)
@@ -42,7 +42,7 @@ function myPiston:lower(blocks)
   if endHeight < 0 then
     endHeight = 0
   end
-  for i=myPiston.curHeight,endHeight,-1 do
+  for _=myPiston.curHeight,endHeight,-1 do
     redstone.setOutput(lowerSide,true) 
     sleep(pulseSpeed/2)
     redstone.setOutput(lowerSide,false)
@@ -53,7 +53,7 @@ end
 
 --- Lower the piston to the bottom.
 function myPiston:ground()
-  for i=myPiston.curHeight,0,-1 do
+  for _=myPiston.curHeight,0,-1 do
     redstone.setOutput(lowerSide,true) 
     sleep(pulseSpeed/2)
     redstone.setOutput(lowerSide,false)
@@ -64,7 +64,7 @@ end
 
 --- Raise the piston to it's maximum extension
 function myPiston:max()
-  for i=myPiston.curHeight,myPiston.maxHeight do
+  for _=myPiston.curHeight,myPiston.maxHeight do
     redstone.setOutput(raiseSide,true) 
     sleep(pulseSpeed/2)
     redstone.setOutput(raiseSide,false)
@@ -79,7 +79,7 @@ local function create(curHeight,maxHeight)
   expect(1,curHeight,"number","nil")
   expect(2,maxHeight,"number")
   if not curHeight then
-    for i=1,50 do
+    for _=1,50 do
       redstone.setOutput(lowerSide,true) 
       sleep(pulseSpeed/2)
       redstone.setOutput(lowerSide,false)
@@ -88,7 +88,9 @@ local function create(curHeight,maxHeight)
     curHeight = 1
   end
   local piston = {
+    --- Current height of the piston, this should always match the piston in the world.
     curHeight = curHeight,
+    --- The maximum height of the piston.
     maxHeight = maxHeight,
   }
   return setmetatable(piston,mt)

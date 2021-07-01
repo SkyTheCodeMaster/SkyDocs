@@ -7,6 +7,7 @@ local function genTime()
   return str
 end
 
+--- Log object, has functions for writing to the log.
 local tbl = {} --- @type log
 local mt = {["__index"] = tbl}
 --- Save the log, writing all the written info to the file. 
@@ -45,7 +46,7 @@ local function create(file)
   local fHandle,err = fs.open(file,"w")
   if not fHandle then return nil,err end
   local tbl = {
-    fHandle = fHandle
+    fHandle = fHandle,
   }
   return setmetatable(tbl,mt)
 end

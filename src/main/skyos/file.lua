@@ -39,7 +39,7 @@ function file.loadGrpLines(path,tOutput)
   SkyOS.sLog.info("[file] loading image " .. path)
   local grpFile = fs.open(path,"r")
   
-  for i = 1,file.countLines(path),1 do
+  for _ = 1,file.countLines(path),1 do
     local grpLine = grpFile.readLine()
     local grpTable = file.split(grpLine,",")
     local operation = grpTable[1]
@@ -81,7 +81,7 @@ function file.loadAppGraphics(graphicPath,settingsPath,appName)
   end
   SkyOS.sLog.info("[info] offset " .. x .."X, " .. y "Y")
   SkyOS.sLog.info("[info] loading image")
-  for i = 1,file.countLines(graphicPath),1 do
+  for _ = 1,file.countLines(graphicPath),1 do
     local grpLine = graphicFile.readLine()
     local grpTable = file.split(grpLine,",")
     local operation = grpTable[1]
@@ -109,11 +109,12 @@ function file.loadAppGraphics(graphicPath,settingsPath,appName)
   graphicFile.close()
 end
 
+
 function file.loadApps(settingsFile)
   SkyOS.sLog.info("[info] loading all apps")
   local settings = fs.open(settingsFile,"r")
   local lines = file.countLines(settingsFile)
-  for i = 1, lines, 1 do
+  for _ = 1, lines, 1 do
     local line = settings.readLine()
     local lineTable = file.split(line,",")
     local app = lineTable[1]

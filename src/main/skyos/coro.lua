@@ -35,7 +35,7 @@ local blocked = {
   ["paste"] = true,
   ["key"] = true,
   ["key_up"] = true,
-  ["char"] = true
+  ["char"] = true,
 }
 
 --- Make a new coroutine and add it to the currently running list.
@@ -67,7 +67,6 @@ local function killCoro(coro)
   end
 end
 
--- TODO: Make calling a custom event on a coroutine easier, possibly `coro.resume(pid,...)`?
 --- Run the coroutines. This doesn't take any parameters nor does it return any.
 local function runCoros()
   local e = {n = 0}
@@ -86,7 +85,7 @@ local function runCoros()
               local traceback = debug.traceback(v.coro)
               crash(traceback,filter)
               if SkyOS then -- We be inside of SkyOS environment
-                SkyOS.displayError(v.name .. ":" .. filter .. ":" .. debug.traceback(v.coro))
+                SkyOS.displayError(v.name .. ":" .. filter .. ":" .. traceback)
               else 
                 error(filter)
               end
@@ -98,6 +97,26 @@ local function runCoros()
     e = table.pack(coroutine.yield())
   end
   running = true
+end
+
+--- Resume a coroutine with a custom event, with error handling and such.
+-- @tparam number pid Process ID of coroutine to resume.
+-- @param ... Event details to resume with.
+local function resume(pid,...)
+  if coros[pid] then
+    local ok,filter = coroutine.resume(coros[pid].coro,...)
+    if ok then
+      coros[pid].filter = filter
+    else
+      local traceback = debug.traceback(coros[pid].coro)
+      crash(traceback,filter)
+      if SkyOS then
+        SkyOS.displayError(coros[pid].name .. ":" .. filter .. ":" .. traceback)
+      else
+        error(filter)
+      end
+    end
+  end
 end
 
 --- Stop the coroutine manager, halting all threads after current loop. Note that this will not stop it immediately.
@@ -112,4 +131,5 @@ return {
   killCoro = killCoro,
   runCoros = runCoros,
   stop = stop,
+  resume = resume,
 }

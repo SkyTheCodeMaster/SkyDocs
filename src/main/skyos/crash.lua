@@ -33,7 +33,7 @@ local function genTimeString(folder,extension)
   else
     offset = 0
   end
-  local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * offset)
+  local epoch = math.floor(os.epoch("utc") / 1000) + 3600 * offset
   local t = os.date("!*t",epoch)
   local time = {
     sec = t.sec,

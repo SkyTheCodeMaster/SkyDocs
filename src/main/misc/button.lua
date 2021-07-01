@@ -10,7 +10,7 @@ local buttons = {}
 
 local function genRandID(length)
   local str = ""
-  for i=1,length do
+  for _=1,length do
     local num = math.random(48,109)
     if num >= 58 then num = num + 7 end
     if num >= 91 then num = num + 6 end
@@ -19,7 +19,6 @@ local function genRandID(length)
   return str
 end
 
--- TODO: Overhaul button graphic drawing system to support redrawing at later dates.
 --[[- Create a button, and add it to the internal table of buttons.
   @tparam number x X coordinate of the button.
   @tparam number y Y coordinate of the button.
@@ -45,16 +44,16 @@ local function newButton(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of
   if tDraw then -- If a blit table is passed, loop through it and make sure it's a valid (ish) table, and make sure it's the same height & width as the button.
     if strictImage then
       if #tDraw ~= nH then
-        error("Image must be same height as button")
+        error("Image must be same height as button",2)
       end
     end
     for i=1,#tDraw do
       if #tDraw[i][1] ~= #tDraw[i][2] or #tDraw[i][1] ~= #tDraw[i][3] then
-        error("tDraw line" .. tostring(i) .. "is not equal to other lines")
+        error("tDraw line" .. tostring(i) .. "is not equal to other lines",2)
       end
       if strictImage then
         if #tDraw[i][1] ~= nW then
-          error("Image must be same width as button")
+          error("Image must be same width as button",2)
         end
       end
     end
@@ -96,7 +95,7 @@ end
 -- @tparam string id Button to enable or disable.
 -- @tparam boolean enable Whether the button is enabled or not.
 local function enableButton(id,enable)
-  if not buttons[id] then error("Button " .. id .. " does not exist.") end
+  if not buttons[id] then error("Button " .. id .. " does not exist.",2) end
   buttons[id].enabled = enable
 end
 
@@ -105,13 +104,44 @@ end
 -- @tparam[opt] boolean drag Enable button trigger on a `mouse_drag` event. Defaults to false.
 local function executeButtons(tEvent,bDrag)
   bDrag = bDrag or false
-  if tEvent[1] == "mouse_click" or (bDrag and tEvent[1] == "mouse_drag") then
+  if tEvent[1] == "mouse_click" or bDrag and tEvent[1] == "mouse_drag" then
     local x,y = tEvent[3],tEvent[4]
-    for i,v in pairs(buttons) do
+    for _,v in pairs(buttons) do
       if v.enabled and x >= v.x and x <= v.x + v.w - 1 and y >= v.y and y <= v.y + v.h - 1 then
-        v.fFunc()
+        pcall(v.fFunc)
       end
     end
+  end
+end
+
+--- Draw a button again, drawing it's `tDraw`, or nothing if there is no image.
+-- @tparam string id Button ID to draw image of.
+local function drawButton(id)
+  if buttons[id] and buttons[id].tDraw then
+    local image = buttons[id].tDraw
+    local w,h = buttons[id].w,buttons[id].h
+    if strictImage then
+      if #image ~= h then
+        error("image must be same height as button",2)
+      end
+    end
+    for i=1,#image do
+      if #image[i][1] ~= #image[i][2] or #image[i][1] ~= #image[i][3] then
+        error("image line" .. tostring(i) .. "is not equal to other lines",2)
+      end
+      if strictImage then
+        if #image[i][1] ~= w then
+          error("Image must be same width as button",2)
+        end
+      end
+    end
+  end
+end
+
+--- Draw every button, this loops through the buttons table.
+local function drawButtons()
+  for k in pairs(buttons) do
+    drawButton(k)
   end
 end
 
@@ -125,7 +155,7 @@ end
 -- @tparam[opt] table image Table of blit lines to draw where the button is.
 local function edit(id,x,y,w,h,func,image)
   if not buttons[id] then
-    error("Button " .. id .. " does not exist.")
+    error("Button " .. id .. " does not exist.",2)
   end
   x = x or buttons[id].x
   y = y or buttons[id].y
@@ -151,4 +181,6 @@ return {
   enableButton = enableButton,
   edit = edit,
   executeButtons = executeButtons,
+  drawButton = drawButton,
+  drawButtons = drawButtons,
 }

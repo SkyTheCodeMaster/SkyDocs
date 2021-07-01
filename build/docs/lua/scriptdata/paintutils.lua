@@ -66,7 +66,7 @@ function paintutils.drawLine(startX, startY, endX, endY, colour, tOutput)
 
     local minX, maxX, minY, maxY = sortCoords(startX, startY, endX, endY)
 
-    -- TODO: clip to screen rectangle?
+    -- do to: clip to screen rectangle?
 
     local xDiff = maxX - minX
     local yDiff = maxY - minY

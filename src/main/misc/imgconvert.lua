@@ -3,7 +3,7 @@
 
 -- make attributes for skimg files, returns {x=x,y=y,creator="skimgConvert",locked=false,type=1}
 local function generateAttributes(blit)
-  local x = string.len(blit[1][1])
+  local x = #blit[1][1]
   local y = #blit
   return {x=x,y=y,creator="skimgConvert",locked=false,type=1}
 end

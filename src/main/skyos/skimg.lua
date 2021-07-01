@@ -40,7 +40,7 @@ local function load(path)
   local skimg = textutils.unserialize(f.readAll())
   f.close()
   return setmetatable(skimg,{
-    __call = function(_,...) return draw(skimg,...) end
+    __call = function(_,...) return draw(skimg,...) end,
   })
 end
 

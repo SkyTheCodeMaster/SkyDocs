@@ -13,7 +13,7 @@ local presets = {
     repo = "SkyOS",
     branch = "master",
     path = "",
-  }
+  },
 }
 
 -- file functions
@@ -78,11 +78,11 @@ local function downloadRepo(user,repo,branch,path)
   local paths = {}
   local failed = {}
 
-  for k,v in pairs(data.tree) do
+  for _,v in pairs(data.tree) do
     -- Send all HTTP requests (async)
     if v.type == "blob" then
       v.path = v.path:gsub("%s","%%20")
-      local url = "https://raw.github.com/"..user.."/"..repo.."/"..branch.."/"..v.path,fs.combine(path,v.path)
+      local url = "https://raw.github.com/"..user.."/"..repo.."/"..branch.."/"..fs.combine(path,v.path)
       http.request(url)
       paths[url] = fs.combine(path,v.path)
       filecount = filecount + 1
@@ -148,7 +148,7 @@ local function addApp(name,image,program,args,screen,x,y)
       name = name,
       image = image,
       program = program,
-      args = args
+      args = args,
     }
     encfwrite("settings/desktop.dat",desktop)
   end
@@ -221,7 +221,7 @@ local function genTimeString()
   else
     offset = 0
   end
-  local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * offset)
+  local epoch = math.floor(os.epoch("utc") / 1000) + 3600 * offset
   local t = os.date("!*t",epoch)
   local time = {
     sec = t.sec,
@@ -260,7 +260,7 @@ local function screenshot()
     y=y,
     creator=creator,
     locked=false,
-    type=1
+    type=1,
   }
   local skimg = {attributes=attributes,data=data}
   local filepath = genTimeString()
@@ -279,5 +279,5 @@ return {
     editApp = editApp,
     deleteApp = deleteApp,
     drawApps = drawApps,
-  }
+  },
 }

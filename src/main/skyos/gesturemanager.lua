@@ -1,7 +1,7 @@
 --- Takes `mouse_click` and `mouse_drag` events and converts them into a `swipe` event.
 -- @module[kind=skyos] swipeman
 
-local coro = require("libraries.coro")
+local coro = dofile("libraries/coro.lua")
 
 --- How long (in milliseconds) a tap must be help for to qualify as a "long press".
 local pressDelay = SkyOS.settings.longPressDelay or 1000 -- Default 1000 milliseconds for long press
@@ -24,7 +24,7 @@ local function swipe(debug)
       local event = os.pullEvent() -- Apparently theres also a `mouse_drag` queued in the same cell as the `mouse_click`. Bruh.
       if event == "mouse_drag" then
         local e2 = {os.pullEvent()}
-        if e1[1] == "mouse_click" and e2[1] == "mouse_drag" then -- We gots a swipe!
+        if e1[1] == "mouse_click" and e2[1] == "mouse_drag" and e1[2] == e2[2] then -- We gots a swipe!
           -- Calculate vectors
           local start = vector.new(e1[3],e1[4])
           local swipeEnd = vector.new(e2[3],e2[4])
@@ -64,10 +64,38 @@ local function longPress(debug)
   end
 end
 
--- TODO: Convert this to `pan_up`, and add `pan` event that triggers every time a `drag` happens.
---- Run the pan manager, with an optional debug variable.
+--- Run the `pan` event, which is triggered when the user is dragging on the screen.
 -- @tparam[opt=false] boolean debug Whether or not debug messages are printed to the screen. Defaults to false.
 local function pan(debug)
+  debug = debug or false
+  while true do
+    local _,cm,cx,cy = os.pullEvent("mouse_drag")
+    local _,m,x,y = os.pullEvent("mouse_drag")
+    if cm == m then
+      -- Calculate vectors
+      local vStart = vector.new(cx,cy)
+      local vEnd = vector.new(x,y)
+      local vNormal = (vEnd-vStart):normalize()
+      if debug then
+        print("drag1",cx,cy)
+        print("drag2",x,y)
+        print("normal",vNormal.x,vNormal.y)
+      end
+      local strDirection = swipeDirections[vNormal.x][vNormal.y]
+      if debug then
+        print("swipe",strDirection)
+      end
+      if strDirection and strDirection ~= "unknown" then
+        os.queueEvent("pan",strDirection)
+      end
+    end
+  end
+end
+
+-- TODO: Convert this to `pan_up`, and add `pan` event that triggers every time a `drag` happens.
+--- Run the pan_up manager, which is triggered when a pan event stops happening, and includes the total distance moved with an optional debug variable.
+-- @tparam[opt=false] boolean debug Whether or not debug messages are printed to the screen. Defaults to false.
+local function pan_up(debug)
   debug = debug or false
   while true do
     local _,cm,cx,cy = os.pullEvent("mouse_click")
@@ -78,7 +106,7 @@ local function pan(debug)
       -- Now calculate the difference
       local difX,difY = x-cx,y-cy
       if debug then print("pan",m,difX,difY) end
-      os.queueEvent("pan",m,difX,difY)
+      os.queueEvent("pan_up",m,difX,difY)
     end
   end
 end
@@ -88,6 +116,7 @@ local function run()
   coro.newCoro(swipe,"Swipe Manager",nil,nil,true)
   coro.newCoro(longPress,"Long Press",nil,nil,true)
   coro.newCoro(pan,"Pan Manager",nil,nil,true)
+  coro.newCoro(pan_up,"Pan Up Manager",nil,nil,true)
   coro.runCoros()
 end
 
@@ -103,5 +132,6 @@ return {
   stop = stop,
   swipe = swipe,
   longPress = longPress,
-  pan = pan
+  pan = pan,
+  pan_up = pan_up,
 }

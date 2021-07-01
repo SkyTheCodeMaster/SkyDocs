@@ -22,7 +22,8 @@
 
     (styles src/web/styles.css)
     ;;(scripts build/rollup/index.js)
-    (head doc/head.html))
+    (head doc/head.html)
+  )
 
   (module-kinds
     (skyos SkyOS)
@@ -31,7 +32,8 @@
     (wip WIP)
     (articles Articles)
     (skyosevent "SkyOS Events")
-    (skyoscallback "SkyOS Callbacks"))
+    (skyoscallback "SkyOS Callbacks")
+  )
 
   (library-path
     /src/main/create/
@@ -39,23 +41,61 @@
     /src/main/misc/
     /src/main/articles/
     /src/main/skyos-events/
-    /src/main/skyos-callbacks/))
+    /src/main/skyos-callbacks/
+  )
+)
 
 (at /
   (linters
-    syntax:string-index)
+    -syntax:string-index
+    -format:separator-space
+    -format:bracket-space
+  )
   (lint
     (bracket-spaces
       (call no-space)
       (function-args no-space)
       (parens no-space)
       (table space)
-      (index no-space))
+      (index no-space)
+    )
 
     (globals
       :max
       _CC_DEFAULT_SETTINGS
       _CC_DISABLE_LUA51_FEATURES
-      ;; Ideally we'd pick these up from bios.lua, but illuaminate currently
-      ;; isn't smart enough.
-      sleep write printError read rs)))
+      sleep 
+      write 
+      printError 
+      read 
+      rs 
+      SkyOS
+      colors
+      colours
+      commands
+      disk
+      fs
+      gps
+      help
+      http
+      io
+      keys
+      multishell
+      os 
+      paintutils
+      parallel
+      peripheral
+      pocket
+      rednet
+      redstone
+      settings 
+      shell
+      term
+      textutils
+      turtle
+      vector
+      window
+      _HOST
+    )
+  )
+)

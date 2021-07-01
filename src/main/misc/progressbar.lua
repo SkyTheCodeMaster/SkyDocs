@@ -51,31 +51,35 @@ local function dfb(x,y,w,h,col,tOutput)
   -- Pretty simple, just fills in the space
   for o = y,h do
     tOutput.setCursorPos(x,o)
-    tOutput.blit((" "):rep(width),("f"):rep(width),(colours.toBlit(col)):rep(width))
+    tOutput.blit((" "):rep(width),("f"):rep(width),colours.toBlit(col):rep(width))
   end
   restore(tbl)
 end
 
 local function update(bar,percent)
+  expect(1,bar,"table")
+  expect(2,percent,"number")
   -- Calculate pixel requirements
   if percent > 100 then percent = 100 end
-  local pixels = math.floor((percent / (100 / bar.w)) + 0.5) -- The math.floor + 0.5 acts as a rounding function.
+  local pixels = math.floor(percent / (100 / bar.w) + 0.5) -- The math.floor + 0.5 acts as a rounding function.
   -- percent / (100 / barWidth) calculates how many pixels should be filled in the bar
-  dfb(bar.x,bar.y,(bar.x+bar.w-1),(bar.y+bar.h-1),bar.bg,bar.terminal)
+  dfb(bar.x,bar.y,bar.x+bar.w-1,bar.y+bar.h-1,bar.bg,bar.terminal)
   if pixels ~= 0 then
-    dfb(bar.x,bar.y,(bar.x+pixels-1),(bar.y+bar.h-1),bar.fg,bar.terminal)
+    dfb(bar.x,bar.y,bar.x+pixels-1,bar.y+bar.h-1,bar.fg,bar.terminal)
   end
   return percent
 end
 
+--- The progress bar object itself. Returns by @{create}
 local bar = {} --- @type bar
 local mt = {
-  __index = bar
+  __index = bar,
 }
 
 --- Update the bar to a percentage from 0 to 100.
 -- @tparam number percent Percentage of how full the bar is.
 function bar:update(percent)
+  expect(1,percent,"number")
   self.fill = update(self,percent)
 end
 
@@ -94,6 +98,14 @@ end
 -- @tparam[opt] number fill The pre filled portion of the bar. Defaults to 0.
 -- @tparam[opt] table terminal The terminal to draw the bar on. Defaults to `term.current()`.
 local function create(x,y,w,h,fg,bg,fill,terminal)
+  expect(1,x,"number")
+  expect(2,y,"number")
+  expect(3,w,"number")
+  expect(4,h,"number")
+  expect(5,fg,"number")
+  expect(6,bg,"number")
+  expect(7,fill,"number","nil")
+  expect(8,terminal,"table","nil")
   fill = fill or 0
   terminal = terminal or term.current()
   local bar = {

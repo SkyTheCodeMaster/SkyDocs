@@ -40,7 +40,7 @@ local function shiftLetter(letter,modifier)
   -- Add the modifier to the letter index
   local newIndex = letterIndex + modifier
   -- Return the index, between 1 and 26
-  return letterTable[(newIndex % 26)]
+  return letterTable[newIndex % 26]
 end
 
 --- Run a Caesar Cipher on the provided string. (https://en.wikipedia.org/wiki/Caesar_cipher)
@@ -114,7 +114,7 @@ local function viginere(input,key)
       local inLet = inputNumbers[i]-1
       local keyLet = keyNumbers[i]-1
       local outNum = inLet + keyLet
-      local outLet = letterTable[(outNum % 26)+1]
+      local outLet = letterTable[outNum % 26+1]
       table.insert(combined,outLet)
     end
   end
@@ -160,7 +160,7 @@ local function viginerDecode(input,key)
       local keyLet = keyNumbers[i]-1
       local outNum = inLet - keyLet
       if outNum < 0 then outNum = outNum + 26 end
-      local outLet = letterTable[(outNum % 26)+1]
+      local outLet = letterTable[outNum % 26+1]
       table.insert(combined,outLet)
     end
     -- Combined string
@@ -170,7 +170,7 @@ end
 
 --- Run a ROT13 cipher on the input. (https://en.wikipedia.org/wiki/ROT13)
 -- @tparam string input The string to cipher.
--- @tparam output The ciphered string. 
+-- @tparam string The ciphered string. 
 local function rot13(input)
   return caesar(input,13)
 end

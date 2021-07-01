@@ -61,8 +61,8 @@ local function put(sText, sName)
     title=sName,
     syntax="lua",
     exposure="Public",
-    content="sText",
-    asGuest=true
+    content=sText,
+    asGuest=true,
   })
   local response = http.post(
     api .. "create?token=" .. key,

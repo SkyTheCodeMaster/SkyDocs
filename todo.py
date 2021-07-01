@@ -38,13 +38,20 @@ def findTodo(file):
       pass # pass lol just don't add it if we can't decode it. ez pz lemon squeezy pcall when please?
       
 for x in myFiles:
-
   findTodo(x)
+
+indexString = ""
+for i,v in enumerate(indexedFolders):
+  if int(i) == (len(indexedFolders)-1):
+    indexString += " and {v}"
+  else:
+    indexString += "{v}, "
+
 
 mdDoc = f"""---
 module: [kind=articles] To-Do
 ---
-List of TODO: lines in {indexedFolders}:
+List of TODO: lines in {indexString}:
 """
 
 for x in todo:

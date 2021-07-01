@@ -21,7 +21,7 @@ local ts = {}
 -- @treturn table Table containing: [1] contents of os.date() with the offset, [2] string with HH:MM, [3] string with HH:MM:SS.
 function ts.get(offset)
   if not SkyOS.settings.timeServerEnabled or not modem then
-    local epoch = math.floor(os.epoch("utc") / 1000) + (3600 * SkyOS.settings.timeZone) 
+    local epoch = math.floor(os.epoch("utc") / 1000) + 3600 * SkyOS.settings.timezone
     local t = os.date("!*t", epoch)
     return {t,tostring(t.hour) .. ":" .. tostring(t.min) .. ":" .. tostring(t.sec),tostring(t.hour) .. ":" .. tostring(t.min)}
   end
