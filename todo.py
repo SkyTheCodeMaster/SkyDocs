@@ -43,7 +43,7 @@ for x in myFiles:
 indexString = ""
 for i,v in enumerate(indexedFolders):
   if int(i) == (len(indexedFolders)-1):
-    indexString += " and {v}"
+    indexString += f" and {v}"
   else:
     indexString += f"{v}, "
 
