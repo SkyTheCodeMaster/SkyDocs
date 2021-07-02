@@ -34,19 +34,10 @@ local function makeProgramEnv(custEnv,win)
   myEnv["term"]["current"] = function() return win end
   myEnv["SkyOS"]["self"] = {win = win}
   myEnv["SkyOS"]["close"] = function() end
-  myEnv["SkyOS"]["visible"] = function(isVisible) end
+  myEnv["SkyOS"]["visible"] = function(isVisible) return isVisible end
   myEnv["SkyOS"]["back"] = function() end
   myEnv["require"],myEnv["package"] = make_package(myEnv,"/")
   return myEnv
-end
-
---- Set a window (and it's coroutine) to an active or inactive state. This is typically an internal use function, but is available in case it needs to be used.
--- @tparam number id Window to change state.
--- @tparam boolean active Active or deactive.
-local function setActive(id,active)
-  if active then
-    local lastActiveCoro = wins[activeWindow].pid
-  end
 end
 
 --- Create a new window with a function to run 

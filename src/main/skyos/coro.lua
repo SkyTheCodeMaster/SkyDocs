@@ -2,7 +2,7 @@
 -- @module[kind=skyos] coro
 
 local ok,crash = pcall(require,"libraries.crash") -- Crash reporting!
-if not ok then crash = function(x,y) end end -- Override crash function if crash library is not available/is errored
+if not ok then crash = function(x,y) return y,x end end -- Override crash function if crash library is not available/is errored
 
 -- Localize coroutine library, because it gets used quite a bit, surprisingly.
 local coroutine = coroutine

@@ -43,9 +43,9 @@ for x in myFiles:
 indexString = ""
 for i,v in enumerate(indexedFolders):
   if int(i) == (len(indexedFolders)-1):
-    indexString += f" and {v}"
+    indexString += f" and `{v}`"
   else:
-    indexString += f"{v}, "
+    indexString += f"`{v}`, "
 
 
 mdDoc = f"""---

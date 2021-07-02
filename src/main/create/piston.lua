@@ -19,7 +19,8 @@ local mt = {["__index"] = myPiston}
 function myPiston:raise(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
-  local endHeight = math.abs(blocks) + myPiston.curHeight
+  --- Current height of the piston, this should always match the piston in the world.
+  local endHeight = math.abs(blocks) + self.curHeight
   if endHeight > myPiston.maxHeight then
     endHeight = myPiston.maxHeight
   end
@@ -38,7 +39,8 @@ end
 function myPiston:lower(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
-  local endHeight = myPiston.curHeight - math.abs(blocks)
+  --- Current height of the piston, this should always match the piston in the world.
+  local endHeight = self.curHeight - math.abs(blocks)
   if endHeight < 0 then
     endHeight = 0
   end
@@ -59,6 +61,7 @@ function myPiston:ground()
     redstone.setOutput(lowerSide,false)
     sleep(pulseSpeed/2)
   end
+  --- Current height of the piston, this should always match the piston in the world.
   myPiston.curHeight = 0
 end
 

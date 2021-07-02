@@ -21,7 +21,6 @@ jobs:
         chmod +x bin/illuaminate
         
     - name: Lint Lua code
-      continue-on-error: true
       run: |
         bin/illuaminate lint
 

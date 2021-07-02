@@ -1,5 +1,5 @@
 ---
-module: [kind=skyosevent] pan
+module: [kind=skyosevent] pan_up
 ---
 This event is called when the user clicks and drags on the screen.
 ## **Return Values**
