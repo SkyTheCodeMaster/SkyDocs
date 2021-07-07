@@ -33,7 +33,6 @@ jobs:
         force_orphan: true
         commit_message: Build for
 
-  build:
     name: Illuaminate Lint
     runs-on: ubuntu-latest
 
