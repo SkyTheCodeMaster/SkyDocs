@@ -1,4 +1,4 @@
-name: Illuamint Lint
+name: Github Pages
 
 on:
   push:
