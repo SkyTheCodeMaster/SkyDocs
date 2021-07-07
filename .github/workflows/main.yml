@@ -13,7 +13,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: leafo/gh-actions-lua@v8.0.0
-    
+
     - name: Setup illuaminate
       run: |
         test -d bin || mkdir bin
@@ -32,18 +32,4 @@ jobs:
         publish_dir: ./build/docs/lua
         force_orphan: true
         commit_message: Build for
-
-  build:
-    name: Illuaminate Lint
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Setup illuaminate
-      run: |
-        test -d bin || mkdir bin
-        test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/linux-x86-64/illuaminate
-        chmod +x bin/illuaminate
         
-    - name: Lint Lua code
-      run: |
-        bin/illuaminate lint
