@@ -1,5 +1,6 @@
 --- The graphic library is a wrapper around paintutils.
 -- @module[kind=skyos] graphic
+-- @deprecated use blit.
 
 local graphic = {}
  

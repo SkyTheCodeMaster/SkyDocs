@@ -595,6 +595,7 @@ end
 -- THIS FILETYPE IS DEPRECATED, DO NOT USE. (not documented)
 --- Draw the given `skgrp` file.
 -- @tparam table Table of instructions to draw.
+-- @deprecated Use @{load}
 local function drawSkgrp(tbl)
   expect(1,tbl,"table")
   for i=1,#tbl do

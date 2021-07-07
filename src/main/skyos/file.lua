@@ -1,6 +1,7 @@
 --[[-
   The file library is a deprecated library that loaded `.skgrp` files, it has been assimilated into sUtils
   @module[kind=skyos] file
+  @deprecated Use sUtils.
 ]]
 
 local file = {}
