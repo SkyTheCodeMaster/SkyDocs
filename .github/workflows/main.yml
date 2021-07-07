@@ -32,4 +32,3 @@ jobs:
         publish_dir: ./build/docs/lua
         force_orphan: true
         commit_message: Build for
-        

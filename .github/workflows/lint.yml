@@ -19,4 +19,3 @@ on:
     - name: Lint Lua code
       run: |
         bin/illuaminate lint
-        
