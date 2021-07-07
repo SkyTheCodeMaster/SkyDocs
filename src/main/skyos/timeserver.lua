@@ -2,8 +2,6 @@
 -- This API was just a test of how modems worked, it really should not be used.
 -- @module[kind=skyos] timeserver
 
--- TODO: Locate the timeserver server side script and upload it into `build/docs/lua/scripts`?
-
 local modem = peripheral.find("modem")
 
 --- channel that requests to the timeserver are sent on

@@ -1,5 +1,5 @@
---- Takes `mouse_click` and `mouse_drag` events and converts them into a `swipe` event.
--- @module[kind=skyos] swipeman
+--- Takes various mouse events, and converts them into other events, such as long press, pan, and swipe.
+-- @module[kind=skyos] gestures
 
 local coro = dofile("libraries/coro.lua")
 
@@ -92,7 +92,6 @@ local function pan(debug)
   end
 end
 
--- TODO: Convert this to `pan_up`, and add `pan` event that triggers every time a `drag` happens.
 --- Run the pan_up manager, which is triggered when a pan event stops happening, and includes the total distance moved with an optional debug variable.
 -- @tparam[opt=false] boolean debug Whether or not debug messages are printed to the screen. Defaults to false.
 local function pan_up(debug)

@@ -74,7 +74,6 @@ local function newButton(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of
   if tDraw then -- If a blit table is passed, loop through it and draw it.
     for i=1,#tDraw do
       local frame = tDraw[i]
-      term.setCursorPos(nX,nY+i)
       term.blit(frame[1],frame[2],frame[3])
     end
   term.setCursorPos(mX,mY)
@@ -86,6 +85,7 @@ end
 --- Remove a button from being clicked.
 -- @tparam string id button id to remove.
 local function deleteButton(id) -- This doesn't remove the image if any!
+  expect(1,id,"string","nil")
   if buttons[id] then
     buttons[id] = nil
   end
@@ -95,6 +95,8 @@ end
 -- @tparam string id Button to enable or disable.
 -- @tparam boolean enable Whether the button is enabled or not.
 local function enableButton(id,enable)
+  expect(1,id,"string")
+  expect(2,enable,"boolean")
   if not buttons[id] then error("Button " .. id .. " does not exist.",2) end
   buttons[id].enabled = enable
 end
@@ -102,9 +104,13 @@ end
 --- Takes an event in a table, checks if it's a `mouse_click` or `mouse_drag`, and sees if it's within a button, if so, execute it's function.
 -- @tparam table event Event table to check for `mouse_click` or `mouse_drag`.
 -- @tparam[opt] boolean drag Enable button trigger on a `mouse_drag` event. Defaults to false.
-local function executeButtons(tEvent,bDrag)
+local function executeButtons(tEvent,bDrag,bMonitor)
+  expect(1,tEvent,"table")
+  expect(2,bDrag,"boolean","nil")
+  expect(3,bMonitor,"boolean","nil")
   bDrag = bDrag or false
-  if tEvent[1] == "mouse_click" or bDrag and tEvent[1] == "mouse_drag" then
+  bMonitor = bMonitor or false
+  if tEvent[1] == "mouse_click" or bDrag and tEvent[1] == "mouse_drag" or bMonitor and tEvent[2] == "monitor_touch" then
     local x,y = tEvent[3],tEvent[4]
     for _,v in pairs(buttons) do
       if v.enabled and x >= v.x and x <= v.x + v.w - 1 and y >= v.y and y <= v.y + v.h - 1 then
@@ -117,9 +123,10 @@ end
 --- Draw a button again, drawing it's `tDraw`, or nothing if there is no image.
 -- @tparam string id Button ID to draw image of.
 local function drawButton(id)
+  expect(1,id,"string")
   if buttons[id] and buttons[id].tDraw then
     local image = buttons[id].tDraw
-    local w,h = buttons[id].w,buttons[id].h
+    local x,y,w,h = buttons[id].x,buttons[id].y,buttons[id].w,buttons[id].h
     if strictImage then
       if #image ~= h then
         error("image must be same height as button",2)
@@ -134,6 +141,15 @@ local function drawButton(id)
           error("Image must be same width as button",2)
         end
       end
+    end
+    local mX,mY = term.getCursorPos()
+    if image then -- If a blit table is passed, loop through it and draw it.
+      for i=1,image do
+        local frame = image[i]
+        term.setCursorPos(x,y+i-1)
+        term.blit(frame[1],frame[2],frame[3])
+      end
+    term.setCursorPos(mX,mY)
     end
   end
 end
@@ -154,6 +170,13 @@ end
 -- @tparam[opt] function func Function to execute when the button is clicked.
 -- @tparam[opt] table image Table of blit lines to draw where the button is.
 local function edit(id,x,y,w,h,func,image)
+  expect(1,id,"string")
+  expect(2,x,"number","nil")
+  expect(3,y,"number","nil")
+  expect(4,w,"number","nil")
+  expect(5,h,"number","nil")
+  expect(6,func"function","nil")
+  expect(7,image,"table","nil")
   if not buttons[id] then
     error("Button " .. id .. " does not exist.",2)
   end

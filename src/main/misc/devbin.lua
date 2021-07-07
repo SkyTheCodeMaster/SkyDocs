@@ -1,8 +1,6 @@
 --- Provides a devbin api to interact with devbin without using the devbin shell command.
 -- @module[kind=misc] devbin
 
--- TODO: Fix `put`, as it errors with `Unsupported Media Type`. Maybe set `Content-Type` in headers?
-
 local api = "https://beta.devbin.dev/api/v2/"
 
 local function extractId(paste)
@@ -64,20 +62,23 @@ local function put(sText, sName)
     content=sText,
     asGuest=true,
   })
-  local response = http.post(
+  local response,err = http.post(
     api .. "create?token=" .. key,
-    body
+    body,
+    {
+      ["Content-Type"]="application/json",
+    }
   )
 
   if response then
 
-    local sResponse = response.readAll()
+    local sResponse = textutils.unserializeJSON(response.readAll())
     response.close()
 
-    local sCode = string.match(sResponse, "[^/]+$")
+    local sCode = sResponse.id
     return sCode
   else
-    return nil
+    return nil,err
   end
 end
 

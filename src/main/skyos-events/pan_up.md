@@ -1,7 +1,7 @@
 ---
 module: [kind=skyosevent] pan_up
 ---
-This event is called when the user clicks and drags on the screen.
+This event is called when @{pan} event ends, and the mouse button is lifted.
 ## **Return Values**
 1. @{string}: The event name.
 2. @{number}: The mouse button that was clicked.
