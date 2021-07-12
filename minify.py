@@ -1,5 +1,7 @@
 # Runs through `src/` and minifies every lua file, dumping it into `build/docs/lua/minified/<name>.lua`
 
+print("-----START MINIFY.PY-----")
+
 import os,subprocess,sys
 
 indexedFolders = ['src'] # This is recursive!
@@ -21,3 +23,5 @@ print("Minifying and writing to `build/docs/lua/minified/`")
 for x in myFiles:
   print(f"minify: {x['name']}")
   subprocess.run(f"bin/illuaminate minify {x['path']} > build/docs/lua/minified/{x['name']}",shell=True)
+
+print("-----END MINIFY.PY-----")

@@ -2,6 +2,8 @@
 # Old todo command:
 #grep -Rni todo src/ build/docs/lua/scripts build/docs/lua/scriptdata > build/docs/lua/todo.txt
 
+print("-----START TODO.PY-----")
+
 import os
 import sys
 
@@ -59,3 +61,5 @@ for x in todo:
 
 with open("src/main/articles/todo.md","w") as f:
   f.write(mdDoc)
+
+print("-----END TODO.PY-----")
