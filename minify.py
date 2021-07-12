@@ -24,4 +24,29 @@ for x in myFiles:
   print(f"minify: {x['name']}")
   subprocess.run(f"bin/illuaminate minify {x['path']} > build/docs/lua/minified/{x['name']}",shell=True)
 
+html = """<html>
+  <head>
+    <title>Minified APIs</title>
+    <meta property="og:title" content="Minified APIs">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://skydocs.madefor.cc/minified/">
+    <meta property="og:description" content="All of the APIs on SkyDocs, but in a minified format.">
+    <meta name=theme-color" content="#57A64E">
+  </head>
+  <body>
+    <h1>Minified APIs</h1>
+    <p>These are all the various APIs stored on SkyDocs, but in a minified format, for compact systems.</p>
+    <ul>
+"""
+
+for x in myFiles:
+  html += f'      <li><a href="https://skydocs.madefor.cc/minified/{x["name"]}">{x["name"]}</a></li>\n'
+
+html += """    </ul>
+  </body>
+</html>"""
+
+with open("build/docs/lua/minified/index.html","w") as f:
+  f.write(html)
+
 print("-----END MINIFY.PY-----")
