@@ -1,4 +1,4 @@
---- This is just the `skimg` parts of {@sUtils}, to load a little quicker when starting SkyOS and displaying images.
+--- This is just the `skimg` parts of @{sUtils}, to load a little quicker when starting SkyOS and displaying images.
 -- @module[kind=skyos] skimg
 
 local expect = require("cc.expect").expect

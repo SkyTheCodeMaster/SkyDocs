@@ -487,10 +487,10 @@ end
 --[[- Draw an image produced by @{load}.
 @param image Image to draw.
 @tparam {format? = string, x? = number, y? = number} opts Options for picture drawing.
-@tparam[opt] table tOutput Terminal to draw to. Has different requirements based on image type. Defaults to `term.current()`
  - `format`: Format to draw image as, if unpassed will try to figure out the image type.
  - `x`: X position to draw image at. Defaults to 1.
  - `y`: Y position to draw image at. Defaults to 1.
+@tparam[opt] table tOutput Terminal to draw to. Has different requirements based on image type. Defaults to `term.current()`
 ]] 
 local function draw(image,options,tOutput)
   expect(1,image,"string","table")
