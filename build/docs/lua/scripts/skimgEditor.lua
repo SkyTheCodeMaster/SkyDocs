@@ -20,16 +20,18 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.]]
 
--- TODO: Add LevelOS support: Window self resizing, window size locking.
--- TODO: Add file selection menu if no args are passed instead of printing usage.
--- TODO: Add screen size check.
+-- TODO: Skimg type 2 support.
+-- Add `<-+>` buttons somewhere to: move to last frame, remove frame, add frame, move to next frame.
+-- The remove frame should be pressed twice w/ a timeout, and the add frame should have the following logic:
+-- If we're on the *last* frame, insert a frame *to the right*.
+-- If we're *not* on the last frame, insert a frame *to the left*.
 
 -- Get all the shit for bein online
 local h,err = http.get("https://raw.githubusercontent.com/SkyTheCodeMaster/SkyDocs/fdf3d62fcbdaa39a957f7a074ebef95bff4a79a1/src/main/misc/sUtils.lua")
 if err then error("Something went wrong whilst downloading sUtils!") end
 local content = h.readAll() h.close()
 local sUtils = load(content,"=prewebquire-package","t",_ENV)()
-local button = sUtils.webquire("https://raw.githubusercontent.com/SkyTheCodeMaster/SkyDocs/ddec75606d183c743c9a92bd08d28b60f8caae3a/src/main/misc/button.lua")
+local button = sUtils.webquire("https://raw.githubusercontent.com/SkyTheCodeMaster/SkyDocs/1714829ffc81436de59ba1c9708dd0546bcbb972/src/main/misc/button.lua")
 local paintutils = sUtils.webquire("https://skydocs.madefor.cc/scriptdata/paintutils.lua") -- paintutils is always online :D
 
 --[[
@@ -105,10 +107,9 @@ local assets = {
     {"                  ","                  ","777777777777777777",6},
   },
   fileMenu = {
-    {"Redraw","000000","777777",1},
-    {"Resize","000000","777777",2},
-    {"Save  ","000000","777777",3},
-    {"Exit  ","000000","777777",4},
+    {"Resize","000000","777777",1},
+    {"Save  ","000000","777777",2},
+    {"Exit  ","000000","777777",3},
   },
   characters = {
     attributes = {
@@ -138,12 +139,15 @@ local assets = {
   },
 }
 
+local save
+
 local function pullEvent(filter)
   local event = {os.pullEventRaw()}
   if event[1] == "terminate" then
     term.clear()
     term.setCursorPos(1,1)
-    error("Program closed")
+    save()
+    error("Program closed",0)
   elseif event[1] == filter then
     return table.unpack(event)
   end
@@ -155,22 +159,99 @@ local function promptPrint(str)
   term.setTextColour(data.textColour)
 end
 
-local function boolX(bool)
-  if bool then return "X" else return " " end
+local file
+
+local function fileSelection(path)
+  local running = true
+  local w,h = term.getSize()
+  local selectedLine = 0
+  local files = fs.list(path)
+  local longest = 0 -- Purely used for LevelOS integration
+  for i=#files,1,-1 do
+    if files[i] == "rom" then table.remove(files,i) end
+    if not fs.isDir(files[i]) and sUtils.split(files[i],".")[2] ~= "skimg" then table.remove(files,i) end
+    if files[i] and #files[i] > longest then longest = #files[i] end
+  end
+  -- LevelOS shit
+  if LevelOS then -- LevelOS is a global, so this will work.
+    local x,y = LevelOS.self.window.win.getPosition()
+    LevelOS.self.window.win.reposition(x,y,longest,#files+2)
+    LevelOS.self.window.resizable = false
+    LevelOS.self.window.title = "Skimg Editor: File Selection"
+  elseif lOS then -- When run from shell, LevelOS isn't available.
+    local id = #lOS.wins
+    local x,y = lOS.wins[id].win.getPosition()
+    lOS.wins[id].win.reposition(x,y,longest,#files+2)
+    lOS.wins[id].resizable = false
+    lOS.wins[id].title = "Skimg Editor: File Selection"
+  end
+  term.setBackgroundColour(colours.blue)
+  term.clear()
+  term.setCursorPos(1,h)
+  term.setBackgroundColour(colours.blue)
+  term.setTextColour(colours.white)
+  term.write("Back")
+  term.setCursorPos(w-4,h)
+  term.write("Exit")
+  for i,v in ipairs(files) do
+    term.setCursorPos(2,i+1)
+    term.setBackgroundColour(colours.lightGrey)
+    term.setTextColour(colours.white)
+    term.write(sUtils.cut(v,w-2))
+  end
+  local fileButton
+  local backButton = button.newButton(1,h,4,1,function() 
+    local path = sUtils.split(path,"/") 
+    table.remove(path) 
+    if not path[1] then path = {"."} end 
+    button.deleteButton(fileButton) 
+    fileSelection(table.concat(path,"/")) 
+  end)
+  local exitButton = button.newButton(w-4,h,4,1,function() term.setBackgroundColour(colours.black) term.clear() running = false error("",0) end)
+  fileButton = button.newButton(2,2,w-1,#files,function(x,y)
+    if selectedLine == y then
+      file = fs.combine(path,files[y]) -- add folder check.
+      if fs.isDir(file) then
+        button.deleteButton(fileButton)
+        fileSelection(fs.combine(path,file))
+      end
+      running = false
+    elseif y <= #files then
+      for i,v in pairs(files) do
+        term.setCursorPos(2,i+1)
+        term.setBackgroundColour(colours.lightGrey)
+        term.setTextColour(colours.white)
+        term.write(sUtils.cut(v,w-2))
+      end
+      selectedLine = y
+      term.setCursorPos(1,y+1)
+      local text = " " .. sUtils.cut(files[y],w-2) .. " "
+      local fg = "b" .. string.rep("0",w-2) .. "b"
+      local bg = "b" .. string.rep("7",w-2) .. "b"
+      term.blit(text,fg,bg)
+    end
+  end)
+  while running do
+    button.executeButtons({os.pullEvent()},false,false)
+  end
+  button.deleteButton(fileButton)
+  button.deleteButton(backButton)
+  button.deleteButton(exitButton)
 end
 
 local tArgs = {...}
-local file = tArgs[1]
-if not file then error("\nUsage:\n" .. shell.getRunningProgram() .. " <file.skimg>") end
+file = file or tArgs[1]
+if not file then fileSelection(".") end
 local fileExtension = sUtils.split(fs.getName(file),".")[2]
-if fileExtension ~= "skimg" then error("File must be a \".skimg\" file!") end
+if fileExtension ~= "skimg" then error("File must be a \".skimg\" file!",0) end
 
 term.setTextColour(data.textColour)
 term.setBackgroundColour(data.bgColour)
 term.clear()
 
 -- if file doesn't exist, run through creating the file.
-if not fs.exists(tArgs[1]) then
+if not fs.exists(file) then
+  term.setCursorPos(1,1)
   promptPrint("File not found, do you want to create it?")
   term.setTextColour(data.textColour)
   local accept = sUtils.confirm()
@@ -194,6 +275,29 @@ end
 local image = sUtils.asset.load(file)
 local imageAttributes = image.attributes
 local canvasX,canvasY = imageAttributes.width,imageAttributes.height
+
+-- LevelOS shit
+if LevelOS then -- LevelOS is a global, so this will work.
+  local x,y = LevelOS.self.window.win.getPosition()
+  -- Width: Canvas (canvasX) + border (2) + Characters win (17) + Menu (6) = canvasX + 25
+  -- Height: canvasY+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = canvasY+2 or 24
+  local w = canvasX+26
+  local h = canvasY+2 > 24 and canvasY+2 or 24 -- 24 is the height of the characters n shit
+  LevelOS.self.window.win.reposition(x,y,w,h)
+  LevelOS.self.window.resizable = false
+  LevelOS.self.window.title = "Skimg Editor: " .. file
+elseif lOS then -- When run from shell, LevelOS isn't available.
+  local id = #lOS.wins
+  local x,y = lOS.wins[id].win.getPosition()
+  -- Width: Canvas (canvasX) + border (2) + Characters win (17) + Menu (6) = canvasX + 25
+  -- Height: canvasY+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = canvasY+2 or 24
+  local w = canvasX+26
+  local h = canvasY+2 > 24 and canvasY+2 or 24 -- 24 is the height of the characters n shit
+  lOS.wins[id].win.reposition(x,y,w,h)
+  lOS.wins[id].resizable = false
+  lOS.wins[id].title = "Skimg Editor: " .. file
+end
+
 local ram = {
   event = {},
   activeChar = { -- this is the character in the canvas
@@ -201,7 +305,7 @@ local ram = {
     y = 1,
   },
   char = { -- this is the character in the chars window
-    char = "\1"
+    char = "\0"
   },
   col = {
     fg = "0",
@@ -235,45 +339,47 @@ end
 
 local function drawInfoFields()
   local x = canvasX+14
-  term.setCursorPos(x,2)
+  local cx,cy = term.getCursorPos()
+  term.setCursorPos(x,1)
   term.blit("Selected Cell","4444444444444","fffffffffffff")
-  term.setCursorPos(x,3)
+  term.setCursorPos(x,2)
   term.blit("X:","44","ff")
-  term.setCursorPos(x,4)
+  term.setCursorPos(x,3)
   term.blit("Y:","44","ff")
-  term.setCursorPos(x,5)
+  term.setCursorPos(x,4)
   term.blit("Char:","44444","fffff")
-  term.setCursorPos(x,6)
+  term.setCursorPos(x,5)
   term.blit("FG:","444","fff")
-  term.setCursorPos(x,7)
+  term.setCursorPos(x,6)
   term.blit("BG:","444","fff")
+  term.setCursorPos(cx,cy)
 end
 
 local function drawInfoData(charX,y,char,fg,bg)
   local x = canvasX+14
-  term.setCursorPos(x+3,3)
+  term.setCursorPos(x+3,2)
   local strX = sUtils.cut(tostring(charX),3)
   term.blit(strX,("0"):rep(strX:len()),("f"):rep(strX:len()))
-  term.setCursorPos(x+3,4)
+  term.setCursorPos(x+3,3)
   local strY = sUtils.cut(tostring(y),3)
   term.blit(strY,("0"):rep(strY:len()),("f"):rep(strY:len()))
-  term.setCursorPos(x+6,5)
+  term.setCursorPos(x+6,4)
   term.blit(char,fg,bg)
-  term.setCursorPos(x+5,6)
+  term.setCursorPos(x+5,5)
   local wordFG = data.blitToWord[fg]
   term.blit(sUtils.cut(wordFG,10),"0000000000","ffffffffff")
-  term.setCursorPos(x+5,7)
+  term.setCursorPos(x+5,6)
   local wordBG = data.blitToWord[bg]
   term.blit(sUtils.cut(wordBG,10),"0000000000","ffffffffff")
 end
 
 local wins = {}
-wins.borderWin = window.create(term.current(),1,2,canvasX+2,canvasY+2)
+wins.borderWin = window.create(term.current(),1,1,canvasX+2,canvasY+2)
 wins.canvasWin = window.create(wins.borderWin,2,2,canvasX,canvasY)
-wins.colourWin = window.create(term.current(),canvasX+3,2,11,6)
-wins.charWin = window.create(term.current(),canvasX+2,8,18,18)
+wins.colourWin = window.create(term.current(),canvasX+3,1,11,6)
+wins.charWin = window.create(term.current(),canvasX+2,7,18,18)
 wins.debugWin = window.create(term.current(),50,1,120,50,false)
-wins.resizeWin = window.create(term.current(),1,canvasY+10,18,6,false)
+wins.resizeWin = window.create(term.current(),1,1,18,6,false)
 
 local function debugWrite(str)
   wins.debugWin.write(str)
@@ -290,7 +396,7 @@ sUtils.asset.drawSkimg(image,1,1,wins.canvasWin)
 sUtils.asset.drawSkimg(assets.colours,1,1,wins.colourWin)
 sUtils.asset.drawSkimg(assets.characters,2,2,wins.charWin)
 -- Draw the file menu buttons
-sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,8)
+sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,7)
 
 drawInfoFields()
 
@@ -319,7 +425,7 @@ local function setPixel(x,y,char,fg,bg)
   local fgLine = sUtils.splice(blitLine[2],x-1,fg,true)
   local bgLine = sUtils.splice(blitLine[3],x-1,bg,true)
   wins.canvasWin.setCursorPos(1,y)
-  term.blit(charLine,fgLine,bgLine)
+  wins.canvasWin.blit(charLine,fgLine,bgLine)
   image.data[y] = {charLine,fgLine,bgLine,y}
 end
 
@@ -352,18 +458,8 @@ local function setColour(arg)
   drawChars(ram.col.fg,ram.col.bg)
 end
 
-local function captureCanvas()
-  local x,y = wins.canvasWin.getSize()
-  local screenshot = {}
-  for i=1,y do
-    screenshot[i] = {wins.canvasWin.getLine(i)}
-    screenshot[i][4] = i
-  end
-  return screenshot
-end
-
-local function save(location)
-  local path = location or tArgs[1]
+function save(location)
+  local path = location or file
   local skimg = {
     attributes = imageAttributes,
     data = image.data,
@@ -374,7 +470,7 @@ end
 
 local function changePixel()
   ram.activeChar.x = ram.event[3]
-  ram.activeChar.y = ram.event[4]-2
+  ram.activeChar.y = ram.event[4]-1
   local x,y = ram.activeChar.x,ram.activeChar.y
   if ram.event[2] == 1 then
     ram.activeChar.info = getCharacterInfo(ram.activeChar.x,ram.activeChar.y)
@@ -384,7 +480,7 @@ local function changePixel()
     setPixel(x,y)
   elseif ram.event[2] == 2 then
     ram.activeChar.info = getCharacterInfo(ram.activeChar.x-1,ram.activeChar.y)
-    drawInfoData(ram.activeChar.x-1,ram.activeChar.y,ram.activeChar.info[1],ram.activeChar.info[2],ram.activeChar.info[3])
+    drawInfoData(ram.activeChar.x,ram.activeChar.y,ram.activeChar.info[1],ram.activeChar.info[2],ram.activeChar.info[3])
     term.setCursorPos(ram.event[3],ram.event[4])
     term.setCursorBlink(true)
   end
@@ -402,6 +498,7 @@ local function resizeCanvas()
   wins.resizeWin.setVisible(true)
   sUtils.asset.drawBlit(assets.resize,1,1,wins.resizeWin)
   wins.resizeWin.setCursorPos(1,2)
+  wins.resizeWin.setBackgroundColour(colours.grey) -- Fixes the bug where text had a black background.
   local accept = sUtils.confirm()
   if not accept then
     term.clear()
@@ -411,7 +508,7 @@ local function resizeCanvas()
     wins.canvasWin.redraw()
     wins.colourWin.redraw()
     drawInfoFields()
-    sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,8)
+    sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,7)
     paintutils.drawBox(1,1,canvasX+2,canvasY+2,colours.white,wins.borderWin)
     paintutils.drawBox(1,1,18,18,colours.white,wins.charWin)
     sUtils.asset.drawSkimg(image,1,1,wins.canvasWin)
@@ -470,6 +567,28 @@ local function resizeCanvas()
   wins.colourWin.reposition(canvasX+3,2,11,6)
   wins.charWin.reposition(canvasX+2,8,18,18)
 
+  -- LevelOS shit
+  if LevelOS then -- LevelOS is a global, so this will work.
+    local x,y = LevelOS.self.window.win.getPosition()
+    -- Width: Canvas (canvasX) + border (2) + Characters win (17) + Menu (6) = canvasX + 25
+    -- Height: canvasY+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = canvasY+2 or 24
+    local w = canvasX+26
+    local h = canvasY+2 > 24 and canvasY+2 or 24 -- 24 is the height of the characters n shit
+    LevelOS.self.window.win.reposition(x,y,w,h)
+    LevelOS.self.window.resizable = false
+    LevelOS.self.window.title = "Skimg Editor: " .. file
+  elseif lOS then -- When run from shell, LevelOS isn't available.
+    local id = #lOS.wins
+    local x,y = lOS.wins[id].win.getPosition()
+    -- Width: Canvas (canvasX) + border (2) + Characters win (17) + Menu (6) = canvasX + 25
+    -- Height: canvasY+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = canvasY+2 or 24
+    local w = canvasX+26
+    local h = canvasY+2 > 24 and canvasY+2 or 24 -- 24 is the height of the characters n shit
+    lOS.wins[id].win.reposition(x,y,w,h)
+    lOS.wins[id].resizable = false
+    lOS.wins[id].title = "Skimg Editor: " .. file
+  end
+
   -- Redraw ***ALL*** the stuffs. this is painful. why do i exist. this is a nightmare nightmare nightmare nightmare nightmare nightmare nightmare nightmare 
   term.clear()
   wins.resizeWin.setVisible(false)
@@ -478,7 +597,7 @@ local function resizeCanvas()
   wins.canvasWin.redraw()
   wins.colourWin.redraw()
   drawInfoFields()
-  sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,8)
+  sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,7)
   paintutils.drawBox(1,1,canvasX+2,canvasY+2,colours.white,wins.borderWin)
   paintutils.drawBox(1,1,18,18,colours.white,wins.charWin)
 
@@ -499,25 +618,30 @@ local function resizeCanvas()
 end
 
 buttonIDs = {
-  canvas = button.newButton(2,3,canvasX,canvasY,changePixel),
+  canvas = button.newButton(2,2,canvasX,canvasY,changePixel),
   characters = button.newButton(canvasX+3,9,16,16,setChar),
   colFG = button.newButton(canvasX+4,3,4,4,function() setColour(true) end),
   colBG = button.newButton(canvasX+9,3,4,4,function() setColour(false) end),
-  redraw = button.newButton(20,8,7,1,function() paintutils.drawBox(1,1,canvasX+2,canvasY+2,colours.white,wins.borderWin)sUtils.asset.drawSkimg(image,1,1,wins.canvasWin) end),
-  resize = button.newButton(canvasX+20,9,7,1,function() resizeCanvas() end),
-  save = button.newButton(  canvasX+20,10,7,1,function() save() end),
-  exit = button.newButton(  canvasX+20,11,7,1,function() ram.running = false end),
+  resize = button.newButton(canvasX+20,7,7,1,function() resizeCanvas() end),
+  save = button.newButton(canvasX+20,8,7,1,function() save() end),
+  exit = button.newButton(canvasX+20,9,7,1,function() ram.running = false end),
 }
 
 term.setCursorPos(1,canvasY+4)
 
 local function handleEvent(event)
   ram.event = event
-  --debugWrite(textutils.serialize(event))
   if event[1] == "mouse_click" then
     button.executeButtons(event)
   elseif event[1] == "mouse_drag" then
     button.executeButtons(event,true)
+  elseif event[1] == "char" then
+    local character = event[2]
+    local x,y = ram.activeChar.x,ram.activeChar.y
+    setPixel(x,y,character)
+    if x+1 >= canvasX+1 then x = canvasX+1 end
+    ram.activeChar.x = x + 1
+    drawInfoData(x+1,y,table.unpack(getCharacterInfo(x+1,y)))
   end
 end
 
@@ -533,4 +657,4 @@ local function main()
   term.setCursorPos(1,2)
 end
 
-parallel.waitForAny(main)--,handleMenus)
+parallel.waitForAny(main)
