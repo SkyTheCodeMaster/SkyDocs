@@ -10,12 +10,12 @@ table.pretty-table td, table.pretty-table th {
 }
 
 table.pretty-table th {
-    background-color: #f0f0f0;
+    background-color: var(--background-2);
 }
 
 pre.highlight.highlight-lua {
     position: relative;
-    background: #eee;
+    background: var(--background-2);
     padding: 2px;
 }
 
@@ -39,7 +39,6 @@ pre.highlight.highlight-lua {
    that it basically does "wrapper height - 40px" to determine the effective
    size. But the footer is actually 1em+6px high, so we need to do very weird
    things.
-
    Yes, it should probably be fixed on the copy-cat side.
  */
 .computer-container {
