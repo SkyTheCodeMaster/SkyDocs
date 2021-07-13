@@ -114,7 +114,7 @@ local function executeButtons(tEvent,bDrag,bMonitor)
     local x,y = tEvent[3],tEvent[4]
     for _,v in pairs(buttons) do
       if v.enabled and x >= v.x and x <= v.x + v.w - 1 and y >= v.y and y <= v.y + v.h - 1 then
-        pcall(v.fFunc)
+        pcall(v.fFunc,x-v.x+1,y-v.y+1)
       end
     end
   end
