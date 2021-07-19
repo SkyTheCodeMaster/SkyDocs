@@ -442,8 +442,7 @@ local function setColour(x,y,arg)
   if arg then
     local char = getPixelSingle(assets.col,x,y)
     ram.col.fg = char
-  end
-  if not arg then
+  else
     local char = getPixelSingle(assets.col,x,y)
     ram.col.bg = char
   end
@@ -478,10 +477,8 @@ local function changePixel()
   end
 end
 
-local function setChar()
-  local x,y = ram.event[3]-canvasX-2,ram.event[4]-8
+local function setChar(x,y)
   ram.char.char = getPixel(assets.characters.data,x,y)[1]
-  debugWrite(ram.char)
 end
 
 local buttonIDs
@@ -611,9 +608,9 @@ end
 
 buttonIDs = {
   canvas = button.newButton(2,2,canvasX,canvasY,changePixel),
-  characters = button.newButton(canvasX+3,9,16,16,setChar),
-  colFG = button.newButton(canvasX+4,3,4,4,function(x,y) setColour(x,y,true) end),
-  colBG = button.newButton(canvasX+9,3,4,4,function(x,y) setColour(x,y,false) end),
+  characters = button.newButton(canvasX+3,8,16,16,setChar),
+  colFG = button.newButton(canvasX+4,2,4,4,function(x,y) setColour(x,y,true) end),
+  colBG = button.newButton(canvasX+9,2,4,4,function(x,y) setColour(x,y,false) end),
   resize = button.newButton(canvasX+20,7,7,1,function() resizeCanvas() end),
   save = button.newButton(canvasX+20,8,7,1,function() save() end),
   exit = button.newButton(canvasX+20,9,7,1,function() ram.running = false end),
