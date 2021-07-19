@@ -2,7 +2,7 @@
 
 print("-----START MINIFY.PY-----")
 
-import os,subprocess,sys
+import os,subprocess
 
 indexedFolders = ['src'] # This is recursive!
 targetType = 'lua'

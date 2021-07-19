@@ -110,6 +110,7 @@ local assets = {
     {"Resize","000000","777777",1},
     {"Save  ","000000","777777",2},
     {"Exit  ","000000","777777",3},
+    {"      ","000000","777777",4},
   },
   characters = {
     attributes = {
@@ -272,27 +273,25 @@ if not fs.exists(file) then
   end
 end
 
-local image = sUtils.asset.load(file)
-local imageAttributes = image.attributes
-local canvasX,canvasY = imageAttributes.width,imageAttributes.height
+local image = sUtils.asset.load(file,"skimg")
 
 -- LevelOS shit
 if LevelOS then -- LevelOS is a global, so this will work.
   local x,y = LevelOS.self.window.win.getPosition()
-  -- Width: Canvas (canvasX) + border (2) + Characters win (17) + Menu (6) = canvasX + 25
-  -- Height: canvasY+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = canvasY+2 or 24
-  local w = canvasX+26
-  local h = canvasY+2 > 24 and canvasY+2 or 24 -- 24 is the height of the characters n shit
+  -- Width: Canvas (image.attributes.width) + border (2) + Characters win (17) + Menu (6) = image.attributes.width + 25
+  -- Height: image.attributes.height+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = image.attributes.height+2 or 24
+  local w = image.attributes.width+26
+  local h = image.attributes.height+2 > 24 and image.attributes.height+2 or 24 -- 24 is the height of the characters n shit
   LevelOS.self.window.win.reposition(x,y,w,h)
   LevelOS.self.window.resizable = false
   LevelOS.self.window.title = "Skimg Editor: " .. file
 elseif lOS then -- When run from shell, LevelOS isn't available.
   local id = #lOS.wins
   local x,y = lOS.wins[id].win.getPosition()
-  -- Width: Canvas (canvasX) + border (2) + Characters win (17) + Menu (6) = canvasX + 25
-  -- Height: canvasY+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = canvasY+2 or 24
-  local w = canvasX+26
-  local h = canvasY+2 > 24 and canvasY+2 or 24 -- 24 is the height of the characters n shit
+  -- Width: Canvas (image.attributes.width) + border (2) + Characters win (17) + Menu (6) = image.attributes.width + 25
+  -- Height: image.attributes.height+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = image.attributes.height+2 or 24
+  local w = image.attributes.width+26
+  local h = image.attributes.height+2 > 24 and image.attributes.height+2 or 24 -- 24 is the height of the characters n shit
   lOS.wins[id].win.reposition(x,y,w,h)
   lOS.wins[id].resizable = false
   lOS.wins[id].title = "Skimg Editor: " .. file
@@ -322,23 +321,30 @@ local ram = {
     }
   },
   running = true,
+  frame = 1,
 }
 
 local function getCharacterInfo(x,y)
   x = x or 1
   y = y or 1
   -- make sure that x/y is in canvas
-  if x > canvasX then x = canvasX end
-  if y > canvasY then y = canvasY end
-  
-  local char = image.data[y][1]:sub(x,x)
-  local fg = image.data[y][2]:sub(x,x)
-  local bg = image.data[y][3]:sub(x,x)
+  if x > image.attributes.width then x = image.attributes.width end
+  if y > image.attributes.height then y = image.attributes.height end
+  local char,fg,bg
+  if image.attributes.type == 2 then
+    char = image.data[ram.frame][y][1]:sub(x,x)
+    fg = image.data[ram.frame][y][2]:sub(x,x)
+    bg = image.data[ram.frame][y][3]:sub(x,x)
+  else
+    char = image.data[y][1]:sub(x,x)
+    fg = image.data[y][2]:sub(x,x)
+    bg = image.data[y][3]:sub(x,x)
+  end
   return {char,fg,bg}
 end
 
 local function drawInfoFields()
-  local x = canvasX+14
+  local x = image.attributes.width+14
   local cx,cy = term.getCursorPos()
   term.setCursorPos(x,1)
   term.blit("Selected Cell","4444444444444","fffffffffffff")
@@ -356,7 +362,7 @@ local function drawInfoFields()
 end
 
 local function drawInfoData(charX,y,char,fg,bg)
-  local x = canvasX+14
+  local x = image.attributes.width+14
   term.setCursorPos(x+3,2)
   local strX = sUtils.cut(tostring(charX),3)
   term.blit(strX,("0"):rep(strX:len()),("f"):rep(strX:len()))
@@ -374,29 +380,26 @@ local function drawInfoData(charX,y,char,fg,bg)
 end
 
 local wins = {}
-wins.borderWin = window.create(term.current(),1,1,canvasX+2,canvasY+2)
-wins.canvasWin = window.create(wins.borderWin,2,2,canvasX,canvasY)
-wins.colourWin = window.create(term.current(),canvasX+3,1,11,6)
-wins.charWin = window.create(term.current(),canvasX+2,7,18,18)
-wins.debugWin = window.create(term.current(),50,1,120,50,false)
+wins.borderWin = window.create(term.current(),1,1,image.attributes.width+2,image.attributes.height+2)
+wins.canvasWin = window.create(wins.borderWin,2,2,image.attributes.width,image.attributes.height)
+wins.colourWin = window.create(term.current(),image.attributes.width+3,1,11,6)
+wins.charWin = window.create(term.current(),image.attributes.width+2,7,18,18)
 wins.resizeWin = window.create(term.current(),1,1,18,6,false)
 
-local function debugWrite(str)
-  wins.debugWin.write(str)
-  local x,y = wins.debugWin.getCursorPos()
-  if x >= 40 then wins.debugWin.clear() wins.debugWin.clear() wins.debugWin.setCursorPos(1,1) end
-  wins.debugWin.setCursorPos(1,y+1)
-end
-
 -- draw the various borders around the windows
-paintutils.drawBox(1,1,canvasX+2,canvasY+2,colours.white,wins.borderWin)
+paintutils.drawBox(1,1,image.attributes.width+2,image.attributes.height+2,colours.white,wins.borderWin)
 paintutils.drawBox(1,1,18,18,colours.white,wins.charWin)
 
-sUtils.asset.drawSkimg(image,1,1,wins.canvasWin)
+if image.attributes.type == 2 then
+  sUtils.asset.drawBlit(image.data[1],1,1,wins.canvasWin)
+else
+  sUtils.asset.drawSkimg(image,1,1,wins.canvasWin)
+end
 sUtils.asset.drawSkimg(assets.colours,1,1,wins.colourWin)
 sUtils.asset.drawSkimg(assets.characters,2,2,wins.charWin)
 -- Draw the file menu buttons
-sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,7)
+sUtils.asset.drawBlit(assets.fileMenu,image.attributes.width+20,7)
+if image.attributes.type and image.attributes.type == 2 then term.setCursorPos(image.attributes.width+20,10) term.blit("<-  +>","0e00d0","777777") end
 
 drawInfoFields()
 
@@ -416,19 +419,6 @@ local function getPixelSingle(tbl,x,y)
   return char
 end
 
-local function setPixel(x,y,char,fg,bg)
-  char = char or ram.char.char
-  fg = fg or ram.col.fg
-  bg = bg or ram.col.bg
-  local blitLine = image.data[y]
-  local charLine = sUtils.splice(blitLine[1],x-1,char,true)
-  local fgLine = sUtils.splice(blitLine[2],x-1,fg,true)
-  local bgLine = sUtils.splice(blitLine[3],x-1,bg,true)
-  wins.canvasWin.setCursorPos(1,y)
-  wins.canvasWin.blit(charLine,fgLine,bgLine)
-  image.data[y] = {charLine,fgLine,bgLine,y}
-end
-
 local function drawChars(fg,bg)
   local chars = assets.characters.data
   for i=1,#chars do
@@ -438,21 +428,13 @@ local function drawChars(fg,bg)
   sUtils.asset.drawBlit(chars,2,2,wins.charWin)
 end
 
-local function setColour(arg)
-  local x,y
-  local event = ram.event
+local function setColour(x,y,arg)
   if arg then
-    x = event[3] - canvasX-3
-    y = event[4] - 2
-    debugWrite(tostring(x) .. " " .. tostring(y))
-    local char = getPixelSingle(assets.col,x,y)
+    local char = getPixelSingle(assets.col,x,y+1)
     ram.col.fg = char
   end
   if not arg then
-    x = event[3] - canvasX-8
-    y = event[4] - 2
-    debugWrite(tostring(x) .. " " .. tostring(y))
-    local char = getPixelSingle(assets.col,x,y)
+    local char = getPixelSingle(assets.col,x,y+1)
     ram.col.bg = char
   end
   drawChars(ram.col.fg,ram.col.bg)
@@ -460,12 +442,29 @@ end
 
 function save(location)
   local path = location or file
-  local skimg = {
-    attributes = imageAttributes,
-    data = image.data,
-  }
-  --sUtils.encfwrite(path,skimg)
-  sUtils.encfwrite(path,skimg)
+  sUtils.encfwrite(path,image)
+end
+
+local function setPixel(x,y,char,fg,bg)
+  char = char or ram.char.char
+  fg = fg or ram.col.fg
+  bg = bg or ram.col.bg
+  local blitLine
+  if image.attributes.type == 2 then
+    blitLine = image.data[ram.frame][y]
+  else
+    blitLine = image.data[y]
+  end
+  local charLine = sUtils.splice(blitLine[1],x-1,char,true)
+  local fgLine = sUtils.splice(blitLine[2],x-1,fg,true)
+  local bgLine = sUtils.splice(blitLine[3],x-1,bg,true)
+  wins.canvasWin.setCursorPos(1,y)
+  wins.canvasWin.blit(charLine,fgLine,bgLine)
+  if image.attributes.type == 2 then
+    image.data[ram.frame][y] = {charLine,fgLine,bgLine,y}
+  else
+    image.data[y] = {charLine,fgLine,bgLine,y}
+  end
 end
 
 local function changePixel()
@@ -486,10 +485,48 @@ local function changePixel()
   end
 end
 
-local function setChar()
-  local x,y = ram.event[3]-canvasX-2,ram.event[4]-8
+local function setChar(x,y)
   ram.char.char = getPixel(assets.characters.data,x,y)[1]
-  debugWrite(ram.char)
+end
+-- (copied from todo)
+-- Add `<-+>` buttons somewhere to: move to last frame, remove frame, add frame, move to next frame.
+-- The remove frame should be pressed twice w/ a timeout, and the add frame should add a frame to the right.
+-- Possibly add another add button for to the left?
+local remPressed = false
+local remID
+local function frameController(x)
+  -- x 1 is <
+  -- x 2 is -
+  -- x 5 is +
+  -- x 6 is >
+
+  if x == 1 and ram.frame > 1 then
+    ram.frame = ram.frame - 1
+  elseif x == 2 and not remPressed then
+    remPressed = true
+    remID = os.startTimer(3)
+  elseif x == 2 and remPressed then
+    os.cancelTimer(remID)
+    table.remove(image.data,ram.frame)
+    if ram.frame > #image.data then
+      ram.frame = #image.data
+    end
+    remPressed = false
+  elseif x == 5 then
+    local newSpot = ram.frame + 1
+    -- Generate the new blit image
+    local newImage = {{string.rep(" ",image.attributes.width),string.rep("0",image.attributes.width),string.rep("f",image.attributes.width),1}}
+    for i=2,image.attributes.height do
+      newImage[i] = {newImage[1],newImage[2],newImage[3],i}
+    end
+    table.insert(image.data,newSpot,newImage)
+  elseif x == 6 and ram.frame < #image.data then
+    ram.frame = ram.frame + 1
+  end
+  for i,v in ipairs(image.data[ram.frame]) do
+    wins.canvasWin.setCursorPos(1,i)
+    wins.canvasWin.blit(v[1],v[2],v[3])
+  end
 end
 
 local buttonIDs
@@ -508,8 +545,9 @@ local function resizeCanvas()
     wins.canvasWin.redraw()
     wins.colourWin.redraw()
     drawInfoFields()
-    sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,7)
-    paintutils.drawBox(1,1,canvasX+2,canvasY+2,colours.white,wins.borderWin)
+    sUtils.asset.drawBlit(assets.fileMenu,image.attributes.width+20,7)
+    if image.attributes.type and image.attributes.type == 2 then term.setCursorPos(image.attributes.width+20,10) term.blit("<-  +>","0e00d0","777777") end
+    paintutils.drawBox(1,1,image.attributes.width+2,image.attributes.height+2,colours.white,wins.borderWin)
     paintutils.drawBox(1,1,18,18,colours.white,wins.charWin)
     sUtils.asset.drawSkimg(image,1,1,wins.canvasWin)
     sUtils.asset.drawSkimg(assets.colours,1,1,wins.colourWin)
@@ -522,74 +560,109 @@ local function resizeCanvas()
   local y = sUtils.readNumber()
 
   -- If new canvas is smaller, delete some data
-  if x < canvasX then
-    for i=1,#image.data do
-      image.data[i][1] = sUtils.cut(image.data[i][1],x)
-      image.data[i][2] = sUtils.cut(image.data[i][2],x)
-      image.data[i][3] = sUtils.cut(image.data[i][3],x)
+  if image.attributes.type == 1 then
+    if x < image.attributes.width then
+      for i=1,#image.data do
+        image.data[i][1] = sUtils.cut(image.data[i][1],x)
+        image.data[i][2] = sUtils.cut(image.data[i][2],x)
+        image.data[i][3] = sUtils.cut(image.data[i][3],x)
+      end
+    end
+    -- If new canvas is bigger, repeat some data
+    if x > image.attributes.width then
+      for i=1,#image.data do
+        local length = image.data[i][1]:len()
+        local char = image.data[i][1]:sub(length,length)
+        local fg = image.data[i][2]:sub(length,length)
+        local bg = image.data[i][3]:sub(length,length)
+        image.data[i][1] = sUtils.cut(image.data[i][1],x,char)
+        image.data[i][2] = sUtils.cut(image.data[i][2],x,fg)
+        image.data[i][3] = sUtils.cut(image.data[i][3],x,bg)
+      end
+    end
+    -- If new canvas is shorter, delete some data
+    if y < image.attributes.height then
+      for i=y+1,#image.data do
+        image.data[i] = nil
+      end
+    end
+    -- If new canvas is taller, repeat some data
+    if y > image.attributes.height then
+      local repeatLine = image.data[#image.data]
+      for i=image.attributes.height+1,y do
+        image.data[i] = repeatLine
+        image.data[i][4] = i
+      end
+    end
+  elseif image.attributes.type == 2 then -- We need to resize every frame.
+    for i,v in ipairs(image.data) do
+      if x < image.attributes.width then
+        for i=1,#v do
+          v[i][1] = sUtils.cut(v[i][1],x)
+          v[i][2] = sUtils.cut(v[i][2],x)
+          v[i][3] = sUtils.cut(v[i][3],x)
+        end
+      end
+      -- If new canvas is bigger, repeat some data
+      if x > image.attributes.width then
+        for i=1,#v do
+          local length = v[i][1]:len()
+          local char = v[i][1]:sub(length,length)
+          local fg = v[i][2]:sub(length,length)
+          local bg = v[i][3]:sub(length,length)
+          v[i][1] = sUtils.cut(v[i][1],x,char)
+          v[i][2] = sUtils.cut(v[i][2],x,fg)
+          v[i][3] = sUtils.cut(v[i][3],x,bg)
+        end
+      end
+      -- If new canvas is shorter, delete some data
+      if y < image.attributes.height then
+        for i=y+1,#v do
+          v[i] = nil
+        end
+      end
+      -- If new canvas is taller, repeat some data
+      if y > image.attributes.height then
+        local repeatLine = v[#v]
+        for i=image.attributes.height+1,y do
+          v[i] = repeatLine
+          v[i][4] = i
+        end
+      end
     end
   end
-  -- If new canvas is bigger, repeat some data
-  if x > canvasX then
-    for i=1,#image.data do
-      local length = image.data[i][1]:len()
-      local char = image.data[i][1]:sub(length,length)
-      local fg = image.data[i][2]:sub(length,length)
-      local bg = image.data[i][3]:sub(length,length)
-      image.data[i][1] = sUtils.cut(image.data[i][1],x,char)
-      image.data[i][2] = sUtils.cut(image.data[i][2],x,fg)
-      image.data[i][3] = sUtils.cut(image.data[i][3],x,bg)
-    end
-  end
-  -- If new canvas is shorter, delete some data
-  if y < canvasY then
-    for i=y+1,#image.data do
-      image.data[i] = nil
-    end
-  end
-  -- If new canvas is taller, repeat some data
-  if y > canvasY then
-    local repeatLine = image.data[#image.data]
-    for i=canvasY+1,y do
-      image.data[i] = repeatLine
-      image.data[i][4] = i
-    end
-  end
-  imageAttributes.width = x
-  imageAttributes.height = y
-  canvasX = imageAttributes.width
-  canvasY = imageAttributes.height
+  image.attributes.width = x
+  image.attributes.height = y
 
   local x,y = wins.borderWin.getPosition()
-  wins.borderWin.reposition(x,y,canvasX+2,canvasY+2)
+  wins.borderWin.reposition(x,y,image.attributes.width+2,image.attributes.height+2)
   local x,y = wins.canvasWin.getPosition()
-  wins.canvasWin.reposition(x,y,canvasX,canvasY)
-  wins.colourWin.reposition(canvasX+3,2,11,6)
-  wins.charWin.reposition(canvasX+2,8,18,18)
+  wins.canvasWin.reposition(x,y,image.attributes.width,image.attributes.height)
+  wins.colourWin.reposition(image.attributes.width+3,2,11,6)
+  wins.charWin.reposition(image.attributes.width+2,8,18,18)
 
   -- LevelOS shit
   if LevelOS then -- LevelOS is a global, so this will work.
     local x,y = LevelOS.self.window.win.getPosition()
-    -- Width: Canvas (canvasX) + border (2) + Characters win (17) + Menu (6) = canvasX + 25
-    -- Height: canvasY+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = canvasY+2 or 24
-    local w = canvasX+26
-    local h = canvasY+2 > 24 and canvasY+2 or 24 -- 24 is the height of the characters n shit
+    -- Width: Canvas (image.attributes.width) + border (2) + Characters win (17) + Menu (6) = image.attributes.width + 25
+    -- Height: image.attributes.height+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = image.attributes.height+2 or 24
+    local w = image.attributes.width+26
+    local h = image.attributes.height+2 > 24 and image.attributes.height+2 or 24 -- 24 is the height of the characters n shit
     LevelOS.self.window.win.reposition(x,y,w,h)
     LevelOS.self.window.resizable = false
     LevelOS.self.window.title = "Skimg Editor: " .. file
   elseif lOS then -- When run from shell, LevelOS isn't available.
     local id = #lOS.wins
     local x,y = lOS.wins[id].win.getPosition()
-    -- Width: Canvas (canvasX) + border (2) + Characters win (17) + Menu (6) = canvasX + 25
-    -- Height: canvasY+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = canvasY+2 or 24
-    local w = canvasX+26
-    local h = canvasY+2 > 24 and canvasY+2 or 24 -- 24 is the height of the characters n shit
+    -- Width: Canvas (image.attributes.width) + border (2) + Characters win (17) + Menu (6) = image.attributes.width + 25
+    -- Height: image.attributes.height+2 or colour border (2) + colour height (4) + characters border (2) + characters (16) = image.attributes.height+2 or 24
+    local w = image.attributes.width+26
+    local h = image.attributes.height+2 > 24 and image.attributes.height+2 or 24 -- 24 is the height of the characters n shit
     lOS.wins[id].win.reposition(x,y,w,h)
     lOS.wins[id].resizable = false
     lOS.wins[id].title = "Skimg Editor: " .. file
   end
 
-  -- Redraw ***ALL*** the stuffs. this is painful. why do i exist. this is a nightmare nightmare nightmare nightmare nightmare nightmare nightmare nightmare 
   term.clear()
   wins.resizeWin.setVisible(false)
   wins.borderWin.redraw()
@@ -597,55 +670,70 @@ local function resizeCanvas()
   wins.canvasWin.redraw()
   wins.colourWin.redraw()
   drawInfoFields()
-  sUtils.asset.drawBlit(assets.fileMenu,canvasX+20,7)
-  paintutils.drawBox(1,1,canvasX+2,canvasY+2,colours.white,wins.borderWin)
+  sUtils.asset.drawBlit(assets.fileMenu,image.attributes.width+20,7)
+  if image.attributes.type and image.attributes.type == 2 then term.setCursorPos(image.attributes.width+20,10) term.blit("<-  +>","0e00d0","777777") end
+  paintutils.drawBox(1,1,image.attributes.width+2,image.attributes.height+2,colours.white,wins.borderWin)
   paintutils.drawBox(1,1,18,18,colours.white,wins.charWin)
 
   sUtils.asset.drawSkimg(image,1,1,wins.canvasWin)
   sUtils.asset.drawSkimg(assets.colours,1,1,wins.colourWin)
   sUtils.asset.drawSkimg(assets.characters,2,2,wins.charWin)
 
-  -- Now the really complicated bit, reassigning the buttons... nightmare nightmare nightmare nightmare nightmare nightmare nightmare nightmare nightmare nightmare nightmare nightmare
-  button.edit(buttonIDs.canvas,nil,nil,canvasX,canvasY)
-  button.edit(buttonIDs.characters,canvasX+3)
-  button.edit(buttonIDs.colFG,canvasX+4)
-  button.edit(buttonIDs.colBG,canvasX+9)
-  button.edit(buttonIDs.redraw,canvasX+20)
-  button.edit(buttonIDs.resize,canvasX+20)
-  button.edit(buttonIDs.save,canvasX+20)
-  button.edit(buttonIDs.exit,canvasX+20) 
+  button.edit(buttonIDs.canvas,nil,nil,image.attributes.width,image.attributes.height)
+  button.edit(buttonIDs.characters,image.attributes.width+3)
+  button.edit(buttonIDs.colFG,image.attributes.width+4)
+  button.edit(buttonIDs.colBG,image.attributes.width+9)
+  button.edit(buttonIDs.redraw,image.attributes.width+20)
+  button.edit(buttonIDs.resize,image.attributes.width+20)
+  button.edit(buttonIDs.save,image.attributes.width+20)
+  button.edit(buttonIDs.exit,image.attributes.width+20) 
+  button.edit(buttonIDs.frame,image.attributes.width+20)
   return
 end
 
 buttonIDs = {
-  canvas = button.newButton(2,2,canvasX,canvasY,changePixel),
-  characters = button.newButton(canvasX+3,9,16,16,setChar),
-  colFG = button.newButton(canvasX+4,3,4,4,function() setColour(true) end),
-  colBG = button.newButton(canvasX+9,3,4,4,function() setColour(false) end),
-  resize = button.newButton(canvasX+20,7,7,1,function() resizeCanvas() end),
-  save = button.newButton(canvasX+20,8,7,1,function() save() end),
-  exit = button.newButton(canvasX+20,9,7,1,function() ram.running = false end),
+  canvas = button.newButton(2,2,image.attributes.width,image.attributes.height,changePixel),
+  characters = button.newButton(image.attributes.width+3,8,16,16,setChar),
+  colFG = button.newButton(image.attributes.width+4,3,4,4,function(x,y) setColour(x,y,true) end),
+  colBG = button.newButton(image.attributes.width+9,3,4,4,function(x,y) setColour(x,y,false) end),
+  resize = button.newButton(image.attributes.width+20,7,6,1,function() resizeCanvas() end),
+  save = button.newButton(image.attributes.width+20,8,6,1,function() save() end),
+  exit = button.newButton(image.attributes.width+20,9,6,1,function() ram.running = false end),
 }
-
-term.setCursorPos(1,canvasY+4)
+if image.attributes.type and image.attributes.type == 2 then
+  buttonIDs.frame = button.newButton(image.attributes.width+20,10,6,1,frameController)
+end
+term.setCursorPos(1,image.attributes.height+4)
 
 local function handleEvent(event)
   ram.event = event
-  if event[1] == "mouse_click" then
-    button.executeButtons(event)
-  elseif event[1] == "mouse_drag" then
+  if event[1] == "mouse_click" or event[1] == "mouse_drag" then
     button.executeButtons(event,true)
+    if image.attributes.type == 2 then
+      if remPressed then
+        term.setCursorPos(image.attributes.width+21,10)
+        term.blit("!","e","7")
+      else
+        term.setCursorPos(image.attributes.width+21,10)
+        term.blit("-","e","7")
+      end
+      term.setCursorPos(image.attributes.width+20,11)
+      term.setBackgroundColour(colours.grey)
+      term.setTextColour(colours.white)
+      term.write(sUtils.cut(tostring(ram.frame),6))
+    end
   elseif event[1] == "char" then
     local character = event[2]
     local x,y = ram.activeChar.x,ram.activeChar.y
     setPixel(x,y,character)
-    if x+1 >= canvasX+1 then x = canvasX+1 end
+    if x+1 >= image.attributes.width+1 then x = image.attributes.width+1 end
     ram.activeChar.x = x + 1
     drawInfoData(x+1,y,table.unpack(getCharacterInfo(x+1,y)))
   end
 end
 
 local function main()
+  os.queueEvent("mouse_click",1,-1,-1) -- This draws the frame counter, it's a hack, I know.
   while ram.running do
     handleEvent({os.pullEvent()})
   end
