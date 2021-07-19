@@ -438,20 +438,12 @@ local function drawChars(fg,bg)
   sUtils.asset.drawBlit(chars,2,2,wins.charWin)
 end
 
-local function setColour(arg)
-  local x,y
-  local event = ram.event
+local function setColour(x,y,arg)
   if arg then
-    x = event[3] - canvasX-3
-    y = event[4] - 2
-    debugWrite(tostring(x) .. " " .. tostring(y))
     local char = getPixelSingle(assets.col,x,y)
     ram.col.fg = char
   end
   if not arg then
-    x = event[3] - canvasX-8
-    y = event[4] - 2
-    debugWrite(tostring(x) .. " " .. tostring(y))
     local char = getPixelSingle(assets.col,x,y)
     ram.col.bg = char
   end
@@ -620,8 +612,8 @@ end
 buttonIDs = {
   canvas = button.newButton(2,2,canvasX,canvasY,changePixel),
   characters = button.newButton(canvasX+3,9,16,16,setChar),
-  colFG = button.newButton(canvasX+4,3,4,4,function() setColour(true) end),
-  colBG = button.newButton(canvasX+9,3,4,4,function() setColour(false) end),
+  colFG = button.newButton(canvasX+4,3,4,4,function(x,y) setColour(x,y,true) end),
+  colBG = button.newButton(canvasX+9,3,4,4,function(x,y) setColour(x,y,false) end),
   resize = button.newButton(canvasX+20,7,7,1,function() resizeCanvas() end),
   save = button.newButton(canvasX+20,8,7,1,function() save() end),
   exit = button.newButton(canvasX+20,9,7,1,function() ram.running = false end),
