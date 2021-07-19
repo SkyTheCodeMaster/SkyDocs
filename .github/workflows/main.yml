@@ -24,6 +24,7 @@ jobs:
       run: |
         python3 ./todo.py ${GITHUB_SHA}
         python3 ./minify.py
+        python3 ./hash.py
 
     - name: Generate documentation
       run: |
