@@ -430,11 +430,10 @@ end
 
 local function setColour(x,y,arg)
   if arg then
-    local char = getPixelSingle(assets.col,x,y+1)
+    local char = getPixelSingle(assets.col,x,y)
     ram.col.fg = char
-  end
-  if not arg then
-    local char = getPixelSingle(assets.col,x,y+1)
+  else
+    local char = getPixelSingle(assets.col,x,y)
     ram.col.bg = char
   end
   drawChars(ram.col.fg,ram.col.bg)
@@ -517,9 +516,10 @@ local function frameController(x)
     -- Generate the new blit image
     local newImage = {{string.rep(" ",image.attributes.width),string.rep("0",image.attributes.width),string.rep("f",image.attributes.width),1}}
     for i=2,image.attributes.height do
-      newImage[i] = {newImage[1],newImage[2],newImage[3],i}
+      newImage[i] = {newImage[1][1],newImage[1][2],newImage[1][3],i}
     end
     table.insert(image.data,newSpot,newImage)
+    save()
   elseif x == 6 and ram.frame < #image.data then
     ram.frame = ram.frame + 1
   end
@@ -558,6 +558,7 @@ local function resizeCanvas()
   local x = sUtils.readNumber()
   wins.resizeWin.setCursorPos(1,6)
   local y = sUtils.readNumber()
+  term.setBackgroundColour(colours.black)
 
   -- If new canvas is smaller, delete some data
   if image.attributes.type == 1 then
@@ -694,8 +695,8 @@ end
 buttonIDs = {
   canvas = button.newButton(2,2,image.attributes.width,image.attributes.height,changePixel),
   characters = button.newButton(image.attributes.width+3,8,16,16,setChar),
-  colFG = button.newButton(image.attributes.width+4,3,4,4,function(x,y) setColour(x,y,true) end),
-  colBG = button.newButton(image.attributes.width+9,3,4,4,function(x,y) setColour(x,y,false) end),
+  colFG = button.newButton(image.attributes.width+4,2,4,4,function(x,y) setColour(x,y,true) end),
+  colBG = button.newButton(image.attributes.width+9,2,4,4,function(x,y) setColour(x,y,false) end),
   resize = button.newButton(image.attributes.width+20,7,6,1,function() resizeCanvas() end),
   save = button.newButton(image.attributes.width+20,8,6,1,function() save() end),
   exit = button.newButton(image.attributes.width+20,9,6,1,function() ram.running = false end),
