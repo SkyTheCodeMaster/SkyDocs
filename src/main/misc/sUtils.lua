@@ -446,42 +446,43 @@ end
 
 --- Load an image file.
 -- @tparam string path Path to the file, supported types are ".skimg", ".skgrp", ".blit", ".nfp", and ".nft".
+-- @tparam string override Type to load file as, overriding the file type.
 -- @treturn table The image file, to be fed into a drawing routine.
-local function load(file)
+local function load(file,override)
   expect(1,file,"string")
   if not fs.exists(file) then
     error("file does not exist",2)
   end
   local fileName = fs.getName(file)
   local fileType = split(fileName,".")[2]
+  local mt = {
+    __index = function(self,i)
+      if i == "format" then
+        return fileType
+      end
+      return self[i]
+    end,
+  }
+  local img = {}
   -- skimg loader
   if fileType == "skimg" then
-    local fileTbl = encfread(file)
-    return fileTbl
-  end
+    img = encfread(file)
   -- skgrp loader (old & outdated)
-  if fileType == "skgrp" then
-    local fileTbl = {}
+  elseif fileType == "skgrp" then
     for x in io.lines(file) do
-      table.insert(fileTbl,x)
+      table.insert(img,x)
     end
-    return fileTbl
-  end
   -- blit loader, similar to `.skimg`
-  if fileType == "blit" then
-    local fileTbl = encfread(file)
-    return fileTbl
-  end
+  elseif fileType == "blit" then
+    img = encfread(file)
   -- nfp loader, for paintutils
-  if fileType == "nfp" then
-    local img = paintutils.loadImage(file)
-    return img
-  end
+  elseif fileType == "nfp" then
+    img = paintutils.loadImage(file)
   -- nft loader, "Nitrogen Fingers Text"
-  if fileType == "nft" then
-    local img = nft.load(file)
-    return img
+  elseif fileType == "nft" then
+    img = nft.load(file)
   end
+  return setmetatable(img,mt)
 end
 
 --[[- Draw an image produced by @{load}.
@@ -502,7 +503,7 @@ local function draw(image,options,tOutput)
   local y = opts["y"] or 1
   local format,sType,sDelay
   -- Default the table!
-  if not opts["format"] then
+  if not opts["format"] or not image["format"] then
     -- Now we need to figure it out.
     if type(image) == "table" then -- This is a skimg or skgrp.
       if image["attributes"] and image["data"] then -- This is a skimg. Lets figure out it's type.
@@ -533,6 +534,8 @@ local function draw(image,options,tOutput)
       -- It's an NFP.
       format = "nfp"
     end
+  else
+    format = opts["format"] or image["format"]
   end
   if format == "skimg" and sType == 1 then
     -- Type one skimg. Easy to draw.
@@ -595,7 +598,7 @@ end
 -- THIS FILETYPE IS DEPRECATED, DO NOT USE. (not documented)
 --- Draw the given `skgrp` file.
 -- @tparam table Table of instructions to draw.
--- @deprecated Use @{load}
+-- @deprecated skgrp is not maintained, use @{load}, and @{draw}, or @{drawSkimg}
 local function drawSkgrp(tbl)
   expect(1,tbl,"table")
   for i=1,#tbl do

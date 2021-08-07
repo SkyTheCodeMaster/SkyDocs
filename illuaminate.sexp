@@ -107,7 +107,6 @@
     src/main/skyos/comms.lua
     src/main/skyos/timeserver.lua
     src/main/misc/tcp.lua
-    src/main/misc/skyrtle.lua
   )
   (
     linters -all

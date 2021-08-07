@@ -5,25 +5,6 @@
 -- TODO: Add desktop file verification.
 
 local expect = require("cc.expect").expect
-local sUtils = require("libraries.sUtils")
-
-local presets = {
-  github = {
-    user = "SkyTheCodeMaster",
-    repo = "SkyOS",
-    branch = "master",
-    path = "",
-  },
-}
-
--- file functions
-local function fread(file)
-  expect(1,file,"string")
-  local f = fs.open(file,"r")
-  local contents = f.readAll()
-  f.close()
-  return contents
-end
 
 local function fwrite(file,contents)
   expect(1,file,"string")
@@ -36,22 +17,6 @@ end
 local function encfwrite(file,object)
   local obj = textutils.serialize(object)
   fwrite(file,obj)
-end
-
-local function encfread(file)
-  local contents = fread(file)
-  return textutils.unserialize(contents)
-end
-
-local function hread(url)
-  expect(1,url,"string")
-  local h,err = http.get(url)
-  if not h then
-    return nil,err
-  end
-  local contents = h.readAll()
-  h.close()
-  return contents,nil
 end
 
 --- Generate a blank desktop file.
@@ -112,7 +77,7 @@ end
 -- @tparam string program Path to the program to open.
 --
 -- @tparam[2] table desktop Desktop to add to.
--- @tparam[2] {name = string, image = string, program = string}
+-- @tparam[2] {name = string, image = string, program = string} opts
 -- - `name` Name of the app.
 -- - `image` Path to the app icon.
 -- - `program` Path to the program to open.
@@ -199,5 +164,6 @@ return {
   desktop = {
     nextAvailable = nextAvailable,
     insertApp = insertApp,
+    genDesktop = genDesktop,
   },
 }

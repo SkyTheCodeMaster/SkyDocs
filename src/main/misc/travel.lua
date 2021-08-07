@@ -17,7 +17,9 @@ local function keepHeight(y)
   --end
 end
  
-
+--- Move player to set of coordinates within 50 blocks
+-- @tparam number x X coordinate to travel to.
+-- @tparam number y Y coordinate to travel to.
 local function travel(x,z)
   local atDestination = false
   local v = {

@@ -15,7 +15,7 @@ local pos = {
 if fs.exists(".skyrtle") then
   local f = fs.open(".skyrtle","r")
   local c = f.readAll() f.close()
-  local pos = textutils.unserialize(c)
+  pos = textutils.unserialize(c)
 else pos = {0,0,0,0} end
 
 local function fwrite(file,contents)
@@ -32,9 +32,7 @@ if not x then -- If GPS isn't available, set XYZ to 000.
   gps_available = false
 end
 
-if gps_available and pos[1] ~= x or pos[2] ~= y or pos[3] ~= z then -- We're in the same position last time we saved the file.
-  -- uh
-else -- We're in a different position! Update the file with our current position.
+if not (gps_available and pos[1] ~= x or pos[2] ~= y or pos[3] ~= z) then -- We're in the same position last time we saved the file.
   pos = {x,y,z,0}
   fwrite(".skyrtle",textutils.serialize(pos))
 end
@@ -45,16 +43,21 @@ local dirLookup = {
   "east",
   "south",
   "west",
+  --- The number corresponding to north
   north = 0,
+  --- The number corresponding to east
   east = 1,
+  --- The number corresponding to south
   south = 2,
+  --- The number corresponding to west
   west = 3,
+  --- Simply the opposite direction for each direction. Used in turtle reversing.
   oppo = {
     [0] = 2,
     3,
     0,
     1,
-  }
+  },
 }
 
 -- if/elseif chain on facing to determine which coordinate to add 1 to when moving
@@ -86,6 +89,7 @@ local function calcFacing()
   local start = {gps.locate()}
   turtle.foward()
   local finish = {gps.locate()}
+  turtle.back()
   if start[1] + 1 == finish[1] then -- We moved east!
     return 1
   elseif start[1] - 1 == finish[1] then -- We moved west!
@@ -107,10 +111,10 @@ local function forward(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local success
-  for i=1,blocks do 
+  for _=1,blocks do 
     success = t.forward()
     if not success then break end
-    pos[1],pos[2],pos[3] = addCoord(pos[1],pos[2],pos[3],facing)
+    pos[1],pos[2],pos[3] = addCoord(pos[1],pos[2],pos[3],pos[4])
   end
   -- Check if we've ended up where we wanted
   if not success and gps_available then
@@ -134,10 +138,10 @@ local function back(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local success
-  for i=1,blocks do
+  for _=1,blocks do
     success = t.back()
     if not success then break end
-    pos[1],pos[2],pos[3] = addCoord(pos[1],pos[2],pos[3],dirLookup.oppo[facing])
+    pos[1],pos[2],pos[3] = addCoord(pos[1],pos[2],pos[3],dirLookup.oppo[pos[4]])
   end
   -- Check if we've ended up where we wanted
   if not success and gps_available then
@@ -162,7 +166,7 @@ local function up(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local success
-  for i=1,blocks do
+  for _=1,blocks do
     success = t.up()
     if not success then break end
     pos[2] = pos[2] + 1
@@ -190,7 +194,7 @@ local function down(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local success
-  for i=1,blocks do
+  for _=1,blocks do
     success = t.down()
     if not success then break end
     pos[2] = pos[2] - 1
@@ -217,9 +221,9 @@ end
 local function turnLeft(turns)
   expect(1,turns,"number","nil")
   turns = turns or 1
-  for i=1,turns do
+  for _=1,turns do
     local success = t.turnLeft()
-    facing = ((facing - 1) % 4)
+    pos[4] = (pos[4] - 1) % 4
     if not success then fwrite(".skyrtle",textutils.serialize(pos)) return false end
   end
   fwrite(".skyrtle",textutils.serialize(pos))
@@ -231,9 +235,9 @@ end
 local function turnRight(turns)
   expect(1,turns,"number","nil")
   turns = turns or 1
-  for i=1,turns do
+  for _=1,turns do
     local success = t.turnRight()
-    facing = ((facing + 1) % 4)
+    pos[4] = (pos[4] + 1) % 4
     if not success then fwrite(".skyrtle",textutils.serialize(pos)) return false end
   end
   fwrite(".skyrtle",textutils.serialize(pos))
@@ -243,7 +247,7 @@ end
 -- @treturn number The facing of the turtle represented as a number.
 -- @treturn string The facing of the turtle represented as a string.
 local function getFacing()
-  return facing, dirLookup[facing]
+  return pos[4], dirLookup[pos[4]]
 end
 
 --- Get the current position of the turtle.
@@ -262,7 +266,7 @@ local function setPosition(x,y,z)
   expect(1,x,"number")
   expect(1,y,"number")
   expect(1,z,"number")
-  pos = {x,y,z,facing}
+  pos = {x,y,z,pos[4]}
   fwrite(".skyrtle",textutils.serialize(pos))
 end
 
@@ -277,7 +281,7 @@ local function hijack()
   turtle.turnRight = turnRight
 
   -- This is cursed
-  return (turtle.forward == forward and turtle.back == back and turtle.up == up and turtle.down == down and turtle.turnLeft == turnLeft and turtle.turnRight == turnRight)
+  return turtle.forward == forward and turtle.back == back and turtle.up == up and turtle.down == down and turtle.turnLeft == turnLeft and turtle.turnRight == turnRight
 end
 
 return {
