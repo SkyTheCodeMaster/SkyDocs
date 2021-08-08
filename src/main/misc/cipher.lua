@@ -19,11 +19,8 @@ local letterTable = {
   "u", "v", "w", "x", "y",
   "z",
 }
-
---- A table where a number turns into a letter. (English alphabet.)
-local numberTable = {}
 for k, v in pairs(letterTable) do
-  numberTable[v] = k
+  letterTable[v] = k
 end
 
 --- Shift a single letter by a modifier.
@@ -36,7 +33,7 @@ local function shiftLetter(letter,modifier)
   expect(2,modifier,"number")
   if letter == " " then return " " end
   -- Get the index of the input letter
-  local letterIndex = numberTable[letter]
+  local letterIndex = letterTable[letter]
   -- Add the modifier to the letter index
   local newIndex = letterIndex + modifier
   -- Return the index, between 1 and 26
@@ -94,7 +91,7 @@ local function viginere(input,key)
     if x == " " then
       table.insert(inputNumbers," ")
     else
-      local index = numberTable[x]
+      local index = letterTable[x]
       table.insert(inputNumbers,index)
     end
   end
@@ -102,7 +99,7 @@ local function viginere(input,key)
     if x == " " then
       table.insert(inputNumbers," ")
     else
-      local index = numberTable[x]
+      local index = letterTable[x]
       table.insert(keyNumbers,index)
     end
   end
@@ -147,11 +144,11 @@ local function viginerDecode(input,key)
     local keyNumbers = {}
     local combined = {}
     for x in input:gmatch(".") do
-      local index = numberTable[x]
+      local index = letterTable[x]
       table.insert(inputNumbers,index)
     end
     for x in cutKey:gmatch(".") do
-      local index = numberTable[x]
+      local index = letterTable[x]
       table.insert(keyNumbers,index)
     end
     -- Loop through the table, and combine the key and input.
@@ -177,7 +174,6 @@ end
 
 return {
   letterTable = letterTable,
-  numberTable = numberTable,
   shiftLetter = shiftLetter,
   caesar = caesar,
   viginere = viginere,
