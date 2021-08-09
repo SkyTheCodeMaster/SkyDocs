@@ -37,6 +37,8 @@ local function makeProgramEnv(custEnv,win)
   myEnv["SkyOS"]["visible"] = function(isVisible) return isVisible end
   myEnv["SkyOS"]["back"] = function() end
   myEnv["require"],myEnv["package"] = make_package(myEnv,"/")
+  myEnv["shell"] = shell
+  myEnv["multishell"] = multishell
   return myEnv
 end
 
