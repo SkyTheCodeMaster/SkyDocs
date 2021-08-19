@@ -19,8 +19,9 @@ end
  
 --- Move player to set of coordinates within 50 blocks
 -- @tparam number x X coordinate to travel to.
--- @tparam number y Y coordinate to travel to.
-local function travel(x,z)
+-- @tparam number y Y height level to keep while travelling.
+-- @tparam number z Z coordinate to travel to.
+local function travel(x,y,z)
   local atDestination = false
   local v = {
     x = x-50,
@@ -54,9 +55,9 @@ local function travel(x,z)
     if mx and mz and mx >= v.x and mx <= v.w and mz >= v.y and mz <= v.h then
       atDestination = true
     end
-    keepHeight(300)
+    keepHeight(y)
     sleep()
   end
 end
  
-return travel
+return setmetatable({travel=travel},{__index = function(_,...) return travel(...) end})
