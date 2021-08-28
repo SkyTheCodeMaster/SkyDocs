@@ -596,7 +596,7 @@ local function draw(image,options,tOutput)
   end
 end
 
--- THIS FILETYPE IS DEPRECATED, DO NOT USE. (not documented)
+-- THIS FILETYPE IS DEPRECATED, DO NOT USE. (not documented) 
 --- Draw the given `skgrp` file.
 -- @tparam table Table of instructions to draw.
 -- @deprecated skgrp is not maintained, use @{load}, and @{draw}, or @{drawSkimg}
@@ -619,7 +619,7 @@ local function drawSkgrp(tbl)
   end
 end
 
---- drawSkimg takes a skimg table, and draws it at the specified location
+--- drawSkimg takes a skimg table, and draws it at the specified location 
 -- @tparam table skimg The skimg image to draw.
 -- @tparam[opt] number x X coordinate, defaults to 1.
 -- @tparam[opt] number y Y coordinate, defaults to 1.
