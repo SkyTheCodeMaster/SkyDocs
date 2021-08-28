@@ -18,7 +18,7 @@ local function deepCopy(tbl)
   return newTbl
 end
 
---- Debug log level, these should be treated as debug `print` statements. Test
+--- Debug log level, these should be treated as debug `print` statements.
 local DEBUG = 0
 --- Info log level, these should be used for logging general information.
 local INFO = 1
