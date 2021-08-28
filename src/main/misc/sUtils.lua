@@ -450,11 +450,12 @@ end
 -- @treturn table The image file, to be fed into a drawing routine.
 local function load(file,override)
   expect(1,file,"string")
+  expect(2,override,"string")
   if not fs.exists(file) then
     error("file does not exist",2)
   end
   local fileName = fs.getName(file)
-  local fileType = split(fileName,".")[2]
+  local fileType = override or split(fileName,".")[2]
   local mt = {
     __index = function(self,i)
       if i == "format" then
