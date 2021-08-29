@@ -32,12 +32,12 @@ local function makeProgramEnv(custEnv,win)
   myEnv["term"] = win
   myEnv["term"]["native"] = function() return _G.term.native() end
   myEnv["term"]["current"] = function() return win end
-  myEnv["SkyOS"] = {
+  myEnv["SkyOS"] = setmetatable({
     ["self"] = {win = win},
     ["close"] = function() end,
     ["visible"] = function(isVisible) return isVisible end,
     ["back"] = function() end,
-  }
+  },{__index=_G.SkyOS})
   myEnv["require"],myEnv["package"] = make_package(myEnv,"/")
   return myEnv
 end
