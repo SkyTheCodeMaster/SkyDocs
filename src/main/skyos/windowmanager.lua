@@ -25,7 +25,7 @@ local window = window
 -- Create an environment, with `term` replaced with a supplied window object, also with a `self` variable with stuff like the window, coro pid, etc
 local function makeProgramEnv(custEnv,win)
   custEnv = custEnv or {}
-  local myEnv = {}
+  local myEnv = setmetatable({},{__index=_G})
   for k,v in pairs(custEnv) do
     myEnv[k] = v
   end
@@ -39,8 +39,6 @@ local function makeProgramEnv(custEnv,win)
     ["back"] = function() end,
   }
   myEnv["require"],myEnv["package"] = make_package(myEnv,"/")
-  myEnv["shell"] = shell
-  myEnv["multishell"] = multishell
   return myEnv
 end
 
