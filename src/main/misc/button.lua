@@ -169,7 +169,7 @@ end
 -- @tparam[opt] number height Height of the button.
 -- @tparam[opt] function func Function to execute when the button is clicked.
 -- @tparam[opt] table image Table of blit lines to draw where the button is.
-local function edit(id,x,y,w,h,func,image)
+local function editButton(id,x,y,w,h,func,image)
   expect(1,id,"string")
   expect(2,x,"number","nil")
   expect(3,y,"number","nil")
@@ -202,7 +202,7 @@ return {
   newButton = newButton,
   deleteButton = deleteButton,
   enableButton = enableButton,
-  edit = edit,
+  editButton = editButton,
   executeButtons = executeButtons,
   drawButton = drawButton,
   drawButtons = drawButtons,
