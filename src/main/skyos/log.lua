@@ -52,6 +52,8 @@ local LOG = {
     datefmt = "%Y/%m/%d-%H:%M:%S",
     --- Level of the logger.
     level = 1, -- INFO level
+    --- Enabled.
+    enabled = true,
   },
 }
 
@@ -100,6 +102,14 @@ function LOG.setDatefmt(datefmt)
   LOG.config.datefmt = datefmt
 end
 
+--- Enable or disable the logger. If the logger is disabled then lines will not be written to the file.
+-- @tparam boolean enabled Whether or not the logger is enabled.
+function LOG.enable(enabled)
+  expect(1,enabled,"boolean")
+  --- Enabled
+  LOG.config.enabled = enabled
+end
+
 --- Write a message to the specified log file.
 -- @tparam table log The log to write.
 -- @tparam number level The level of the log message.
@@ -112,13 +122,17 @@ local function writeLog(log,level,message)
   expect(2,level,"number")
   expect(3,message,"string")
 
-  if log.level >= level then -- Yep, this is reportable.
-    local f,err = fs.open(log.file,"a")
-    if not f then return false,err end
-    local time = os.date(log.datefmt)
-    local fmt = log.format:gsub("{asctime}",time):gsub("{level}",levelLookup[level]):gsub("{message}",message)
-    f.write(fmt .. "\n")
-    return true
+  if log.config.enabled then
+    if log.level >= level then -- Yep, this is reportable.
+      local f,err = fs.open(log.config.file,"a")
+      if not f then return false,err end
+      local time = os.date(log.config.datefmt)
+      local fmt = log.config.format:gsub("{asctime}",time):gsub("{level}",levelLookup[level]):gsub("{message}",message)
+      f.write(fmt .. "\n")
+      return true
+    end
+  else
+    return false,"logger not enabled"
   end
   return false,"level too low"
 end
