@@ -66,13 +66,13 @@ local function newWindow(program,name,visible,env,...)
     error("Program not found",2)
   end
   -- We want to start it in 26x18 mode, which is the default with both bars visible.
-  local win = window.create(term.current(),1,2,26,18,false) -- Start invisible, will maybe make visible later on in function
+  local win = window.create(term.current(),1,2,26,18,visible)
   local programEnv = makeProgramEnv(env,win)
   local tArgs = table.pack(...)
   local f = fs.open(program,"r")
   local contents = f.readAll()
   f.close()
-  local func = load(contents,name,"t",programEnv)
+  local func = load(contents,"="..name,"t",programEnv)
   local function runFunc()
     func(table.unpack(tArgs,1,tArgs.n))
   end
