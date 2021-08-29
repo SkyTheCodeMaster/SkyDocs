@@ -450,7 +450,7 @@ end
 -- @treturn table The image file, to be fed into a drawing routine.
 local function load(file,override)
   expect(1,file,"string")
-  expect(2,override,"string")
+  expect(2,override,"string","nil")
   if not fs.exists(file) then
     error("file does not exist",2)
   end

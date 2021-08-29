@@ -32,10 +32,12 @@ local function makeProgramEnv(custEnv,win)
   myEnv["term"] = win
   myEnv["term"]["native"] = function() return _G.term.native() end
   myEnv["term"]["current"] = function() return win end
-  myEnv["SkyOS"]["self"] = {win = win}
-  myEnv["SkyOS"]["close"] = function() end
-  myEnv["SkyOS"]["visible"] = function(isVisible) return isVisible end
-  myEnv["SkyOS"]["back"] = function() end
+  myEnv["SkyOS"] = {
+    ["self"] = {win = win},
+    ["close"] = function() end,
+    ["visible"] = function(isVisible) return isVisible end,
+    ["back"] = function() end,
+  }
   myEnv["require"],myEnv["package"] = make_package(myEnv,"/")
   myEnv["shell"] = shell
   myEnv["multishell"] = multishell

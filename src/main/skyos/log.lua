@@ -8,7 +8,7 @@ local expect = require("cc.expect").expect
 -- @treturn table Copied table. 
 local function deepCopy(tbl)
   local newTbl = {}
-  for k,v in tbl do
+  for k,v in pairs(tbl) do
     if type(v) == "table" then
       newTbl[k] = deepCopy(v)
     else
@@ -66,7 +66,7 @@ function LOG.basicConfig(file,format,datefmt,level)
   expect(1,file,"string")
   expect(2,format,"string")
   expect(3,datefmt,"string")
-  expect(4,level,"string")
+  expect(4,level,"number")
 
   --- File to log to.
   LOG.config.file = file
