@@ -40,7 +40,7 @@ local function makeProgramEnv(custEnv,win)
     end
   end
 
-  myEnv["term"]["current"] = function() return win end
+  myEnv["term"]["current"] = function() return redirectTarget end
   myEnv["term"]["redirect"] = function(target)
     expect(1, target, "table")
     if target == myEnv["term"] or target == _G.term then
