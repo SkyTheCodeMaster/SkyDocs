@@ -30,8 +30,45 @@ local function makeProgramEnv(custEnv,win)
     myEnv[k] = v
   end
   myEnv["term"] = win
-  myEnv["term"]["native"] = function() return _G.term.native() end
+
+  local native = _G.term.native and _G.term.native() or term
+  local redirectTarget = native
+
+  local function wrap(_sFunction)
+    return function(...)
+      return redirectTarget[_sFunction](...)
+    end
+  end
+
   myEnv["term"]["current"] = function() return win end
+  myEnv["term"]["redirect"] = function(target)
+    expect(1, target, "table")
+    if target == myEnv["term"] or target == _G.term then
+      error("term is not a recommended redirect target, try term.current() instead", 2)
+    end
+    for k, v in pairs(native) do
+      if type(k) == "string" and type(v) == "function" then
+        if type(target[k]) ~= "function" then
+          target[k] = function()
+            error("Redirect object is missing method " .. k .. ".", 2)
+          end
+        end
+      end
+    end
+    local oldRedirectTarget = redirectTarget
+    redirectTarget = target
+    return oldRedirectTarget
+  end
+
+  local term = myEnv["term"]
+  for k,v in pairs(native) do
+    if type(k) == "string" and type(v) == "function" and rawget(term,k) == nil then
+      myEnv["term"][k] = wrap(k)
+    end
+  end
+
+  myEnv["term"]["native"] = function() return native end
+
   myEnv["SkyOS"] = setmetatable({
     ["self"] = {win = win},
     ["close"] = function() end,
