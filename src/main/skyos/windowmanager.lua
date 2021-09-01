@@ -15,9 +15,9 @@ local activeWindow = 0
 local wins = {} 
 
 --- Whether or not the top bar is open.
-local topbarOpen = true
+local topbar = true
 --- Whether or not the bottom bar is open.
-local bottombarOpen = true
+local bottombar = true
 
 -- Localize global apis.
 local window = window
@@ -161,7 +161,7 @@ local function foreground(win)
     local oldWin = activeWindow
     SkyOS.coro.activeCoros[wins[oldWin].pid] = false
     wins[oldWin].env.SkyOS.visible(false)
-    wins[oldWin].self.env.term.setVisible(false) -- `term` is actually a window object, here.
+    wins[oldWin].env.term.setVisible(false) -- `term` is actually a window object, here.
   end
   activeWindow = id
   SkyOS.coro.activeCoros[wins[id].pid] = true
@@ -174,8 +174,8 @@ end
 return {
   wins = wins,
   activeWindow = activeWindow,
-  bottombarOpen = bottombarOpen,
-  topbarOpen = topbarOpen,
+  bottombarOpen = bottombar,
+  topbarOpen = topbar,
   newWindow = newWindow,
   closeWindow = closeWindow,
   foreground = foreground,
