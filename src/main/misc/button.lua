@@ -31,40 +31,42 @@ local function genRandID(length)
 end
 
 --[[- Create a button, and add it to the internal table of buttons.
-  @tparam number x X coordinate of the button.
-  @tparam number y Y coordinate of the button.
-  @tparam number width Width of the button.
-  @tparam number height Height of the button.
-  @tparam function function The function to run when the button is clicked.
-  @tparam[opt] table image Table of blit lines to draw on the button.
-  @tparam[opt] boolean enabled Whether or not the button is active. Defaults to true.
-  @treturn string id id of the button
-  @usage Create a simple button.
-    local button = require("libs.button")
-    local id = button.new(1,1,5,5,function()
-      print("Hi!")
-    end)
+@tparam number x X coordinate of the button.
+@tparam number y Y coordinate of the button.
+@tparam number width Width of the button.
+@tparam number height Height of the button.
+@tparam function function The function to run when the button is clicked.
+@tparam[opt] table image Table of blit lines to draw on the button.
+@tparam[opt] boolean enabled Whether or not the button is active. Defaults to true.
+@treturn string id id of the button
+@usage Create a simple button.
 
-  @usage Create a button with an image
-    local button = require("libs.button")
-    local image = {
-      {
-        "+-----+",
-        "0000000",
-        "fffffff",
-      },
-      {
-        "|Image|",
-        "0000000",
-        "fffffff",
-      }
-      {
-        "+-----+",
-        "0000000",
-        "fffffff",
-      },
+  local button = require("libs.button")
+  local id = button.new(1,1,5,5,function()
+    print("Hi!")
+  end)
+
+@usage Create a button with an image
+
+  local button = require("libs.button")
+  local image = {
+    {
+      "+-----+",
+      "0000000",
+      "fffffff",
+    },
+    {
+      "|Image|",
+      "0000000",
+      "fffffff",
     }
-    local id = button.new(1,1,7,3,function() print("Clicked!") end,image) -- Note the `image` parameter passed here.
+    {
+      "+-----+",
+      "0000000",
+      "fffffff",
+    },
+  }
+  local id = button.new(1,1,7,3,function() print("Clicked!") end,image) -- Note the `image` parameter passed here.
 ]]
 local function new(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of blit lines. This function will check they're the same length.
   expect(1,nX,"number")
@@ -138,10 +140,11 @@ local function enable(id,enable)
   buttons[id].enabled = enable
 end
 
---- Takes an event in a table, checks if it's a `mouse_click` or `mouse_drag`, and sees if it's within a button, if so, execute it's function.
--- @tparam table event Event table to check for `mouse_click` or `mouse_drag`.
--- @tparam[opt] boolean drag Enable button trigger on a `mouse_drag` event. Defaults to false.
--- @tparam[opt] boolean monitor Enable button trigger on a `monitor_touch` event. Defaults to false.
+--[[- Takes an event in a table, checks if it's a `mouse_click` or `mouse_drag`, and sees if it's within a button, if so, execute it's function.
+@tparam table event Event table to check for `mouse_click` or `mouse_drag`.
+@tparam[opt] boolean drag Enable button trigger on a `mouse_drag` event. Defaults to false.
+@tparam[opt] boolean monitor Enable button trigger on a `monitor_touch` event. Defaults to false.
+]]
 local function exec(tEvent,bDrag,bMonitor)
   expect(1,tEvent,"table")
   expect(2,bDrag,"boolean","nil")
@@ -199,14 +202,15 @@ local function drawButtons()
   end
 end
 
---- Edit a button, changing it's function, position, or whatnot.
--- @tparam string id ID of the button to change.
--- @tparam[opt] number x X coordinate of the button.
--- @tparam[opt] number y Y coordinate of the button.
--- @tparam[opt] number width Width of the button.
--- @tparam[opt] number height Height of the button.
--- @tparam[opt] function func Function to execute when the button is clicked.
--- @tparam[opt] table image Table of blit lines to draw where the button is.
+--[[- Edit a button, changing it's function, position, or whatnot.
+@tparam string id ID of the button to change.
+@tparam[opt] number x X coordinate of the button.
+@tparam[opt] number y Y coordinate of the button.
+@tparam[opt] number width Width of the button.
+@tparam[opt] number height Height of the button.
+@tparam[opt] function func Function to execute when the button is clicked.
+@tparam[opt] table image Table of blit lines to draw where the button is.
+]]
 local function edit(id,x,y,w,h,func,image)
   expect(1,id,"string")
   expect(2,x,"number","nil")
