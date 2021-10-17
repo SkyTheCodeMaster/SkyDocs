@@ -1,16 +1,14 @@
 --- A simple button api with the option of drawing an image on the button.
+-- @module[kind=misc] button
 -- @usage Create a simple button
 --   local button = require("libs.button")
 --   local id = button.new(1,1,5,5,function()
 --     print("Hi!")
 --   end)
 --
---  while true do
---    button.exec({os.pullEvent()})
---  end
---
-
--- @module[kind=misc] button
+--   while true do
+--     button.exec({os.pullEvent()})
+--   end
 
 local expect = require("cc.expect").expect
 --- idLength is how long the specific IDs are, if you have lots of buttons, this should go higher.

@@ -36,6 +36,7 @@ local function makeProgramEnv(custEnv,win)
 
   local function wrap(_sFunction)
     return function(...)
+      ---@diagnostic disable-next-line: redundant-parameter
       return redirectTarget[_sFunction](...)
     end
   end
