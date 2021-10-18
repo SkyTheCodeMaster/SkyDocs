@@ -389,7 +389,7 @@ function farm.farm(length,width,check)
     turtle.forward()
   end
   turtle.turnRight()
-  for _=1,width+1 do
+  for _=1,width do
     turtle.forward()
   end
   turtle.turnRight()
