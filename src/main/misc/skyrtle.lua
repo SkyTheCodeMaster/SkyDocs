@@ -29,7 +29,7 @@ end
 -- @treturn table Copied table. 
 local function deepCopy(tbl)
   local newTbl = {}
-  for k,v in tbl do
+  for k,v in pairs(tbl) do
     if type(v) == "table" then
       newTbl[k] = deepCopy(v)
     else
