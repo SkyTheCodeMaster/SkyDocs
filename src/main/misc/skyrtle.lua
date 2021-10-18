@@ -1,6 +1,8 @@
 --- Functions for turtles
 -- @module[kind=misc] skyrtle
 
+local skyrtle = {}
+
 -- I know that CC:T 1.96.0 supports just `local expect = require("cc.expect")`, but earlier versions does not have this feature, so I'll still be using `local expect = require("cc.expect").expect .
 local expect = require("cc.expect").expect
 
@@ -39,9 +41,11 @@ local function deepCopy(tbl)
   return newTbl
 end
 
+local locate = gps.locate -- Keep copy of gps locate for hijacking
+
 -- Determine if GPS is available
 local gps_available = true
-local x,y,z = gps.locate()
+local x,y,z = locate()
 if not x then -- If GPS isn't available, set XYZ to 000.
   x,y,z = 0,0,0
   gps_available = false
@@ -99,11 +103,11 @@ end
 --- Get the current facing of the turtle. 
 -- @treturn[1] number Current facing of the turtle.
 -- @treturn[2] false GPS isn't available.
-local function calcFacing()
+function skyrtle.calcFacing()
   if not gps_available then return false end
-  local start = {gps.locate()}
+  local start = {locate()}
   turtle.foward()
-  local finish = {gps.locate()}
+  local finish = {locate()}
   turtle.back()
   if start[1] + 1 == finish[1] then -- We moved east!
     return 1
@@ -122,7 +126,7 @@ local t = deepCopy(turtle) -- Localize the turtle api for replacing it with `sky
 --- Move the turtle forward N (default 1) blocks.
 -- @tparam[opt=1] number blocks The number of blocks to move, defaults to 1.
 -- @treturn boolean Whether or not the turtle was able to move the amount of blocks.
-local function forward(blocks)
+function skyrtle.forward(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local success
@@ -133,7 +137,7 @@ local function forward(blocks)
   end
   -- Check if we've ended up where we wanted
   if not success and gps_available then
-    local mypos = {gps.locate()}
+    local mypos = {locate()}
     if mypos[1] == pos[1] and mypos[2] == pos[2] and mypos[3] == pos[3] then
       -- Yep, we're right on target!
       return true 
@@ -149,7 +153,7 @@ end
 --- Move the turtle backward N (default 1) blocks.
 -- @tparam[opt=1] number blocks The number of blocks to move, defaults to 1.
 -- @treturn boolean Whether or not the turtle was able to move the amount of blocks.
-local function back(blocks)
+function skyrtle.back(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local success
@@ -160,7 +164,7 @@ local function back(blocks)
   end
   -- Check if we've ended up where we wanted
   if not success and gps_available then
-    local mypos = {gps.locate()}
+    local mypos = {locate()}
     if mypos[1] == pos[1] and mypos[2] == pos[2] and mypos[3] == pos[3] then
       -- Yep, we're right on target!
       fwrite(".skyrtle",textutils.serialize(pos))
@@ -177,7 +181,7 @@ end
 --- Move the turtle up N times.
 -- @tparam[opt=1] number blocks The number of blocks to move, defaults to 1.
 -- @treturn boolean Whether or not the turtle was able to move the amount of blocks.
-local function up(blocks)
+function skyrtle.up(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local success
@@ -188,7 +192,7 @@ local function up(blocks)
   end
   -- Check if we've ended up where we wanted
   if not success and gps_available then
-    local mypos = {gps.locate()}
+    local mypos = {locate()}
     if mypos[1] == pos[1] and mypos[2] == pos[2] and mypos[3] == pos[3] then
       -- Yep, we're right on target!
       fwrite(".skyrtle",textutils.serialize(pos))
@@ -205,7 +209,7 @@ end
 --- Move the turtle down N times.
 -- @tparam[opt=1] number blocks The number of blocks to move, defaults to 1.
 -- @treturn boolean Whether or not the turtle was able to move the amount of blocks.
-local function down(blocks)
+function skyrtle.down(blocks)
   expect(1,blocks,"number","nil")
   blocks = blocks or 1
   local success
@@ -216,7 +220,7 @@ local function down(blocks)
   end
   -- Check if we've ended up where we wanted
   if not success and gps_available then
-    local mypos = {gps.locate()}
+    local mypos = {locate()}
     if mypos[1] == pos[1] and mypos[2] == pos[2] and mypos[3] == pos[3] then
       -- Yep, we're right on target!
       fwrite(".skyrtle",textutils.serialize(pos))
@@ -233,7 +237,7 @@ end
 --- Turn the turtle left N times.
 -- @tparam[opt=1] number turns How many times to turn the turtle, defaults to 1.
 -- @treturn boolean Whether or not the turtle was able to turn.
-local function turnLeft(turns)
+function skyrtle.turnLeft(turns)
   expect(1,turns,"number","nil")
   turns = turns or 1
   for _=1,turns do
@@ -247,7 +251,7 @@ end
 --- Turn the turtle right N times.
 -- @tparam[opt=1] number turns How many times to turn the turtle, defaults to 1.
 -- @treturn boolean Whether or not the turtle was able to turn.
-local function turnRight(turns)
+function skyrtle.turnRight(turns)
   expect(1,turns,"number","nil")
   turns = turns or 1
   for _=1,turns do
@@ -261,7 +265,7 @@ end
 --- Get the current facing of the turtle.
 -- @treturn number The facing of the turtle represented as a number.
 -- @treturn string The facing of the turtle represented as a string.
-local function getFacing()
+function skyrtle.getFacing()
   return pos[4], dirLookup[pos[4]]
 end
 
@@ -269,7 +273,7 @@ end
 -- @treturn number X coordinate of the turtle.
 -- @treturn number Y coordinate of the turtle.
 -- @treturn number Z coordinate of the turtle. 
-local function getPosition()
+function skyrtle.getPosition()
   return pos[1],pos[2],pos[3]
 end
 
@@ -277,7 +281,7 @@ end
 -- @tparam number x X coordinate of the turtle.
 -- @tparam number y Y coordinate of the turtle. 
 -- @tparam number z Z coordinate of the turtle. 
-local function setPosition(x,y,z)
+function skyrtle.setPosition(x,y,z)
   expect(1,x,"number")
   expect(1,y,"number")
   expect(1,z,"number")
@@ -285,31 +289,31 @@ local function setPosition(x,y,z)
   fwrite(".skyrtle",textutils.serialize(pos))
 end
 
---- Hijack the turtle API and replace it with Skyrtle functions.
--- @treturn boolean Whether or not the changes were applied successfully.
-local function hijack()
-  turtle.forward = forward
-  turtle.back = back
-  turtle.up = up
-  turtle.down = down
-  turtle.turnLeft = turnLeft
-  turtle.turnRight = turnRight
-
-  -- This is cursed
-  return turtle.forward == forward and turtle.back == back and turtle.up == up and turtle.down == down and turtle.turnLeft == turnLeft and turtle.turnRight == turnRight
+local function newGPSLocate(timeout,dbug)
+  if gps_available then
+    return locate(timeout,dbug)
+  else
+    return skyrtle.getPosition()
+  end
 end
 
-return {
-    dirLookup = dirLookup,
-      forward = forward,
-         back = back,
-           up = up,
-         down = down,
-     turnLeft = turnLeft,
-    turnRight = turnRight,
-    getFacing = getFacing,
-   calcFacing = calcFacing,
-  getPosition = getPosition,
-  setPosition = setPosition,
-       hijack =  hijack,
-}
+--- Hijack the turtle API and replace it with Skyrtle functions.
+-- @tparam boolean gps Whether or not to replace the GPS api.
+-- @treturn boolean Whether or not the changes were applied successfully.
+function skyrtle.hijack(doGPS)
+
+  turtle.forward = skyrtle.forward
+  turtle.back = skyrtle.back
+  turtle.up = skyrtle.up
+  turtle.down = skyrtle.down
+  turtle.turnLeft = skyrtle.turnLeft
+  turtle.turnRight = skyrtle.turnRight
+
+  if doGPS then
+    gps.locate = newGPSLocate
+  end
+  -- This is cursed
+  return turtle.forward == skyrtle.forward and turtle.back == skyrtle.back and turtle.up == skyrtle.up and turtle.down == skyrtle.down and turtle.turnLeft == skyrtle.turnLeft and turtle.turnRight == skyrtle.turnRight
+end
+
+return skyrtle
