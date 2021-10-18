@@ -24,6 +24,21 @@ local function fwrite(file,contents)
   f.close()
 end
 
+--- Deep copy a table, recurses to nested tables.
+-- @tparam table tbl Table to copy. 
+-- @treturn table Copied table. 
+local function deepCopy(tbl)
+  local newTbl = {}
+  for k,v in tbl do
+    if type(v) == "table" then
+      newTbl[k] = deepCopy(v)
+    else
+      newTbl[k] = v
+    end
+  end
+  return newTbl
+end
+
 -- Determine if GPS is available
 local gps_available = true
 local x,y,z = gps.locate()
@@ -102,7 +117,7 @@ local function calcFacing()
 end
 
 -- Functions that can replace the turtle api.
-local t = turtle -- Localize the turtle api for replacing it with `skyrtle.replace()`
+local t = deepCopy(turtle) -- Localize the turtle api for replacing it with `skyrtle.replace()`
 
 --- Move the turtle forward N (default 1) blocks.
 -- @tparam[opt=1] number blocks The number of blocks to move, defaults to 1.
