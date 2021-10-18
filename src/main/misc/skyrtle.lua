@@ -382,7 +382,6 @@ function farm.farm(length,width,check)
   -- If width is odd, then we're facing the way we came, if it is even we're facing the opposite way we need to go.
   if width%2==0 then
     turtle.turnLeft()
-    turtle.forward()
     turtle.turnLeft()
   end
   for _=1,length do
