@@ -18,7 +18,7 @@ if fs.exists(".skyrtle") then
   local f = fs.open(".skyrtle","r")
   local c = f.readAll() f.close()
   pos = textutils.unserialize(c)
-else pos = {0,0,0,0} end
+end
 
 local function fwrite(file,contents)
   local f = fs.open(file,"w")
@@ -339,8 +339,22 @@ function farm.farm(length,width,check)
   expect(1,length,"number")
   expect(1,width,"number")
   check = check or farm.check
+  local success,item = check() -- Slight jank fix for bug
+  if success then
+    turtle.digDown()
+    turtle.suckDown()
+    for i=1,16 do
+      local data = turtle.getItemDetail(i)
+      if data and data.name == item then
+        turtle.select(i)
+        turtle.placeDown()
+        break
+      end
+    end
+  end
   for y=1,width do
     for x=1,length do
+      turtle.forward()
       local success,item = check()
       if success then
         turtle.digDown()
@@ -354,18 +368,15 @@ function farm.farm(length,width,check)
           end
         end
       end
-      turtle.forward()
     end
     if y%2==0 then -- even, turn left
       turtle.turnLeft()
       turtle.forward()
       turtle.turnLeft()
-      turtle.forward()
     else -- odd, turn right
       turtle.turnRight()
       turtle.forward()
       turtle.turnRight()
-      turtle.forward()
     end
   end
   -- If width is odd, then we're facing the way we came, if it is even we're facing the opposite way we need to go.
