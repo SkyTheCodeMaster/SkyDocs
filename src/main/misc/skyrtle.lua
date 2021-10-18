@@ -324,6 +324,9 @@ end
 
 local farm = {}
 
+--- The default check
+-- @treturn boolean Whether or not to farm the item
+-- @treturn string What to replace it with.
 function farm.check()
   local _,data = turtle.inspectDown()
   if data and data.name == "minecraft:wheat" and data.state.age == 7 then
@@ -339,43 +342,40 @@ function farm.farm(length,width,check)
   expect(1,length,"number")
   expect(1,width,"number")
   check = check or farm.check
-  local success,item = check() -- Slight jank fix for bug
-  if success then
-    turtle.digDown()
-    turtle.suckDown()
-    for i=1,16 do
-      local data = turtle.getItemDetail(i)
-      if data and data.name == item then
-        turtle.select(i)
-        turtle.placeDown()
-        break
-      end
-    end
-  end
-  for y=1,width do
-    for x=1,length do
-      turtle.forward()
-      local success,item = check()
-      if success then
-        turtle.digDown()
-        turtle.suckDown()
-        for i=1,16 do
-          local data = turtle.getItemDetail(i)
-          if data and data.name == item then
-            turtle.select(i)
-            turtle.placeDown()
-            break
-          end
+
+  local function doCheck()
+    local success,item = check()
+    if success then
+      turtle.digDown()
+      turtle.suckDown()
+      for i=1,16 do
+        local data = turtle.getItemDetail(i)
+        if data and data.name == item then
+          turtle.select(i)
+          turtle.placeDown()
+          break
         end
       end
     end
+  end
+
+  for y=1,width do
+    for x=1,length do
+      if x ~= length then
+        turtle.forward()
+      end
+      doCheck()
+    end
+
     if y%2==0 then -- even, turn left
       turtle.turnLeft()
       turtle.forward()
+      doCheck()
       turtle.turnLeft()
     else -- odd, turn right
       turtle.turnRight()
       turtle.forward()
+      doCheck()
       turtle.turnRight()
     end
   end
