@@ -367,20 +367,22 @@ function farm.farm(length,width,check)
       doCheck()
     end
 
-    if y%2==0 then -- even, turn left
-      turtle.turnLeft()
-      turtle.forward()
-      doCheck()
-      turtle.turnLeft()
-    else -- odd, turn right
-      turtle.turnRight()
-      turtle.forward()
-      doCheck()
-      turtle.turnRight()
+    if y ~= width then
+      if y%2==0 then -- even, turn left
+        turtle.turnLeft()
+        turtle.forward()
+        doCheck()
+        turtle.turnLeft()
+      else -- odd, turn right
+        turtle.turnRight()
+        turtle.forward()
+        doCheck()
+        turtle.turnRight()
+      end
     end
   end
-  -- If width is odd, then we're facing the way we came, if it is even we're facing the opposite way we need to go.
-  if width%2==0 then
+  -- If width is even, then we're facing the way we came, if it is odd we're facing the opposite way we need to go.
+  if width%2==1 then
     turtle.turnLeft()
     turtle.turnLeft()
   end
