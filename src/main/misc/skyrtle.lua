@@ -316,4 +316,66 @@ function skyrtle.hijack(doGPS)
   return turtle.forward == skyrtle.forward and turtle.back == skyrtle.back and turtle.up == skyrtle.up and turtle.down == skyrtle.down and turtle.turnLeft == skyrtle.turnLeft and turtle.turnRight == skyrtle.turnRight
 end
 
+local farm = {}
+
+function farm.check()
+  local _,data = turtle.inspectDown()
+  if data and data.name == "minecraft:wheat" and data.state.age == 7 then
+    return true,"minecraft:wheat_seeds"
+  end
+end
+
+--- A standard farm function, runs the check function and if it passes it will dig down, and place down the seed.
+-- @tparam number length How far the turtle should go.
+-- @tparam number width How many blocks to the right the turtle should go.
+-- @tparam function check Whether or not the turtle should dig, and if it does, what item it should place down as a seed. The default check checks for a wheat growth state of 7. The returns should be a boolean, and a string for the item name. The default check function is @{skyrtle.farm.check}
+function farm.farm(length,width,check)
+  expect(1,length,"number")
+  expect(1,width,"number")
+  check = check or farm.check
+  for y=1,width do
+    for x=1,length do
+      local success,item = check()
+      if success then
+        turtle.digDown()
+        turtle.suckDown()
+        for i=1,16 do
+          local data = turtle.getItemDetail(i)
+          if data and data.name == item then
+            turtle.select(i)
+            turtle.placeDown()
+            break
+          end
+        end
+      end
+      turtle.forward()
+    end
+    if y%2==0 then -- even, turn left
+      turtle.turnLeft()
+      turtle.forward()
+      turtle.turnLeft()
+    else -- odd, turn right
+      turtle.turnRight()
+      turtle.forward()
+      turtle.turnRight()
+    end
+  end
+  -- If width is odd, then we're facing the way we came, if it is even we're facing the opposite way we need to go.
+  if width%2==0 then
+    turtle.turnLeft()
+    turtle.forward()
+    turtle.turnLeft()
+  end
+  for _=1,length do
+    turtle.forward()
+  end
+  turtle.turnRight()
+  for _=1,width+1 do
+    turtle.forward()
+  end
+  turtle.turnRight()
+  -- We are now at our beginning position :)
+end
+
+skyrtle.farm = farm
 return skyrtle
