@@ -316,6 +316,12 @@ function skyrtle.hijack(doGPS)
   return turtle.forward == skyrtle.forward and turtle.back == skyrtle.back and turtle.up == skyrtle.up and turtle.down == skyrtle.down and turtle.turnLeft == skyrtle.turnLeft and turtle.turnRight == skyrtle.turnRight
 end
 
+--- Restore the turtle API and the GPS api
+function skyrtle.restore()
+  turtle = t
+  gps.locate = locate
+end
+
 local farm = {}
 
 function farm.check()
@@ -354,10 +360,12 @@ function farm.farm(length,width,check)
       turtle.turnLeft()
       turtle.forward()
       turtle.turnLeft()
+      turtle.forward()
     else -- odd, turn right
       turtle.turnRight()
       turtle.forward()
       turtle.turnRight()
+      turtle.forward()
     end
   end
   -- If width is odd, then we're facing the way we came, if it is even we're facing the opposite way we need to go.
