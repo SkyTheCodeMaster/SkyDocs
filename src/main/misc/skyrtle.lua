@@ -358,6 +358,7 @@ function farm.farm(length,width,check)
       end
     end
   end
+  doCheck() -- Check the one we're currently over.
 
   for y=1,width do
     for x=1,length do
@@ -381,13 +382,17 @@ function farm.farm(length,width,check)
       end
     end
   end
-  -- If width is even, then we're facing the way we came, if it is odd we're facing the opposite way we need to go.
+  -- If width is even, we're facing the way we need to go.
+  -- If width is odd, we need to turn around.
   if width%2==1 then
     turtle.turnLeft()
     turtle.turnLeft()
   end
-  for _=1,length-1 do
-    turtle.forward()
+  -- If the width is even, then we've already travelled this distance.
+  if width%2==1 then
+    for _=1,length-1 do
+      turtle.forward()
+    end
   end
   turtle.turnRight()
   for _=1,width-1 do
