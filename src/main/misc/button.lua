@@ -183,7 +183,7 @@ local function drawButton(id)
     end
     local mX,mY = term.getCursorPos()
     if image then -- If a blit table is passed, loop through it and draw it.
-      for i=1,image do
+      for i=1,#image do
         local frame = image[i]
         term.setCursorPos(x,y+i-1)
         term.blit(frame[1],frame[2],frame[3])
