@@ -1,14 +1,5 @@
 --- A simple button api with the option of drawing an image on the button.
 -- @module[kind=misc] button
--- @usage Create a simple button
---   local button = require("libs.button")
---   local id = button.new(1,1,5,5,function()
---     print("Hi!")
---   end)
---
---   while true do
---     button.exec({os.pullEvent()})
---   end
 
 local expect = require("cc.expect").expect
 --- idLength is how long the specific IDs are, if you have lots of buttons, this should go higher.
@@ -28,6 +19,8 @@ local function genRandID(length)
   return str
 end
 
+local button
+
 --[[- Create a button, and add it to the internal table of buttons.
 @tparam number x X coordinate of the button.
 @tparam number y Y coordinate of the button.
@@ -37,15 +30,15 @@ end
 @tparam[opt] table image Table of blit lines to draw on the button.
 @tparam[opt] boolean enabled Whether or not the button is active. Defaults to true.
 @treturn string id id of the button
-@usage Create a simple button.
-
+@usage
+  ```lua
   local button = require("libs.button")
   local id = button.new(1,1,5,5,function()
     print("Hi!")
   end)
-
+  ```
 @usage Create a button with an image
-
+  ```lua
   local button = require("libs.button")
   local image = {
     {
@@ -65,8 +58,9 @@ end
     },
   }
   local id = button.new(1,1,7,3,function() print("Clicked!") end,image) -- Note the `image` parameter passed here.
+  ```
 ]]
-local function new(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of blit lines. This function will check they're the same length.
+function button.new(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of blit lines. This function will check they're the same length.
   expect(1,nX,"number")
   expect(1,nY,"number")
   expect(1,nW,"number")
@@ -121,7 +115,7 @@ end
 
 --- Remove a button from being clicked.
 -- @tparam string id button id to remove.
-local function delete(id) -- This doesn't remove the image if any!
+function button.delete(id) -- This doesn't remove the image if any!
   expect(1,id,"string","nil")
   if buttons[id] then
     buttons[id] = nil
@@ -131,19 +125,19 @@ end
 --- Enable or disable a button.
 -- @tparam string id Button to enable or disable.
 -- @tparam boolean enable Whether the button is enabled or not.
-local function enable(id,enable)
+function button.enable(id,enable)
   expect(1,id,"string")
   expect(2,enable,"boolean")
   if not buttons[id] then error("Button " .. id .. " does not exist.",2) end
   buttons[id].enabled = enable
 end
 
---[[- Takes an event in a table, checks if it's a `mouse_click` or `mouse_drag`, and sees if it's within a button, if so, execute it's function.
+--[[- Takes an event in a table, checks if it's a `mouse_click` or `mouse_drag`, and sees if it's within a button, if so, execute its function.
 @tparam table event Event table to check for `mouse_click` or `mouse_drag`.
 @tparam[opt] boolean drag Enable button trigger on a `mouse_drag` event. Defaults to false.
 @tparam[opt] boolean monitor Enable button trigger on a `monitor_touch` event. Defaults to false.
 ]]
-local function exec(tEvent,bDrag,bMonitor)
+function button.exec(tEvent,bDrag,bMonitor)
   expect(1,tEvent,"table")
   expect(2,bDrag,"boolean","nil")
   expect(3,bMonitor,"boolean","nil")
@@ -159,9 +153,9 @@ local function exec(tEvent,bDrag,bMonitor)
   end
 end
 
---- Draw a button again, drawing it's `tDraw`, or nothing if there is no image.
+--- Draw a button again, drawing its `tDraw`, or nothing if there is no image.
 -- @tparam string id Button ID to draw image of.
-local function drawButton(id)
+function button.drawButton(id)
   expect(1,id,"string")
   if buttons[id] and buttons[id].tDraw then
     local image = buttons[id].tDraw
@@ -194,13 +188,13 @@ local function drawButton(id)
 end
 
 --- Draw every button, this loops through the buttons table.
-local function drawButtons()
+function button.drawButtons()
   for k in pairs(buttons) do
-    drawButton(k)
+    button.drawButton(k)
   end
 end
 
---[[- Edit a button, changing it's function, position, or whatnot.
+--[[- Edit a button, changing its function, position, or whatnot.
 @tparam string id ID of the button to change.
 @tparam[opt] number x X coordinate of the button.
 @tparam[opt] number y Y coordinate of the button.
@@ -209,7 +203,7 @@ end
 @tparam[opt] function func Function to execute when the button is clicked.
 @tparam[opt] table image Table of blit lines to draw where the button is.
 ]]
-local function edit(id,x,y,w,h,func,image)
+function button.edit(id,x,y,w,h,func,image)
   expect(1,id,"string")
   expect(2,x,"number","nil")
   expect(3,y,"number","nil")
@@ -238,21 +232,29 @@ local function edit(id,x,y,w,h,func,image)
   }
 end
 
+--- Run buttons forever. Useful in parallel.
+-- @tparam boolean drag Whether or not dragging triggers buttons.
+-- @tparam boolean touch Whether or not monitor touches triggers buttons
+-- @treturn function A runnable function that runs buttons forever.
+-- @usage
+-- ```lua
+-- parallel.run(button.run(false,true))
+-- ```
+function button.run(bDrag,bMonitor)
+  return function()
+    while true do
+      button.exec({os.pullEvent()},bDrag,bMonitor)
+    end
+  end
+end
+
 local aliases = {
-  newButton = new,
-  deleteButton = delete,
-  enableButton = enable,
-  executeButtons = exec,
-  execute = exec,
-  editButton = edit,
+  newButton = button.new,
+  deleteButton = button.delete,
+  enableButton = button.enable,
+  executeButtons = button.exec,
+  execute = button.exec,
+  editButton = button.edit,
 }
 
-return setmetatable({
-  new = new,
-  delete = delete,
-  enable = enable,
-  edit = edit,
-  exec = exec,
-  drawButton = drawButton,
-  drawButtons = drawButtons,
-},{__index = aliases})
+return setmetatable(button,{__index = aliases})
