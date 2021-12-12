@@ -322,6 +322,7 @@ function skyrtle.restore()
   gps.locate = locate
 end
 
+--- Various farming functions
 local farm = {}
 
 --- The default check
@@ -399,7 +400,32 @@ function farm.farm(length,width,check)
     turtle.forward()
   end
   turtle.turnRight()
+  turtle.select(1)
   -- We are now at our beginning position :)
+end
+
+--- Pathfinding functions
+local path = {}
+
+--- Generates a straight line path to the requested coordinates from gps or saved coordinates.
+-- This goes Y (Height), then Z and X in straight lines towards the destination.
+function path.generate(x,y,z)
+  local cx,cy,cz = 0,0,0
+  if gps_available then
+    cx,cy,cz = gps.locate()
+  else
+    cx,cy,cz = skyrtle.getPosition()
+  end
+  local genPath = {}
+  while cy ~= y do
+    if cy > y then
+      table.insert(genPath,"down")
+      cy = cy - 1
+    else
+      table.insert(genPath,"up")
+      cy = cy + 1
+    end
+  end
 end
 
 skyrtle.farm = farm

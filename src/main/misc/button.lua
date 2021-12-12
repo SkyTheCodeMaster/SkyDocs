@@ -1,5 +1,6 @@
 --- A simple button api with the option of drawing an image on the button.
 -- @module[kind=misc] button
+local button = {}
 
 local expect = require("cc.expect").expect
 --- idLength is how long the specific IDs are, if you have lots of buttons, this should go higher.
@@ -18,8 +19,6 @@ local function genRandID(length)
   end
   return str
 end
-
-local button
 
 --[[- Create a button, and add it to the internal table of buttons.
 @tparam number x X coordinate of the button.
