@@ -461,7 +461,7 @@ local function load(file,override)
       if i == "format" then
         return fileType
       end
-      return self[i]
+      return rawget(self,i)
     end,
   }
   local img = {}
