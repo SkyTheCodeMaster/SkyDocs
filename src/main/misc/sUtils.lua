@@ -213,10 +213,11 @@ end
 
 --- Read the contents of a file.
 -- @tparam string file Path to the file.
--- @treturn string Contents of the file.
+-- @treturn string|nil Contents of the file, or nil if the file doesn't exist.
 local function fread(file)
   expect(1,file,"string")
   local f = fs.open(file,"r")
+  if not f then return nil end -- File does not exist
   local contents = f.readAll()
   f.close()
   return contents
