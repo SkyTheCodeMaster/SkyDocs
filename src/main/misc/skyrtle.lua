@@ -270,11 +270,12 @@ function skyrtle.getFacing()
 end
 
 --- Set the current facing of the turtle
--- @tparam number,string The facing of the turtle in number or string form, 0 = north, 1 = east, 2 = south, 3 = west.
+-- @tparam number,string dir The facing of the turtle in number or string form, 0 = north, 1 = east, 2 = south, 3 = west.
 function skyrtle.setFacing(dir)
   expect(1,dir,"number","string")
   if type(dir) == "string" then dir = dirLookup[dir:lower()] end
   pos[4] = dir
+  fwrite(".skyrtle",textutils.serialize(pos))
 end
 
 --- Get the current position of the turtle.
