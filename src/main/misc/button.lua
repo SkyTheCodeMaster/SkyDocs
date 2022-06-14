@@ -104,6 +104,7 @@ function button.new(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of blit
   if tDraw then -- If a blit table is passed, loop through it and draw it.
     for i=1,#tDraw do
       local frame = tDraw[i]
+      term.setCursorPos(nX,nY+i-1)
       term.blit(frame[1],frame[2],frame[3])
     end
   term.setCursorPos(mX,mY)
@@ -142,7 +143,7 @@ function button.exec(tEvent,bDrag,bMonitor)
   expect(3,bMonitor,"boolean","nil")
   bDrag = bDrag or false
   bMonitor = bMonitor or false
-  if tEvent[1] == "mouse_click" or bDrag and tEvent[1] == "mouse_drag" or bMonitor and tEvent[2] == "monitor_touch" then
+  if tEvent[1] == "mouse_click" or bDrag and tEvent[1] == "mouse_drag" or bMonitor and tEvent[1] == "monitor_touch" then
     local x,y = tEvent[3],tEvent[4]
     for _,v in pairs(buttons) do
       if v.enabled and x >= v.x and x <= v.x + v.w - 1 and y >= v.y and y <= v.y + v.h - 1 then
