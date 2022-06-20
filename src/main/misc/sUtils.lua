@@ -71,7 +71,7 @@ local function split(inputstr, sep)
   expect(1,sep,"string","nil")
   sep = sep or ","
   local t={}
-  for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
+  for str in inputstr:gmatch("([^"..sep.."]+)") do
     table.insert(t, str)
   end
   return t
