@@ -248,13 +248,4 @@ function button.run(bDrag,bMonitor)
   end
 end
 
-local aliases = {
-  newButton = button.new,
-  deleteButton = button.delete,
-  enableButton = button.enable,
-  executeButtons = button.exec,
-  execute = button.exec,
-  editButton = button.edit,
-}
-
-return setmetatable(button,{__index = aliases})
+return button
