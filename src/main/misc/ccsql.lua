@@ -60,7 +60,7 @@ function ccsql.open(host,username,password)
   expect(3,password,"string","nil")
   local ws = http.websocket(HOST)
   -- Initialize the connection.
-  ws.send(textutils.serializeJSON({url=host,username=username,password=password}))
+  ws.send(textutils.serializeJSON({url=host,username=username,password=password,connect=true}))
   local resp = ws.receive()
   if resp ~= "ok" then
     return false
