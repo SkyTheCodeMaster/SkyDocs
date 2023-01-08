@@ -19,12 +19,6 @@ jobs:
         test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/linux-x86-64/illuaminate
         chmod +x bin/illuaminate
 
-    - name: Run python scripts
-      run: |
-        python3 ./todo.py ${GITHUB_SHA}
-        python3 ./minify.py
-        python3 ./hash.py
-
     - name: Generate documentation
       run: |
         bin/illuaminate doc-gen
@@ -36,18 +30,3 @@ jobs:
         publish_dir: ./build/docs/lua
         force_orphan: true
         commit_message: Build for
-
-  lint:
-    name: Illuaminate Lint
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Setup illuaminate
-      run: |
-        test -d bin || mkdir bin
-        test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/linux-x86-64/illuaminate
-        chmod +x bin/illuaminate
-        
-    - name: Lint Lua code
-      run: |
-        bin/illuaminate lint
