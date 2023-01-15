@@ -1,0 +1,21 @@
+{
+  "https://raw.githubusercontent.com/MasonGulu/CC-MISC/master/common.lua": {
+    "path": "common.lua"
+  },
+  "https://raw.githubusercontent.com/MasonGulu/CC-MISC/master/storage.lua": {
+    "path": "storage.lua"
+  },
+  "https://raw.githubusercontent.com/MasonGulu/CC-MISC/master/abstractInvLib.lua": {
+    "path": "abstractInvLib.lua"
+  },
+
+  "https://raw.githubusercontent.com/MasonGulu/CC-MISC/master/modules/inventory.lua": {
+    "path": "modules/inventory.lua"
+  },
+  "https://raw.githubusercontent.com/MasonGulu/CC-MISC/master/modules/interface.lua": {
+    "path": "modules/interface.lua"
+  },
+  "https://raw.githubusercontent.com/MasonGulu/CC-MISC/master/modules/modem.lua": {
+    "path": "modules/modem.lua"
+  }
+}
