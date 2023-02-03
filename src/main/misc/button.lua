@@ -1,6 +1,5 @@
 --- A simple button api with the option of drawing an image on the button.
 -- @module[kind=misc] button
-local button = {}
 
 local expect = require("cc.expect").expect
 --- idLength is how long the specific IDs are, if you have lots of buttons, this should go higher.
@@ -59,7 +58,7 @@ end
   local id = button.new(1,1,7,3,function() print("Clicked!") end,image) -- Note the `image` parameter passed here.
   ```
 ]]
-function button.new(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of blit lines. This function will check they're the same length.
+function new(nX,nY,nW,nH,fFunc,tDraw,enabled) -- tDraw is a table of blit lines. This function will check they're the same length.
   expect(1,nX,"number")
   expect(1,nY,"number")
   expect(1,nW,"number")
@@ -125,7 +124,7 @@ end
 --- Enable or disable a button.
 -- @tparam string id Button to enable or disable.
 -- @tparam boolean enable Whether the button is enabled or not.
-function button.enable(id,enable)
+function enable(id,enable)
   expect(1,id,"string")
   expect(2,enable,"boolean")
   if not buttons[id] then error("Button " .. id .. " does not exist.",2) end
@@ -137,7 +136,7 @@ end
 @tparam[opt] boolean drag Enable button trigger on a `mouse_drag` event. Defaults to false.
 @tparam[opt] boolean monitor Enable button trigger on a `monitor_touch` event. Defaults to false.
 ]]
-function button.exec(tEvent,bDrag,bMonitor)
+function exec(tEvent,bDrag,bMonitor)
   expect(1,tEvent,"table")
   expect(2,bDrag,"boolean","nil")
   expect(3,bMonitor,"boolean","nil")
@@ -155,7 +154,7 @@ end
 
 --- Draw a button again, drawing its `tDraw`, or nothing if there is no image.
 -- @tparam string id Button ID to draw image of.
-function button.drawButton(id)
+function drawButton(id)
   expect(1,id,"string")
   if buttons[id] and buttons[id].tDraw then
     local image = buttons[id].tDraw
@@ -188,7 +187,7 @@ function button.drawButton(id)
 end
 
 --- Draw every button, this loops through the buttons table.
-function button.drawButtons()
+function drawButtons()
   for k in pairs(buttons) do
     button.drawButton(k)
   end
@@ -203,7 +202,7 @@ end
 @tparam[opt] function func Function to execute when the button is clicked.
 @tparam[opt] table image Table of blit lines to draw where the button is.
 ]]
-function button.edit(id,x,y,w,h,func,image)
+function edit(id,x,y,w,h,func,image)
   expect(1,id,"string")
   expect(2,x,"number","nil")
   expect(3,y,"number","nil")
@@ -240,12 +239,20 @@ end
 -- ```lua
 -- parallel.run(button.run(false,true))
 -- ```
-function button.run(bDrag,bMonitor)
+function run(bDrag,bMonitor)
   return function()
     while true do
       button.exec({os.pullEvent()},bDrag,bMonitor)
     end
   end
 end
-
-return button
+return {
+  new = new,
+  delete = delete,
+  enable = enable,
+  exec = exec,
+  drawButton = drawButton,
+  drawButtons = drawButtons,
+  edit = edit,
+  run = run,
+}
