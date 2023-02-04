@@ -1,6 +1,5 @@
 --- An API that connects to the `ccsql` server and allows requests.
 -- @module[kind=misc] ccsql
-local ccsql = {}
 
 local expect = require("cc.expect").expect
 
@@ -54,7 +53,7 @@ end
 -- @tparam[opt] string password Password of the account of the psql server.
 -- @treturn Connection
 -- @return[2] false If the connection failed.
-function ccsql.open(host,username,password)
+function open(host,username,password)
   expect(1,host,"string")
   expect(2,username,"string","nil")
   expect(3,password,"string","nil")
@@ -71,4 +70,6 @@ function ccsql.open(host,username,password)
   return setmetatable(conn,mt)
 end
 
-return ccsql
+return {
+  open = open,
+}
