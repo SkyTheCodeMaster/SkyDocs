@@ -114,7 +114,7 @@ end
 
 --- Remove a button from being clicked.
 -- @tparam string id button id to remove.
-function button.delete(id) -- This doesn't remove the image if any!
+function delete(id) -- This doesn't remove the image if any!
   expect(1,id,"string","nil")
   if buttons[id] then
     buttons[id] = nil
@@ -189,7 +189,7 @@ end
 --- Draw every button, this loops through the buttons table.
 function drawButtons()
   for k in pairs(buttons) do
-    button.drawButton(k)
+    drawButton(k)
   end
 end
 
@@ -242,7 +242,7 @@ end
 function run(bDrag,bMonitor)
   return function()
     while true do
-      button.exec({os.pullEvent()},bDrag,bMonitor)
+      exec({os.pullEvent()},bDrag,bMonitor)
     end
   end
 end
