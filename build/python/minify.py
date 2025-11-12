@@ -2,27 +2,29 @@
 
 print("-----START MINIFY.PY-----")
 
-import os,subprocess,sys
+import os
+import subprocess
+import humanize
 
-indexedFolders = ['src'] # This is recursive!
-targetType = 'lua'
+indexed_folders = ['src'] # This is recursive!
+target_file_type = 'lua'
 
-myFiles = []
+minified_files = []
 
 print("Indexing folders...")
 
-for x in indexedFolders:
-  for root,dirs,files in os.walk(x,topdown=False):
+for file in indexed_folders:
+  for root,dirs,files in os.walk(file,topdown=False):
     for name in files:
-      if name[-len(targetType):] == targetType:
+      if name[-len(target_file_type):] == target_file_type:
         print(f"queue: {os.path.join(root,name)}")
-        myFiles.append({'path':os.path.join(root,name),'name':name})
+        minified_files.append({'path':os.path.join(root,name),'name':name})
 
 print("Minifying and writing to `build/docs/lua/minified/`")
 
-for x in myFiles:
-  print(f"minify: {x['name']}")
-  subprocess.run(f"bin/illuaminate minify {x['path']} > build/docs/lua/minified/{x['name']}",shell=True)
+for file in minified_files:
+  print(f"minify: {file['name']}")
+  subprocess.run(f"bin/illuaminate minify {file['path']} > build/docs/lua/minified/{file['name']}",shell=True)
 
 html = """<html>
   <head>
@@ -39,8 +41,13 @@ html = """<html>
     <ul>
 """
 
-for x in myFiles:
-  html += f'      <li><a href="https://skydocs.madefor.cc/minified/{x["name"]}">{x["name"]}</a></li>\n'
+for file in minified_files:
+  # Find the original and minified size of the libraries.
+  with open(file["path"], "r") as f:
+    original_size = len(f.read())
+  with open(f"build/docs/lua/minified/{file['name']}", "r") as f:
+    minified_size = len(f.read())
+  html += f'      <li><a href="https://skydocs.madefor.cc/minified/{file["name"]}">{file["name"]}</a> (min: {humanize.naturalsize(minified_size)}, orig: {humanize.naturalsize(original_size)})</li>\n'
 
 html += """    </ul>
   </body>

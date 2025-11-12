@@ -18,7 +18,7 @@ local function read(options)
     elseif ev == "key" and value == keys.enter then
       return buffer
     elseif ev == "char" then
-      if limit then
+      if options.limit then
         if #buffer < options.limit then
           buffer = buffer .. value
         end

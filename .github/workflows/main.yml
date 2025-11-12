@@ -16,9 +16,10 @@ jobs:
         chmod +x bin/illuaminate
     - name: Run python scripts
       run: |
-        python3 ./todo.py ${GITHUB_SHA}
-        python3 ./minify.py
-        python3 ./hash.py
+        python3 -m pip install humanize
+        python3 build//todo.py ${GITHUB_SHA}
+        python3 build/minify.py
+        python3 build/hash.py
     - name: Generate documentation
       run: |
         bin/illuaminate doc-gen
