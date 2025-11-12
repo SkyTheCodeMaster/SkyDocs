@@ -17,6 +17,7 @@ for folder in indexed_folders:
   for root,dirs,files in os.walk(folder,topdown=False):
     for name in files:
       files.append(os.path.join(root,name))
+      print(root, name)
 
 todo = []
 

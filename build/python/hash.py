@@ -7,33 +7,33 @@ import hashlib
 import json
 import os
 
-indexedFolders = ['src'] # This is recursive!
-targetType = 'lua'
+indexed_folders = ['src'] # This is recursive!
+target_type = 'lua'
 
-myFiles = []
+hash_files = []
 
 print("Indexing folders...")
 
-for x in indexedFolders:
-  for root,dirs,files in os.walk(x,topdown=False):
+for file in indexed_folders:
+  for root,dirs,files in os.walk(file,topdown=False):
     for name in files:
-      if name[-len(targetType):] == targetType:
+      if name[-len(target_type):] == target_type:
         print(f"queue: {os.path.join(root,name)}")
-        myFiles.append(os.path.join(root,name))
+        hash_files.append(os.path.join(root,name))
 
 hashes = {}
 
 print("Hashing files...")
 
-for x in myFiles:
-  with open(x,"r",encoding="utf-8") as f:
+for file in hash_files:
+  with open(file,"r",encoding="utf-8") as f:
     contents = f.read()
   try:
     hash = hashlib.sha256(contents.encode("utf-8","strict")).hexdigest()
-    print(f"Hashed {x}, hash: {hash}")
-    hashes[x] = hash
+    print(f"Hashed {file}, hash: {hash}")
+    hashes[file] = hash
   except UnicodeDecodeError as e:
-    print(f"Wops, no decodey {x} because {e}")
+    print(f"Wops, no decodey {file} because {e}")
 
 with open("build/docs/lua/hashes.json","w") as f:
   f.write(json.dumps(hashes,indent=2))

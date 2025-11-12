@@ -19,7 +19,7 @@ jobs:
       run: |
         python3 build/python/hash.py
         python3 build/python/minify.py
-        python3 build/python/todo.py ${GITHUB_SHA}
+#        python3 build/python/todo.py ${GITHUB_SHA} # Skipped, because it has some infinite error with file reading
 
     - name: Generate documentation
       run: |
