@@ -14,11 +14,13 @@ jobs:
         test -d bin || mkdir bin
         test -f bin/illuaminate || wget -q -Obin/illuaminate https://squiddev.cc/illuaminate/bin/latest/illuaminate-linux-x86_64
         chmod +x bin/illuaminate
+
     - name: Run python scripts
       run: |
-        python3 build/python/todo.py ${GITHUB_SHA}
-        python3 build/python/minify.py
         python3 build/python/hash.py
+        python3 build/python/minify.py
+        python3 build/python/todo.py ${GITHUB_SHA}
+
     - name: Generate documentation
       run: |
         bin/illuaminate doc-gen
