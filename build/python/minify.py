@@ -2,9 +2,9 @@
 
 print("-----START MINIFY.PY-----")
 
+import math
 import os
 import subprocess
-import humanize
 
 indexed_folders = ['src'] # This is recursive!
 target_file_type = 'lua'
@@ -41,13 +41,22 @@ html = """<html>
     <ul>
 """
 
+def humanize(size: int) -> str:
+  suffixes = ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"]
+
+  if size < 1024:
+    return f"{size}B"
+
+  exponent = int(min(math.log(size, 1024), len(suffixes)))
+  return "%.1f" % (size / (1024**exponent)) + suffixes[exponent]
+
 for file in minified_files:
   # Find the original and minified size of the libraries.
   with open(file["path"], "r") as f:
     original_size = len(f.read())
   with open(f"build/docs/lua/minified/{file['name']}", "r") as f:
     minified_size = len(f.read())
-  html += f'      <li><a href="https://skydocs.madefor.cc/minified/{file["name"]}">{file["name"]}</a> (min: {humanize.naturalsize(minified_size)}, orig: {humanize.naturalsize(original_size)})</li>\n'
+  html += f'      <li><a href="https://skydocs.madefor.cc/minified/{file["name"]}">{file["name"]}</a> (min: {humanize(minified_size)}, orig: {humanize.(original_size)})</li>\n'
 
 html += """    </ul>
   </body>

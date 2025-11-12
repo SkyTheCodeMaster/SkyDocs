@@ -16,7 +16,6 @@ jobs:
         chmod +x bin/illuaminate
     - name: Run python scripts
       run: |
-        python3 -m pip install humanize
         python3 build/python/todo.py ${GITHUB_SHA}
         python3 build/python/minify.py
         python3 build/python/hash.py
