@@ -3,7 +3,9 @@
 
 print("-----START HASH.PY-----")
 
-import os,hashlib,json
+import hashlib
+import json
+import os
 
 indexedFolders = ['src'] # This is recursive!
 targetType = 'lua'
