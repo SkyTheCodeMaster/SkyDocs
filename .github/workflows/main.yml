@@ -17,9 +17,9 @@ jobs:
     - name: Run python scripts
       run: |
         python3 -m pip install humanize
-        python3 build/todo.py ${GITHUB_SHA}
-        python3 build/minify.py
-        python3 build/hash.py
+        python3 build/python/todo.py ${GITHUB_SHA}
+        python3 build/python/minify.py
+        python3 build/python/hash.py
     - name: Generate documentation
       run: |
         bin/illuaminate doc-gen
