@@ -224,17 +224,16 @@ local Rectangle = setmetatable({
   Super = Object
 },{__index=Object})
 
---[[- Instantiate a new @{Rectangle} object.
-  This is called through @{graphics.new}
-  @tparam table Options
-  @treturn Rectangle The instantiated @{Rectangle} object
+--- Instantiate a new @{Rectangle} object.
+--  This is called through @{graphics.new}
+--@tparam table Options
+--@treturn Rectangle The instantiated @{Rectangle} object
 
-  - `size`: @{Size} The width and height of the rectangle
-  - `origin`: @{Point} The point where the top left of the rectangle is.
-  - `border?`: number/string The colour of the border of the rectangle, defaults to white.
-  - `fill?`: number/string The colour of the infill of the rectangle, defaults to the border colour.
-  - `pixel?=false`: boolean Whether or not the rectangle should use the pixel characters, or full size characters.
-]]
+-- `size`: @{Size} The width and height of the rectangle
+-- `origin`: @{Point} The point where the top left of the rectangle is.
+-- `border?`: number/string The colour of the border of the rectangle, defaults to white.
+-- `fill?`: number/string The colour of the infill of the rectangle, defaults to the border colour.
+-- `pixel?=false`: boolean Whether or not the rectangle should use the pixel characters, or full size characters.
 function Rectangle.new(options)
   local rect = {
     size = options.size,
@@ -413,20 +412,19 @@ local TextBox = setmetatable({
   Super = Object
 },{__index=Object})
 
---[[- Instantiate a new @{TextBox} object.
--- @tparam table Options
-  - `size`: @{Size} The width and height of the text box.
-  - `origin`: @{Point} The point where the top left of the text box is.
-  - `text`: string The initial text of the text box.
-  - `colour`: string|number The colour of the text.
-  - `background`: boolean Whether or not it renders a rectangle in the background of the text. Defaults to false.
-  - `border`: string The style of border for the textbox. "full" uses full size characters, "pixel" uses the pixel characters, and "none" doesn't draw a border.
-  - `border_colour`: string|number The colour of the border. This can not be set if the border is `none`.
-  - `background_fill`: string|number The colour of the background.
-  - `justify`: string "left", "center", "right". The justification of the text, defaults to center.
-  - `alignment`: string "top", "center", "bottom". The alignment of the text, defaults to center.
-  - `wordwrap`: string "none", "space", "character". The word wrap setting. If set to none, the only word wrapping will be from newline characters. If set to space, it will wrap on space characters. If set to character, it will split words to wrap.
-]]
+--- Instantiate a new @{TextBox} object.
+--@tparam table Options
+-- `size`: @{Size} The width and height of the text box.
+-- `origin`: @{Point} The point where the top left of the text box is.
+-- `text`: string The initial text of the text box.
+-- `colour`: string|number The colour of the text.
+-- `background`: boolean Whether or not it renders a rectangle in the background of the text. Defaults to false.
+-- `border`: string The style of border for the textbox. "full" uses full size characters, "pixel" uses the pixel characters, and "none" doesn't draw a border.
+-- `border_colour`: string|number The colour of the border. This can not be set if the border is `none`.
+-- `background_fill`: string|number The colour of the background.
+-- `justify`: string "left", "center", "right". The justification of the text, defaults to center.
+-- `alignment`: string "top", "center", "bottom". The alignment of the text, defaults to center.
+-- `wordwrap`: string "none", "space", "character". The word wrap setting. If set to none, the only word wrapping will be from newline characters. If set to space, it will wrap on space characters. If set to character, it will split words to wrap.
 function TextBox.new(options)
   field(options, "size", "table")
   field(options, "origin", "table")
@@ -472,9 +470,9 @@ function TextBox.new(options)
 end
 
 --- Split a string by it's separator.
--- @tparam string inputstr String to split.
--- @tparam string sep Separator to split the string by.
--- @treturn table Table containing the split string.
+--@tparam string inputstr String to split.
+--@tparam string sep Separator to split the string by.
+--@treturn table Table containing the split string.
 local function split(inputstr, sep)
   expect(1,inputstr,"string")
   expect(1,sep,"string","nil")
@@ -487,7 +485,7 @@ local function split(inputstr, sep)
 end
 
 --- Draw the textbox
--- @tparam table A window object
+--@tparam table A window object
 function TextBox:draw(win)
   local ox,oy = self:real_origin()
   local border = self.border ~= "none"
@@ -567,8 +565,8 @@ function TextBox:draw(win)
 end
 
 --- Test if a point falls within the bounds of the textbox.
---- @tparam @{Point} point to test
---- @treturn @{Object} or false
+--@tparam @{Point} point to test
+--@treturn @{Object} or false
 function TextBox:test_hit(point)
   local child_result = self.Super.test_hit(self, point)
   if child_result then
@@ -595,19 +593,18 @@ local Input = setmetatable({
   Super = Object
 },{__index=Object})
 
---[[- Instantiate a new @{Input} object.
-  This is called through @{graphics.new}
-  @tparam table Options
-  @treturn Input The instantiated @{Input} object
+--- Instantiate a new @{Input} object.
+--This is called through @{graphics.new}
+--@tparam table Options
+--@treturn Input The instantiated @{Input} object
 
-  - `size`: @{Size} The width and height of the rectangle
-  - `origin`: @{Point} The point where the top left of the rectangle is.
-  - `colour`: number|string The colour of the text written.
-  - `background`: number|string The colour of the background.
-  - `border`: bool=true Whether or not a rectangle is rendered behind the text input.
-  - `border_colour`: number|string=colour The colour of the border. Defaults to the text colour.
-  - `border_pixel`: bool=true Whether or not the border is made of space characters or pixel characters
-]]
+-- `size`: @{Size} The width and height of the rectangle
+-- `origin`: @{Point} The point where the top left of the rectangle is.
+-- `colour`: number|string The colour of the text written.
+-- `background`: number|string The colour of the background.
+-- `border`: bool=true Whether or not a rectangle is rendered behind the text input.
+-- `border_colour`: number|string=colour The colour of the border. Defaults to the text colour.
+-- `border_pixel`: bool=true Whether or not the border is made of space characters or pixel characters
 function Input.new(options)
   field(options, "size", "table")
   field(options, "origin", "table")
@@ -663,7 +660,7 @@ function Input:remove_char()
 end
 
 --- Scroll the input left or right
---- @tparam number len The amount to scroll. negative number scrolls left, positive number scrolls right
+--@tparam number len The amount to scroll. negative number scrolls left, positive number scrolls right
 function Input:scroll(len)
   local input_width = not self.border and self.size[1] or self.size[1]-2
   if (0>len) then
@@ -674,8 +671,8 @@ function Input:scroll(len)
 end
 
 --- Draw the input.
---- @tparam win table The terminal object to draw to.
---- @tparam set_cursor boolean Whether or not to enable cursor blink, and position it at the correct index after drawing.
+--@tparam win table The terminal object to draw to.
+--@tparam set_cursor boolean Whether or not to enable cursor blink, and position it at the correct index after drawing.
 function Input:draw(win, set_cursor)
   local input_width = not self.border and self.size[1] or self.size[1]-2
   local text_window = self.text:sub(0+self._text_offset, input_width+self._text_offset)
@@ -704,8 +701,8 @@ function Input:draw(win, set_cursor)
 end
 
 --- Test if a point falls within the bounds of the input.
---- @tparam @{Point} point to test
---- @treturn @{Object} or false
+--@tparam @{Point} point to test
+--@treturn @{Object} or false
 function Input:test_hit(point)
   local child_result = self.Super.test_hit(self, point)
   if child_result then
@@ -727,8 +724,8 @@ function Input:test_hit(point)
 end
 
 --- Run the event loop for an input.
---- This will handle setting focus, running each callback, etc.
---- @tparam boolean unfocus_on_enter Whether or not to set `focus` to false when enter is pressed.
+--This will handle setting focus, running each callback, etc.
+--@tparam boolean unfocus_on_enter Whether or not to set `focus` to false when enter is pressed.
 function Input:loop(unfocus_on_enter)
   while true do
     local event = {os.pullEvent()}
@@ -784,32 +781,31 @@ function Input:loop(unfocus_on_enter)
 end
 
 --- Progress bar object
---- @class progress
+--@class progress
 local Progress = setmetatable({
   Super = Object
 },{__index=Object})
 
---[[- Instantiate a new @{Progress} object.
-  This is called through @{graphics.new}
-@tparam table options
-@treturn Input The instantiated @{Progress} object
+--- Instantiate a new @{Progress} object.
+--  This is called through @{graphics.new}
+--@tparam table options
+--@treturn Input The instantiated @{Progress} object
+--@tparam @{Size} options.size The width and height of the progress bar
+--@tparam @{Point} options.origin The point where the top left of the progress bar is.
+--@tparam number|string options.colour The foreground colour of the bar.
+--@tparam number|string options.background The background colour of the bar.
+--@tparam[opt=false] boolean options.border  Whether or not a rectangle is rendered behind the text input.
+--@tparam[opt=options.colour] number|string border_colour The colour of the border. Defaults to the text colour.
+--@tparam[opt=true] boolean border_pixel Whether or not the border is made of space characters or pixel characters.
+--@tparam[opt=full] string mode The progress bar mode. It has 3 options.
+--                   "full" uses space characters, so it has a resolution of `width`.
+--                   "half" uses the half drawing character, so it has a resolution of `width*2`.
+--                   "sixth" uses all the drawing characters, and the entire vertical height of the bar, filling top to bottom, left to right. It has a resolution of `width*height*6`.
+--@tparam[opt=right] string direction The direction the progress bar flows.
+--@tparam[opt=0] number value The percentage (from 0-1) of the progress bar that is filled.
 
-@tparam @{Size} options.size The width and height of the progress bar
-@tparam @{Point} options.origin The point where the top left of the progress bar is.
-@tparam number|string options.colour The foreground colour of the bar.
-@tparam number|string options.background The background colour of the bar.
-@tparam[opt=false] boolean options.border  Whether or not a rectangle is rendered behind the text input.
-@tparam[opt=options.colour] number|string border_colour The colour of the border. Defaults to the text colour.
-@tparam[opt=true] boolean border_pixel Whether or not the border is made of space characters or pixel characters.
-@tparam[opt=full] string mode The progress bar mode. It has 3 options.
-                   "full" uses space characters, so it has a resolution of `width`.
-                   "half" uses the half drawing character, so it has a resolution of `width*2`.
-                   "sixth" uses all the drawing characters, and the entire vertical height of the bar, filling top to bottom, left to right. It has a resolution of `width*height*6`.
-@tparam[opt=right] string direction The direction the progress bar flows.
-@tparam[opt=0] number value The percentage (from 0-1) of the progress bar that is filled.
-
-@changed 0.0.1 Only "full", and "right" is implemented.
-]]
+--@changed 0.0.1 Only "full", and "right" is implemented.
+---@diagnostic disable-next-line: duplicate-set-field
 function Progress.new(options)
   field(options, "size", "table")
   field(options, "origin", "table")
@@ -861,7 +857,7 @@ function Progress:_blit_line_right(width, value, mode)
 end
 
 --- Draw the progress bar
---- @tparam table win The window object to draw to.
+--@tparam table win The window object to draw to.
 function Progress:draw(win)
   if self._bg_rectangle then
     self._bg_rectangle:draw(win)
