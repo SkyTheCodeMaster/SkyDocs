@@ -56,7 +56,7 @@ for file in minified_files:
     original_size = len(f.read())
   with open(f"build/docs/lua/minified/{file['name']}", "r") as f:
     minified_size = len(f.read())
-  html += f'      <li><a href="https://skydocs.madefor.cc/minified/{file["name"]}">{file["name"]}</a> (min: {humanize(minified_size)}, orig: {humanize.(original_size)})</li>\n'
+  html += f'      <li><a href="https://skydocs.madefor.cc/minified/{file["name"]}">{file["name"]}</a> (min: {humanize(minified_size)}, orig: {humanize(original_size)})</li>\n'
 
 html += """    </ul>
   </body>
