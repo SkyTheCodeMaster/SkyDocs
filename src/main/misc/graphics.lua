@@ -272,9 +272,9 @@ function Rectangle:_draw_chars(win)
     end
   else
     local line = (" "):rep(width)
-    for y=ty,height+ty do
+    for y=ty,height+ty-1 do
       local col
-      if (y == ty) or (y == height+ty) then
+      if (y == ty) or (y == height+ty-1) then
         col = self.border:rep(width)
       else
         col = self.border .. self.fill:rep(width-2) .. self.border
@@ -871,7 +871,7 @@ function Progress:draw(win)
     local top = oy + modifier
     local bottom = (oy+self.size[2]) - modifier-1
     local width = (self.size[1]) - modifier*2
-    local left = (oy) + modifier
+    local left = (ox) + modifier
 
     for i=top,bottom do
       local blit = self:_blit_line_right(width, self.value, self.mode)
