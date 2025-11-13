@@ -1,0 +1,8 @@
+{
+  "https://raw.githubusercontent.com/MasonGulu/CC-MISC/master/clients/modemLib.lua": {
+    "path": "clients/modemLib.lua"
+  },
+  "https://raw.githubusercontent.com/MasonGulu/CC-MISC/master/clients/terminal.lua": {
+    "path": "clients/terminal.lua"
+  }
+}
