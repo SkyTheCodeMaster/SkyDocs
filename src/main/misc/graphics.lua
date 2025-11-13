@@ -197,15 +197,15 @@ function Object:mouse_loop(monitor)
 end
 
 -- Generic polygon object
---- @class Polygon
+--- @type Polygon
 local Polygon = setmetatable({
   Super = Object
 },{__index=Object})
 
 --- Instantiate a new @{Polygon} object.
--- @tparam Points a list of points that the polygon takes
--- @tparam number The edge colour of the polygon
--- @tparam number The fill colour of the polygon, -1 for transparent
+-- @tparam points Points a list of points that the polygon takes
+-- @tparam edge_colour number The edge colour of the polygon
+-- @tparam fill_colour number The fill colour of the polygon, -1 for transparent
 -- @treturn Polygon the new polygon object.
 function graphics.new_polygon(points, edge_colour, fill_colour)
   error("Polygons not implemented")
@@ -219,7 +219,7 @@ function Polygon:draw()
 end
 
 --- Generic rectangle object
---- @class Rectangle
+--- @type Rectangle
 local Rectangle = setmetatable({
   Super = Object
 },{__index=Object})
@@ -407,7 +407,7 @@ function Rectangle:draw(win)
 end
 
 --- Rectangle textbox
---- @class TextBox
+--- @type TextBox
 local TextBox = setmetatable({
   Super = Object
 },{__index=Object})
@@ -588,7 +588,7 @@ function TextBox:test_hit(point)
 end
 
 --- Text input object
---- @class Input
+--- @type Input
 local Input = setmetatable({
   Super = Object
 },{__index=Object})
@@ -781,7 +781,7 @@ function Input:loop(unfocus_on_enter)
 end
 
 --- Progress bar object
---@class progress
+--@type progress
 local Progress = setmetatable({
   Super = Object
 },{__index=Object})
